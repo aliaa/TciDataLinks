@@ -1,12 +1,22 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
+using AliaaCommon;
+using EasyMongoNet;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json.Serialization;
+using TciDataLinks.Models;
 
 namespace TciDataLinks
 {
@@ -22,7 +32,67 @@ namespace TciDataLinks
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => false;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).
+                AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/Logout";
+                });
+
+            string permissionClaimName = nameof(Permission);
+            services.AddAuthorization(options =>
+            {
+                foreach (string perm in Enum.GetNames(typeof(Permission)))
+                    options.AddPolicy(perm, policy => policy.RequireAssertion(context =>
+                    {
+                        var permClaim = context.User.Claims.FirstOrDefault(c => c.Type == permissionClaimName);
+                        return permClaim != null && permClaim.Value.Contains(perm);
+                    }));
+                options.AddPolicy("Admin", policy => policy.RequireClaim("IsAdmin"));
+            });
+
+            var mvcBuilder = services.AddControllersWithViews();
+#if (DEBUG)
+            mvcBuilder.AddRazorRuntimeCompilation();
+#endif
+            services.AddRazorPages()
+                .AddNewtonsoftJson(
+                    options =>
+                    {
+                        options.SerializerSettings.Converters.Add(new ObjectIdJsonConverter());
+                        options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                        // Maintain property names during serialization. See:
+                        // https://github.com/aspnet/Announcements/issues/194
+                        options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                    })
+                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+
+            services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Arabic));
+
+            // Add mongodb service:
+            string filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "PersianCharsMap.json");
+            var stringNormalizer = new StringNormalizer(filePath);
+            services.AddSingleton(stringNormalizer);
+
+            var db = new MongoDbContext(
+                Configuration.GetValue<string>("DBName"), 
+                Configuration.GetValue<string>("MongoConnString"),
+                customConnections: Configuration.GetSection("CustomConnections").Get<List<CustomMongoConnection>>(),
+                objectPreprocessor: stringNormalizer);
+            services.AddSingleton<IDbContext>(db);
+            services.AddSingleton<IReadOnlyDbContext>(db);
+
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AutomaticAuthentication = false;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -37,9 +107,9 @@ namespace TciDataLinks
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
-
             app.UseRouting();
-
+            app.UseCookiePolicy();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
