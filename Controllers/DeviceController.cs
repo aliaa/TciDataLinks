@@ -100,6 +100,7 @@ namespace TciDataLinks.Controllers
                 Network = m.Network,
                 Type = m.Type,
                 RackRow = m.RackRow,
+                Address = m.Address,
                 Rack = rackId
             };
             db.Save(device);
@@ -116,6 +117,7 @@ namespace TciDataLinks.Controllers
                 Model = device.Model,
                 Network = device.Network,
                 RackRow = device.RackRow,
+                Address = device.Address,
                 Type = device.Type
             };
             var parent = db.FindById<Rack>(device.Rack).Parent;
@@ -174,6 +176,7 @@ namespace TciDataLinks.Controllers
             device.Model = m.Model;
             device.Network = m.Network;
             device.RackRow = m.RackRow;
+            device.Address = m.Address;
             device.Type = m.Type;
             db.Save(device);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });

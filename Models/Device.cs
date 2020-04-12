@@ -31,6 +31,7 @@ namespace TciDataLinks.Models
         [BsonRepresentation(BsonType.String)]
         public NetworkType Network { get; set; }
         public string Model { get; set; }
+        public string Address { get; set; }
 
         public override string ToString()
         {
