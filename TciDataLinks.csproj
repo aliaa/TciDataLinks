@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>f50929ee-3561-46e7-b712-e2ef6b0df0fe</UserSecretsId>
+    <SatelliteResourceLanguages>fa</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>
