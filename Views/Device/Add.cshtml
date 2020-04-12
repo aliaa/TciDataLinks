@@ -1,0 +1,142 @@
+﻿@model TciDataLinks.Models.DeviceViewModel
+@using TciCommon.Models
+
+@{
+    ViewData["Title"] = "دستگاه جدید";
+}
+
+<h1>دستگاه جدید</h1>
+<hr />
+<div class="row mt-5">
+    <div class="col-md-4">
+        <form asp-action="Add">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <select asp-for="City" class="form-control">
+                    <option disabled selected="selected">انتخاب کنید</option>
+                    @foreach (City c in ViewBag.Cities)
+                    {
+                        <option value="@c.Id.ToString()">@c.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Center" class="control-label"></label>
+                <select asp-for="Center" class="form-control"></select>
+                <span asp-validation-for="Center" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Building" class="control-label"></label>
+                <select asp-for="Building" class="form-control">
+                    <option disabled selected>انتخاب کنید یا وارد کنید</option>
+                </select>
+                <span asp-validation-for="Building" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Room" class="control-label"></label>
+                <select asp-for="Room" class="form-control">
+                    <option disabled selected>انتخاب کنید یا وارد کنید</option>
+                </select>
+                <span asp-validation-for="Room" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rack" class="control-label"></label>
+                <select asp-for="Rack" class="form-control">
+                    <option disabled selected>انتخاب کنید یا وارد کنید</option>
+                </select>
+                <span asp-validation-for="Rack" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RackRow" class="control-label"></label>
+                <input asp-for="RackRow" class="form-control" />
+                <span asp-validation-for="RackRow" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <select asp-for="Type" class="form-control">
+                    @foreach (var t in Enum.GetNames(typeof(Device.DeviceType)))
+                    {
+                        <option>@t</option>
+                    }
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Network" class="control-label"></label>
+                <select asp-for="Network" class="form-control">
+                    @foreach (var n in Enum.GetNames(typeof(Device.NetworkType)))
+                    {
+                        <option>@n</option>
+                    }
+                </select>
+                <span asp-validation-for="Network" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Model" class="control-label"></label>
+                <input asp-for="Model" class="form-control" />
+                <span asp-validation-for="Model" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="ایجاد" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Place" asp-action="Index">بازگشت به لیست</a>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script src="~/lib/select2/js/select2.full.min.js"></script>
+    <script>
+        var select2Settings = {
+            tags: true,
+            theme: "bootstrap4",
+            language: "fa"
+        };
+
+        $("#City").change(function () {
+            var cityId = $(this).val();
+            $.get("/Device/Centers?city=" + cityId, function (res) {
+                $("#Center").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+                $.each(res, function (index, item) {
+                    $("#Center").append("<option value='" + item.value + "'>" + item.text + "</option>");
+                });
+            });
+        });
+
+        $("#Center").change(function () {
+            var centerId = $(this).val();
+            $.get("/Device/Buildings?center=" + centerId, function (res) {
+                $("#Building").select2({
+                    data: res,
+                    ...select2Settings
+                });
+            });
+        });
+
+        $("#Building").on('select2:select', function (e) {
+            var buildingId = e.params.data.id;
+            $.get("/Device/Rooms?building=" + buildingId, function (res) {
+                $("#Room").select2({
+                    data: res,
+                    ...select2Settings
+                });
+            });
+        });
+
+        $('#Room').on('select2:select', function (e) {
+            var roomId = e.params.data.id;
+            $.get("/Device/Racks?room=" + roomId, function (res) {
+                $("#Rack").select2({
+                    data: res,
+                    ...select2Settings
+                });
+            });
+        });
+    </script>
+}

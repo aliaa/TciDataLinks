@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using EasyMongoNet;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using TciCommon.Models;
 using TciDataLinks.Models;
 
 namespace TciDataLinks.Controllers
@@ -13,11 +14,27 @@ namespace TciDataLinks.Controllers
     public abstract class BaseController : Controller
     {
         protected readonly IDbContext db;
-        public static readonly List<DayOfWeek> WEEKENDS = new List<DayOfWeek> { DayOfWeek.Thursday, DayOfWeek.Friday };
+        protected Settings settings = null;
 
         public BaseController(IDbContext db)
         {
             this.db = db;
+        }
+
+        public BaseController(IDbContext db, Settings settings)
+        {
+            this.db = db;
+            this.settings = settings;
+        }
+
+        protected IEnumerable<City> Cities
+        {
+            get
+            {
+                if (settings == null)
+                    throw new Exception("Settings is null");
+                return db.FindGetResults<City>(c => c.Province == ObjectId.Parse(settings.ProvinceId));
+            }
         }
 
         protected ObjectId? UserId

@@ -76,6 +76,9 @@ namespace TciDataLinks
 
             services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Arabic));
 
+            var settings = Configuration.GetSection("Settings").Get<Settings>();
+            services.AddSingleton(settings);
+
             // Add mongodb service:
             string filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "PersianCharsMap.json");
             var stringNormalizer = new StringNormalizer(filePath);

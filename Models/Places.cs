@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace TciDataLinks.Models
 {
     [CollectionIndex(new string[] { nameof(Parent) })]
-    public abstract class PlaceBase : MongoEntity
+    public class PlaceBase : MongoEntity
     {
         public ObjectId Parent { get; set; }
         public string Name { get; set; }
@@ -22,6 +22,6 @@ namespace TciDataLinks.Models
     public class Rack : PlaceBase
     {
         [Display(Name = "ظرفیت")]
-        public int Capacity { get; set; }
+        public int Capacity { get; set; } = 46;
     }
 }

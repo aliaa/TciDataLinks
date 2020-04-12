@@ -1,0 +1,59 @@
+﻿@model PlaceViewModel
+@using AliaaCommon
+
+@{
+    ViewData["Title"] = Model.Current.Name;
+}
+
+<div>
+    <span>@Model.City.Name</span>
+    <span>&gt;</span>
+    <a asp-action="Item" asp-route-type="Center" asp-route-id="@Model.Center.Id.ToString()">مرکز @Model.Center.Name</a>
+    @if (Model.Building != null)
+    {
+        <span>&gt;</span>
+        <a asp-action="Item" asp-route-type="Building" asp-route-id="@Model.Building.Id.ToString()">ساختمان @Model.Building.Name</a>
+    }
+    @if (Model.Room != null)
+    {
+        <span>&gt;</span>
+        <a asp-action="Item" asp-route-type="Room" asp-route-id="@Model.Room.Id.ToString()">سالن/اتاق @Model.Room.Name</a>
+    }
+    @if (Model.Rack != null)
+    {
+        <span>&gt;</span>
+        <a asp-action="Item" asp-route-type="Rack" asp-route-id="@Model.Rack.Id.ToString()">راک @Model.Rack.Name</a>
+    }
+</div>
+
+@if (Model.SubItems.Any())
+{
+    <h3 class="mt-5">لیست @(Utils.GetDisplayNameOfMember(typeof(PlaceType), Model.NextLevelType.ToString()))های @Model.ToString() </h3>
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <ul column="2">
+                @foreach (var item in Model.SubItems)
+                {
+                    <li>
+                        @if (Model.NextLevelType == PlaceType.Device)
+                        {
+                            <a asp-controller="Device" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item.Name</a>
+                        }
+                        else
+                        {
+                            <a asp-action="Item" asp-route-type="@Model.NextLevelType" asp-route-id="@item.Id.ToString()">
+                                @Utils.GetDisplayNameOfMember(typeof(PlaceType), Model.NextLevelType.ToString()) @item.Name
+                            </a>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+else if (Model.Type != PlaceType.Center)
+{
+    <div class="text-center m-5">
+        <a asp-action="Delete" asp-route-id="@Model.Current.Id.ToString()" asp-route-type="@Model.Type" class="btn btn-danger">حذف</a>
+    </div>
+}
