@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Omu.ValueInjecter;
 using TciCommon.Models;
 using TciDataLinks.Models;
 
@@ -94,32 +95,17 @@ namespace TciDataLinks.Controllers
                 }
             }
 
-            var device = new Device
-            {
-                Model = m.Model,
-                Network = m.Network,
-                Type = m.Type,
-                RackRow = m.RackRow,
-                Address = m.Address,
-                Rack = rackId
-            };
+            var device = Mapper.Map<Device>(m);
+            device.Rack = rackId;
+
             db.Save(device);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
 
         public IActionResult Edit(string id)
         {
             var device = db.FindById<Device>(id);
-            var model = new DeviceViewModel
-            {
-                Id = id,
-                Rack = device.Rack.ToString(),
-                Model = device.Model,
-                Network = device.Network,
-                RackRow = device.RackRow,
-                Address = device.Address,
-                Type = device.Type
-            };
+            var model = Mapper.Map<DeviceViewModel>(device);
             var parent = db.FindById<Rack>(device.Rack).Parent;
             model.Room = parent.ToString();
             parent = db.FindById<Room>(parent).Parent;
@@ -172,12 +158,8 @@ namespace TciDataLinks.Controllers
                 }
             }
             var device = db.FindById<Device>(m.Id);
+            device.InjectFrom(m);
             device.Rack = rackId;
-            device.Model = m.Model;
-            device.Network = m.Network;
-            device.RackRow = m.RackRow;
-            device.Address = m.Address;
-            device.Type = m.Type;
             db.Save(device);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
