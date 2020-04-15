@@ -1,4 +1,5 @@
 ﻿using AliaaCommon;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -45,6 +46,7 @@ namespace TciDataLinks.Models
         [Display(Name = "مدل دستگاه")]
         public string Model { get; set; }
 
+        [Remote("DeviceAddressIsValid", "Device", AdditionalFields = "Id", ErrorMessage = "آدرس وارد شده قبلا موجود میباشد!")]
         [Display(Name = "آدرس IP یا NodeID")]
         public string Address { get; set; }
 

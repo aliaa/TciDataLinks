@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TciDataLinks.Models
 {
+    [CollectionIndex(new string[] { nameof(Address) })]
     public class Device : MongoEntity
     {
         public enum DeviceType

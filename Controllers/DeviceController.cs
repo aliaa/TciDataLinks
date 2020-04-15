@@ -163,5 +163,13 @@ namespace TciDataLinks.Controllers
             db.Save(device);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult DeviceAddressIsValid(string id, string address)
+        {
+            ObjectId.TryParse(id, out ObjectId objId);
+            bool exists = db.Any<Device>(d => d.Id != objId && d.Address == address);
+            return Json(!exists);
+        }
     }
 }
