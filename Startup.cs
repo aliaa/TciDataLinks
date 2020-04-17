@@ -18,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using MongoDB.Bson;
 using Newtonsoft.Json.Serialization;
 using Omu.ValueInjecter;
+using TciCommon.Models;
 using TciDataLinks.Models;
 
 namespace TciDataLinks
@@ -60,7 +61,10 @@ namespace TciDataLinks
                 options.AddPolicy("Admin", policy => policy.RequireClaim("IsAdmin"));
             });
 
-            var mvcBuilder = services.AddControllersWithViews();
+            var mvcBuilder = services.AddControllersWithViews(config => 
+            { 
+                config.ModelBinderProviders.Insert(0, new ObjectIdModelBinderProvider()); 
+            });
 #if (DEBUG)
             mvcBuilder.AddRazorRuntimeCompilation();
 #endif
@@ -94,17 +98,12 @@ namespace TciDataLinks
             services.AddSingleton<IDbContext>(db);
             services.AddSingleton<IReadOnlyDbContext>(db);
 
+            var cities = db.FindGetResults<City>(c => c.Province == ObjectId.Parse(settings.ProvinceId));
+            services.AddSingleton(cities);
+
             services.Configure<IISServerOptions>(options =>
             {
                 options.AutomaticAuthentication = false;
-            });
-
-            Mapper.AddMap<Device, DeviceViewModel>(src => 
-            {
-                var res = new DeviceViewModel();
-                res.InjectFrom(src);
-                res.Id = src.Id.ToString();
-                return res;
             });
 
             ConfigureMapper();

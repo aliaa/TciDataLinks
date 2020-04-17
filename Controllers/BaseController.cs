@@ -14,27 +14,10 @@ namespace TciDataLinks.Controllers
     public abstract class BaseController : Controller
     {
         protected readonly IDbContext db;
-        protected Settings settings = null;
 
         public BaseController(IDbContext db)
         {
             this.db = db;
-        }
-
-        public BaseController(IDbContext db, Settings settings)
-        {
-            this.db = db;
-            this.settings = settings;
-        }
-
-        protected IEnumerable<City> Cities
-        {
-            get
-            {
-                if (settings == null)
-                    throw new Exception("Settings is null");
-                return db.FindGetResults<City>(c => c.Province == ObjectId.Parse(settings.ProvinceId));
-            }
         }
 
         protected ObjectId? UserId
@@ -67,6 +50,11 @@ namespace TciDataLinks.Controllers
             if (id != null)
                 return db.FindById<AuthUserX>(id.Value);
             return null;
+        }
+
+        protected IActionResult GetEditorTemplatePartialView<T>(T model)
+        {
+            return PartialView("EditorTemplates/" + typeof(T).Name, model);
         }
     }
 }

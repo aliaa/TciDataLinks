@@ -17,50 +17,16 @@ namespace TciDataLinks.Controllers
     [Authorize]
     public class DeviceController : BaseController
     {
-
-        public DeviceController(IDbContext db, Settings settings) : base(db, settings) { }
+        private IEnumerable<City> cities = null;
+        public DeviceController(IDbContext db, IEnumerable<City> cities) : base(db) 
+        {
+            this.cities = cities;
+        }
         
         public IActionResult Add()
         {
-            ViewBag.Cities = Cities;
+            ViewBag.Cities = cities;
             return View();
-        }
-
-        public IActionResult Centers(string city)
-        {
-            var centers = db.Find<CommCenter>(c => c.City == ObjectId.Parse(city))
-                .Project(c => new { c.Id, c.Name }).ToEnumerable()
-                .Select(c => new { value = c.Id.ToString(), text = c.Name });
-            return Json(centers);
-        }
-
-        public IActionResult Buildings(string center)
-        {
-            var buildings = db.FindGetResults<Building>(b => b.Parent == ObjectId.Parse(center))
-                .Select(r => new { id = r.Id.ToString(), text = r.Name });
-            return Json(buildings);
-        }
-
-        public IActionResult Rooms(string building)
-        {
-            if (ObjectId.TryParse(building, out ObjectId buildingId))
-            {
-                var rooms = db.FindGetResults<Room>(r => r.Parent == buildingId)
-                    .Select(r => new { id = r.Id.ToString(), text = r.Name });
-                return Json(rooms);
-            }
-            return Json(Enumerable.Empty<object>());
-        }
-
-        public IActionResult Racks(string room)
-        {
-            if(ObjectId.TryParse(room, out ObjectId roomId))
-            {
-                var racks = db.FindGetResults<Rack>(r => r.Parent == roomId)
-                    .Select(r => new { id = r.Id.ToString(), text = r.Name });
-                return Json(racks);
-            }
-            return Json(Enumerable.Empty<object>());
         }
 
         [HttpPost]
@@ -69,7 +35,7 @@ namespace TciDataLinks.Controllers
             ObjectId centerId, buildingId, roomId, rackId;
             if (!ObjectId.TryParse(m.Center, out centerId))
             {
-                ViewBag.Cities = Cities;
+                ViewBag.Cities = cities;
                 ModelState.AddModelError("Center", "مرکز درست انتخاب نشده است.");
                 return View(m);
             }
@@ -114,7 +80,7 @@ namespace TciDataLinks.Controllers
             model.Center = parent.ToString();
             model.City = db.Find<CommCenter>(c => c.Id == parent).Project(c => c.City).FirstOrDefault().ToString();
 
-            ViewBag.Cities = Cities;
+            ViewBag.Cities = cities;
             ViewBag.Centers = db.FindGetResults<CommCenter>(c => c.City == ObjectId.Parse(model.City))
                 .Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString(), Selected = c.Id.ToString() == model.Center });
             ViewBag.Buildings = db.FindGetResults<Building>(b => b.Parent == ObjectId.Parse(model.Center))
@@ -132,7 +98,7 @@ namespace TciDataLinks.Controllers
             ObjectId centerId, buildingId, roomId, rackId;
             if (!ObjectId.TryParse(m.Center, out centerId))
             {
-                ViewBag.Cities = Cities;
+                ViewBag.Cities = cities;
                 ModelState.AddModelError("Center", "مرکز درست انتخاب نشده است.");
                 return View(m);
             }
@@ -171,5 +137,6 @@ namespace TciDataLinks.Controllers
             bool exists = db.Any<Device>(d => d.Id != objId && d.Address == address);
             return Json(!exists);
         }
+
     }
 }

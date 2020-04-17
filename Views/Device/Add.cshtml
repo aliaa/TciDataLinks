@@ -106,17 +106,17 @@
 
         $("#City").change(function () {
             var cityId = $(this).val();
-            $.get("/Device/Centers?city=" + cityId, function (res) {
+            $.get("/Place/Centers?city=" + cityId, function (res) {
                 $("#Center").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
                 $.each(res, function (index, item) {
-                    $("#Center").append("<option value='" + item.value + "'>" + item.text + "</option>");
+                    $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
                 });
             });
         });
 
         $("#Center").change(function () {
             var centerId = $(this).val();
-            $.get("/Device/Buildings?center=" + centerId, function (res) {
+            $.get("/Place/Buildings?center=" + centerId, function (res) {
                 $("#Building").select2({
                     data: res,
                     ...select2Settings
@@ -126,7 +126,7 @@
 
         $("#Building").on('select2:select', function (e) {
             var buildingId = e.params.data.id;
-            $.get("/Device/Rooms?building=" + buildingId, function (res) {
+            $.get("/Place/Rooms?building=" + buildingId, function (res) {
                 $("#Room").select2({
                     data: res,
                     ...select2Settings
@@ -136,7 +136,7 @@
 
         $('#Room').on('select2:select', function (e) {
             var roomId = e.params.data.id;
-            $.get("/Device/Racks?room=" + roomId, function (res) {
+            $.get("/Place/Racks?room=" + roomId, function (res) {
                 $("#Rack").select2({
                     data: res,
                     ...select2Settings

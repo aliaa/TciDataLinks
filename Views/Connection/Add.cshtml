@@ -1,0 +1,175 @@
+﻿@model TciDataLinks.Models.ConnectionViewModel
+@inject IEnumerable<City> Cities
+
+<h1>تعریف لینک جدید</h1>
+<hr />
+
+<h4>اتصال جدید</h4>
+<hr />
+<div class="my-5">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">شهر</label>
+                <select id="City" class="form-control">
+                    <option disabled selected>انتخاب کنید</option>
+                    @foreach (var city in Cities)
+                    {
+                        <option value="@city.Id.ToString()">@city.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">مرکز</label>
+                <select id="Center" class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">ساختمان</label>
+                <select id="Building" class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">سالن/اتاق</label>
+                <select id="Room" class="form-control"></select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">راک</label>
+                <select id="Rack" class="form-control"></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">دستگاه</label>
+                <select id="Device" class="form-control"></select>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-3">
+        <input type="button" id="btnAddNewEndPoint" class="btn btn-secondary d-none" value="اتصال جدید" />
+    </div>
+</div>
+
+<form asp-action="Add">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div id="divEndPoints" class="mt-5">
+        @for (var i = 0; i < Model.EndPoints.Count; i++)
+        {
+            @Html.EditorFor(m => Model.EndPoints[i], "EndPoint");
+        }
+    </div>
+    
+    <div class="form-group">
+        <input type="button" id="btnDeleteLastConnection" value="حذف آخرین اتصال" class="btn btn-secondary d-none" />
+        <input type="submit" id="btnSubmit" value="ذخیره" class="btn btn-primary mr-4 d-none" />
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">بازگشت به لیست</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+<script>
+    var dropdownsToClear = [$("#Center"), $("#Building"), $("#Room"), $("#Rack"), $("#Device")];
+
+    function ClearDropdownsAfter(offset) {
+        for (var i = offset; i < dropdownsToClear.length; i++)
+            dropdownsToClear[i].find("option").remove();
+        $("#btnAddNewEndPoint").addClass("d-none");
+    }
+
+    $("#City").change(function () {
+        ClearDropdownsAfter(0);
+        var id = $(this).val();
+        $.get("/Place/Centers?city=" + id, function (res) {
+            $("#Center").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            $.each(res, function (index, item) {
+                $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
+            });
+        });
+    });
+
+    $("#Center").change(function () {
+        ClearDropdownsAfter(1);
+        var id = $(this).val();
+        $.get("/Place/Buildings?center=" + id, function (res) {
+            $("#Building").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            $.each(res, function (index, item) {
+                $("#Building").append("<option value='" + item.id + "'>" + item.text + "</option>");
+            });
+        });
+    });
+
+    $("#Building").change(function () {
+        ClearDropdownsAfter(2);
+        var id = $(this).val();
+        $.get("/Place/Rooms?building=" + id, function (res) {
+            $("#Room").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            $.each(res, function (index, item) {
+                $("#Room").append("<option value='" + item.id + "'>" + item.text + "</option>");
+            });
+        });
+    });
+
+    $("#Room").change(function () {
+        ClearDropdownsAfter(3);
+        var id = $(this).val();
+        $.get("/Place/Racks?room=" + id, function (res) {
+            $("#Rack").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            $.each(res, function (index, item) {
+                $("#Rack").append("<option value='" + item.id + "'>" + item.text + "</option>");
+            });
+        });
+    });
+
+    $("#Rack").change(function () {
+        ClearDropdownsAfter(4);
+        var id = $(this).val();
+        $.get("/Place/Devices?rack=" + id, function (res) {
+            $("#Device").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            $.each(res, function (index, item) {
+                $("#Device").append("<option value='" + item.id + "'>" + item.text + "</option>");
+            });
+        });
+    });
+
+    $("#Device").change(function () {
+        $("#btnAddNewEndPoint").removeClass("d-none");
+    });
+
+    $("#btnAddNewEndPoint").on("click", function () {
+        var i = $("#divEndPoints").children().length;
+        $.ajax({
+            url: "/Connection/AddEndPoint?index=" + i + "&device=" + $("#Device").val(),
+                success: function (partialView) {
+                    var item = $.parseHTML(partialView);
+                    item = ConvertInputsToBeAsArrayItem(item, "@nameof(Model.EndPoints)", i);
+                    $('#divEndPoints').append(item);
+                    $("#btnDeleteLastConnection").removeClass("d-none");
+                    if ($('#divEndPoints').children().length >= 2) {
+                        $("#btnSubmit").removeClass("d-none");
+                    }
+                }
+            });
+    });
+
+    $("#btnDeleteLastConnection").on("click", function () {
+        $("#divEndPoints").children().last().remove();
+        if ($("#divEndPoints").children().length == 0)
+            $("#btnDeleteLastConnection").addClass("d-none");
+        if ($("#divEndPoints").children().length < 2)
+            $("#btnSubmit").addClass("d-none");
+    });
+</script>
+}

@@ -22,10 +22,6 @@
     <ProjectReference Include="..\TciCommon\TciCommonStandard\TciCommonStandard.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Link\" />
-  </ItemGroup>
-
 
 
 </Project>
