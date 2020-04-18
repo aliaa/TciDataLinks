@@ -148,10 +148,19 @@
         $("#btnAddNewEndPoint").removeClass("d-none");
     });
 
+    function IsDeviceAlreadyAdded(id) {
+        return $("input[value=" + id + "]").filter(function () { return this.id.match(/EndPoints_\d+__Device/); }).length > 0;
+    }
+
     $("#btnAddNewEndPoint").on("click", function () {
+        var deviceId = $("#Device").val();
+        if (IsDeviceAlreadyAdded(deviceId)) {
+            showToast("دستگاه انتخاب شده قبلا اضافه شده است!", "danger");
+            return;
+        }
         var i = $("#divEndPoints").children().length;
         $.ajax({
-            url: "/Connection/AddEndPoint?index=" + i + "&device=" + $("#Device").val(),
+            url: "/Connection/AddEndPoint?index=" + i + "&device=" + deviceId,
                 success: function (partialView) {
                     var item = $.parseHTML(partialView);
                     item = ConvertInputsToBeAsArrayItem(item, "@nameof(Model.EndPoints)", i);

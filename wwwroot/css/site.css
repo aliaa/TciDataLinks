@@ -81,3 +81,9 @@ body {
 .modal-header .close {
     margin: -1rem -1rem auto -1rem;
 }
+
+.affix {
+    top: 4rem;
+    left: 2rem;
+    position: fixed;
+}

@@ -7,3 +7,12 @@ function ConvertInputsToBeAsArrayItem(elem, arrayName, index) {
     });
     return elem;
 }
+
+function showToast(text, type) {
+    $("#toast-body").text(text);
+    if (type) {
+        $("#toast-body").addClass("alert-" + type);
+    }
+    $("#toast").toast({ delay: 1000 });
+    $("#toast").toast("show");
+}
