@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Bson;
-using MongoDB.Driver;
 using Omu.ValueInjecter;
 using TciCommon.Models;
 using TciDataLinks.Models;
@@ -15,14 +14,14 @@ using TciDataLinks.Models;
 namespace TciDataLinks.Controllers
 {
     [Authorize]
-    public class DeviceController : BaseController
+    public class PatchPanelController : BaseController
     {
         private IEnumerable<City> cities = null;
-        public DeviceController(IDbContext db, IEnumerable<City> cities) : base(db) 
+        public PatchPanelController(IDbContext db, IEnumerable<City> cities) : base(db)
         {
             this.cities = cities;
         }
-        
+
         public IActionResult Add()
         {
             ViewBag.Cities = cities;
@@ -30,7 +29,7 @@ namespace TciDataLinks.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(DeviceViewModel m)
+        public IActionResult Add(PatchPanelViewModel m)
         {
             ObjectId buildingId, roomId, rackId;
             if (m.Center == ObjectId.Empty)
@@ -61,24 +60,26 @@ namespace TciDataLinks.Controllers
                 }
             }
 
-            var device = Mapper.Map<Device>(m);
-            device.Rack = rackId;
+            var patchPanel = Mapper.Map<PatchPanel>(m);
+            patchPanel.Rack = rackId;
 
-            db.Save(device);
+            db.Save(patchPanel);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
 
         public IActionResult Edit(string id)
         {
-            var device = db.FindById<Device>(id);
-            var model = Mapper.Map<DeviceViewModel>(device);
-            var parent = db.FindById<Rack>(device.Rack).Parent;
-            model.Room = parent.ToString();
-            parent = db.FindById<Room>(parent).Parent;
+            var patchPanel = db.FindById<PatchPanel>(id);
+            var model = Mapper.Map<PatchPanelViewModel>(patchPanel);
+            var rack = db.FindById<Rack>(patchPanel.Rack);
+            model.RackType = rack.Type;
+            model.Rack = rack.Id.ToString();
+            model.Room = rack.Parent.ToString();
+            var parent = db.FindById<Room>(rack.Parent).Parent;
             model.Building = parent.ToString();
             parent = db.FindById<Building>(parent).Parent;
             model.Center = parent;
-            model.City = db.Find<CommCenter>(c => c.Id == parent).Project(c => c.City).FirstOrDefault();
+            model.City = db.FindById<CommCenter>(parent).City;
 
             ViewBag.Cities = cities;
             ViewBag.Centers = db.FindGetResults<CommCenter>(c => c.City == model.City)
@@ -93,7 +94,7 @@ namespace TciDataLinks.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(DeviceViewModel m)
+        public IActionResult Edit(PatchPanelViewModel m)
         {
             ObjectId buildingId, roomId, rackId;
             if (m.Center == ObjectId.Empty)
@@ -118,24 +119,16 @@ namespace TciDataLinks.Controllers
                 }
                 if (!ObjectId.TryParse(m.Rack, out rackId))
                 {
-                    var rack = new Rack { Name = m.Rack, Parent = roomId };
+                    var rack = new Rack { Name = m.Rack, Parent = roomId, Type = m.RackType };
                     db.Save(rack);
                     rackId = rack.Id;
                 }
             }
-            var device = db.FindById<Device>(m.Id);
-            device.InjectFrom(m);
-            device.Rack = rackId;
-            db.Save(device);
+            var patchPanel = db.FindById<PatchPanel>(m.Id);
+            patchPanel.InjectFrom(m);
+            patchPanel.Rack = rackId;
+            db.Save(patchPanel);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
-        }
-
-        [AcceptVerbs("GET", "POST")]
-        public IActionResult DeviceAddressIsValid(string id, string address)
-        {
-            ObjectId.TryParse(id, out ObjectId objId);
-            bool exists = db.Any<Device>(d => d.Id != objId && d.Address == address);
-            return Json(!exists);
         }
 
     }

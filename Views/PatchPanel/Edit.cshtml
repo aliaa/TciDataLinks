@@ -1,13 +1,15 @@
-﻿@model TciDataLinks.Models.DeviceViewModel
-@using TciCommon.Models
+﻿@model TciDataLinks.Models.PatchPanelViewModel
 
 @{
-    ViewData["Title"] = "دستگاه جدید";
+    ViewData["Title"] = "ویرایش رابط Passive";
 }
 
-<h1>دستگاه جدید</h1>
+<h1>ویرایش رابط Passive</h1>
+
+<h4 class="mt-4">@Model.Name</h4>
 <hr />
-<form asp-action="Add">
+
+<form asp-action="Edit">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="form-group col-md-4">
@@ -23,26 +25,26 @@
         </div>
         <div class="form-group col-md-4">
             <label asp-for="Center" class="control-label"></label>
-            <select asp-for="Center" class="form-control"></select>
+            <select asp-for="Center" asp-items="ViewBag.Centers" class="form-control"></select>
             <span asp-validation-for="Center" class="text-danger"></span>
         </div>
         <div class="form-group col-md-4">
             <label asp-for="Building" class="control-label"></label>
-            <select asp-for="Building" class="form-control">
+            <select asp-for="Building" asp-items="ViewBag.Buildings" class="form-control">
                 <option disabled selected>انتخاب کنید یا وارد کنید</option>
             </select>
             <span asp-validation-for="Building" class="text-danger"></span>
         </div>
         <div class="form-group col-md-4">
             <label asp-for="Room" class="control-label"></label>
-            <select asp-for="Room" class="form-control">
+            <select asp-for="Room" asp-items="ViewBag.Rooms" class="form-control">
                 <option disabled selected>انتخاب کنید یا وارد کنید</option>
             </select>
             <span asp-validation-for="Room" class="text-danger"></span>
         </div>
         <div class="form-group col-md-4">
             <label asp-for="Rack" class="control-label"></label>
-            <select asp-for="Rack" class="form-control">
+            <select asp-for="Rack" asp-items="ViewBag.Racks" class="form-control">
                 <option disabled selected>انتخاب کنید یا وارد کنید</option>
             </select>
             <span asp-validation-for="Rack" class="text-danger"></span>
@@ -52,10 +54,21 @@
             <input asp-for="RackRow" class="form-control" />
             <span asp-validation-for="RackRow" class="text-danger"></span>
         </div>
+
+        <div class="form-group col-md-4">
+            <label asp-for="RackType" class="control-label"></label>
+            <select asp-for="RackType" class="form-control">
+                @foreach (var t in Enum.GetNames(typeof(Rack.RackType)))
+                {
+                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Rack.RackType), t)</option>
+                }
+            </select>
+            <span asp-validation-for="RackType" class="text-danger"></span>
+        </div>
         <div class="form-group col-md-4">
             <label asp-for="Type" class="control-label"></label>
             <select asp-for="Type" class="form-control">
-                @foreach (var t in Enum.GetNames(typeof(Device.DeviceType)))
+                @foreach (var t in Enum.GetNames(typeof(PatchPanel.PatchPanelType)))
                 {
                     <option>@t</option>
                 }
@@ -63,28 +76,13 @@
             <span asp-validation-for="Type" class="text-danger"></span>
         </div>
         <div class="form-group col-md-4">
-            <label asp-for="Network" class="control-label"></label>
-            <select asp-for="Network" class="form-control">
-                @foreach (var n in Enum.GetNames(typeof(Device.NetworkType)))
-                {
-                    <option>@n</option>
-                }
-            </select>
-            <span asp-validation-for="Network" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-4">
-            <label asp-for="Model" class="control-label"></label>
-            <input asp-for="Model" class="form-control" />
-            <span asp-validation-for="Model" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-4">
-            <label asp-for="Address" class="control-label"></label>
-            <input asp-for="Address" class="form-control" />
-            <span asp-validation-for="Address" class="text-danger"></span>
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
     </div>
-    <div class="form-group mt-4">
-        <input type="submit" value="ایجاد" class="btn btn-primary" />
+    <div class="form-group">
+        <input type="submit" value="ویرایش" class="btn btn-primary" />
     </div>
 </form>
 
@@ -93,7 +91,8 @@
 </div>
 
 @section Scripts {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
 <script src="~/lib/select2/js/select2.full.min.js"></script>
 <script>
     var select2Settings = {
@@ -102,9 +101,13 @@
         language: "fa"
     };
 
+    $("#Building").select2(select2Settings);
+    $("#Room").select2(select2Settings);
+    $("#Rack").select2(select2Settings);
+
     $("#City").change(function () {
         var cityId = $(this).val();
-        $.get("/Place/Centers?city=" + cityId, function (res) {
+        $.get("/Device/Centers?city=" + cityId, function (res) {
             $("#Center").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
             $.each(res, function (index, item) {
                 $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
@@ -114,7 +117,8 @@
 
     $("#Center").change(function () {
         var centerId = $(this).val();
-        $.get("/Place/Buildings?center=" + centerId, function (res) {
+        $.get("/Device/Buildings?center=" + centerId, function (res) {
+            $("#Building").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
             $("#Building").select2({
                 data: res,
                 ...select2Settings
@@ -124,7 +128,8 @@
 
     $("#Building").on('select2:select', function (e) {
         var buildingId = e.params.data.id;
-        $.get("/Place/Rooms?building=" + buildingId, function (res) {
+        $.get("/Device/Rooms?building=" + buildingId, function (res) {
+            $("#Room").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
             $("#Room").select2({
                 data: res,
                 ...select2Settings
@@ -134,7 +139,8 @@
 
     $('#Room').on('select2:select', function (e) {
         var roomId = e.params.data.id;
-        $.get("/Place/Racks?room=" + roomId, function (res) {
+        $.get("/Device/Racks?room=" + roomId, function (res) {
+            $("#Rack").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
             $("#Rack").select2({
                 data: res,
                 ...select2Settings

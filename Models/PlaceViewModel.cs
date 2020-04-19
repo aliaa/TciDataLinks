@@ -1,15 +1,14 @@
 ﻿using AliaaCommon;
-using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TciDataLinks.Models
 {
     public enum PlaceType
     {
+        [Display(Name = "شهر")]
+        City,
         [Display(Name = "مرکز")]
         Center,
         [Display(Name = "ساختمان")]
@@ -19,7 +18,9 @@ namespace TciDataLinks.Models
         [Display(Name = "راک")]
         Rack,
         [Display(Name = "دستگاه")]
-        Device
+        Device,
+        [Display(Name = "رابط Passive")]
+        PatchPanel
     }
 
     public class PlaceViewModel
@@ -31,6 +32,8 @@ namespace TciDataLinks.Models
             {
                 switch (Type)
                 {
+                    case PlaceType.City:
+                        return City;
                     case PlaceType.Center:
                         return Center;
                     case PlaceType.Building:
@@ -51,6 +54,8 @@ namespace TciDataLinks.Models
             {
                 switch (Type)
                 {
+                    case PlaceType.City:
+                        return PlaceType.Center;
                     case PlaceType.Center:
                         return PlaceType.Building;
                     case PlaceType.Building:

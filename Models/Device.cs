@@ -11,10 +11,18 @@ namespace TciDataLinks.Models
     {
         public enum DeviceType
         {
-            [Display(Name = "روتر")]
             Router,
-            [Display(Name = "سوئیچ")]
-            Switch
+            [Display(Name = "Ethernet Switch")]
+            EthernetSwitch,
+            BRAS,
+            [Display(Name = "Wireless Controller")]
+            WirelessController,
+            DSLAM,
+            MSAN,
+            OLT,
+            Tellabs,
+            Server,
+            Firewall
         }
 
         public enum NetworkType

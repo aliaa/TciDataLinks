@@ -60,6 +60,9 @@ namespace TciDataLinks.Models
             SCPC,
             [Display(Name = "SC/APC")]
             SCAPC,
+            [Display(Name = "3C2V")]
+            _3C2V,
+            G62,
         }
 
         public ObjectId Device { get; set; }

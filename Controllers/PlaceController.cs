@@ -46,8 +46,8 @@ namespace TciDataLinks.Controllers
                 case PlaceType.Center:
                     var center = db.FindById<CommCenter>(objId);
                     var city = cities.First(c => c.Id == center.City);
-                    model.Center = new PlaceBase { Id = objId, Name = center.Name };
-                    model.City = new PlaceBase { Id = city.Id, Name = city.Name };
+                    model.Center = new PlaceBase(PlaceType.Center) { Id = objId, Name = center.Name };
+                    model.City = new PlaceBase(PlaceType.City) { Id = city.Id, Name = city.Name };
                     model.SubItems = db.FindGetResults<Building>(b => b.Parent == objId);
                     break;
                 case PlaceType.Building:
@@ -61,10 +61,14 @@ namespace TciDataLinks.Controllers
                 case PlaceType.Rack:
                     model.Rack = db.FindById<Rack>(objId);
                     model.SubItems = db.FindGetResults<Device>(d => d.Rack == objId)
-                        .Select(d => new PlaceBase { Id = d.Id, Name = d.ToString(), Parent = objId });
+                        .Select(d => new PlaceBase(PlaceType.Device) { Id = d.Id, Name = d.ToString(), Parent = objId })
+                        .Concat(db.FindGetResults<PatchPanel>(p => p.Rack == objId)
+                            .Select(p => new PlaceBase(PlaceType.PatchPanel) { Id = p.Id, Name = p.Name, Parent = objId }));
                     break;
                 case PlaceType.Device:
-                    return RedirectToAction("Item", "Device", new { id });
+                    return RedirectToAction("Edit", "Device", new { id });
+                case PlaceType.PatchPanel:
+                    return RedirectToAction("Edit", "PatchPanel", new { id });
                 default:
                     throw new NotImplementedException();
             }
@@ -76,8 +80,8 @@ namespace TciDataLinks.Controllers
             {
                 var center = db.FindById<CommCenter>(model.Building.Parent);
                 var city = cities.First(c => c.Id == center.City);
-                model.Center = new PlaceBase { Id = center.Id, Name = center.Name, Parent = city.Id };
-                model.City = new PlaceBase { Id = city.Id, Name = city.Name };
+                model.Center = new PlaceBase(PlaceType.Center) { Id = center.Id, Name = center.Name, Parent = city.Id };
+                model.City = new PlaceBase(PlaceType.City) { Id = city.Id, Name = city.Name };
             }
             return View(model);
         }
@@ -98,7 +102,7 @@ namespace TciDataLinks.Controllers
                         deleted = db.DeleteOne<Room>(objId).DeletedCount > 0;
                     break;
                 case PlaceType.Rack:
-                    if (!db.Any<Device>(d => d.Rack == objId))
+                    if (!db.Any<Device>(d => d.Rack == objId) && !db.Any<PatchPanel>(p => p.Rack == objId))
                         deleted = db.DeleteOne<Rack>(objId).DeletedCount > 0;
                     break;
                 default:
