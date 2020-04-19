@@ -1,17 +1,21 @@
 ﻿@model TciDataLinks.Models.EndPointViewModel
 @inject IReadOnlyDbContext db
 
+@{ 
+    int hue = (Model.Index * 35 + 60) % 360;
+}
+
 <div class="card my-4">
-    <div class="card-header">
+    <div class="card-header" style="background-color: hsl(@hue , 25%, 88%); color: hsl(@hue , 80%, 32%, 1);">
         <div class="float-right">اتصال @(Model.Index+1)</div>
-        <div class="text-center text-info">@Model.GetPlaceDisplayName(db)</div>
+        <div class="text-center">@Model.GetPlaceDisplayName(db)</div>
     </div>
-    <div class="card-body row">
+    <div class="card-body" style="background-color: hsl(@hue , 40%, 88%);">
         <input type="hidden" asp-for="Device" />
         <input type="hidden" asp-for="Index" />
-        <div class="col-md-3">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="form-group col-md-3">
                 <label asp-for="PortType" class="control-label"></label>
                 <select asp-for="PortType" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.PortTypeEnum)))
@@ -21,23 +25,17 @@
                 </select>
                 <span asp-validation-for="PortType" class="text-danger"></span>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="PortNumber" class="control-label"></label>
                 <input asp-for="PortNumber" class="form-control" />
                 <span asp-validation-for="PortNumber" class="text-danger"></span>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="Speed" class="control-label"></label>
                 <input asp-for="Speed" class="form-control" />
                 <span asp-validation-for="Speed" class="text-danger"></span>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="SpeedUnit" class="control-label"></label>
                 <select asp-for="SpeedUnit" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.SpeedUnitEnum)))
@@ -47,9 +45,7 @@
                 </select>
                 <span asp-validation-for="SpeedUnit" class="text-danger"></span>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="Module" class="control-label"></label>
                 <select asp-for="Module" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.ModuleType)))
@@ -59,9 +55,7 @@
                 </select>
                 <span asp-validation-for="Module" class="text-danger"></span>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
+            <div class="form-group col-md-3">
                 <label asp-for="PatchCord" class="control-label"></label>
                 <select asp-for="PatchCord" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.PatchCordType)))
@@ -71,12 +65,22 @@
                 </select>
                 <span asp-validation-for="PatchCord" class="text-danger"></span>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <label asp-for="DistanceToNextPoint" class="control-label"></label>
-                <input asp-for="DistanceToNextPoint" class="form-control" />
-                <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>
+            <div class="form-group col-md-3">
+                <label asp-for="Connector" class="control-label"></label>
+                <select asp-for="Connector" class="form-control">
+                    @foreach (var item in Enum.GetNames(typeof(EndPoint.ConnectorType)))
+                    {
+                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ConnectorType), item)</option>
+                    }
+                </select>
+                <span asp-validation-for="Connector" class="text-danger"></span>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label asp-for="DistanceToNextPoint" class="control-label"></label>
+                    <input asp-for="DistanceToNextPoint" class="form-control" />
+                    <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>
+                </div>
             </div>
         </div>
     </div>

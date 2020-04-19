@@ -92,6 +92,10 @@ namespace TciDataLinks.Models
         [Display(Name = "نوع پچ کورد")]
         public PatchCordType PatchCord { get; set; }
 
+        [BsonRepresentation(BsonType.String)]
+        [Display(Name = "نوع کانکتور")]
+        public ConnectorType Connector { get; set; }
+
         [Display(Name = "فاصله تا اتصال بعدی (متر)")]
         [Required(ErrorMessage = "فاصله اجباریست")]
         public int DistanceToNextPoint { get; set; }
