@@ -90,10 +90,15 @@ namespace TciDataLinks
             var stringNormalizer = new StringNormalizer(filePath);
             services.AddSingleton(stringNormalizer);
 
+            var connString = Configuration.GetValue<string>("MongoConnString");
+            var customeConnections = Configuration.GetSection("CustomConnections").Get<List<CustomMongoConnection>>();
+            foreach (var cc in customeConnections)
+                if (cc.ConnectionString == null)
+                    cc.ConnectionString = connString;
+
             var db = new MongoDbContext(
-                Configuration.GetValue<string>("DBName"), 
-                Configuration.GetValue<string>("MongoConnString"),
-                customConnections: Configuration.GetSection("CustomConnections").Get<List<CustomMongoConnection>>(),
+                Configuration.GetValue<string>("DBName"), connString,
+                customConnections: customeConnections,
                 objectPreprocessor: stringNormalizer);
             services.AddSingleton<IDbContext>(db);
             services.AddSingleton<IReadOnlyDbContext>(db);
