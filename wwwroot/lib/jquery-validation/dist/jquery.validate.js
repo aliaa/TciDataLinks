@@ -1521,11 +1521,23 @@ $.extend( $.validator, {
 				return previous.valid;
 			}
 
+			if (param.data) {
+				for (var key in param.data) {
+					if (key.includes(".")) {
+						var newkey = key.substr(key.lastIndexOf(".") + 1);
+						param.data[newkey] = param.data[key];
+						delete param.data[key];
+					}
+                }
+					
+            }
+
 			previous.old = optionDataString;
 			validator = this;
 			this.startRequest( element );
 			data = {};
-			data[ element.name ] = value;
+			//data[ element.name ] = value;
+			data[element.name.substr(element.name.lastIndexOf(".") + 1)] = value; // added by Aliaa
 			$.ajax( $.extend( true, {
 				mode: "abort",
 				port: "validate" + element.name,

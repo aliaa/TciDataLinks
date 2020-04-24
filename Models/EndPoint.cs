@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace TciDataLinks.Models
@@ -67,12 +68,14 @@ namespace TciDataLinks.Models
 
         public ObjectId Device { get; set; }
 
+        public List<PassiveConnection> PassiveConnections { get; set; } = new List<PassiveConnection>();
+
         [BsonRepresentation(BsonType.String)]
         [Display(Name = "نوع پورت")]
         public PortTypeEnum PortType { get; set; }
 
         [Required(ErrorMessage = "شماره پورت اجباریست")]
-        [Remote("PortNumberIsValid", "Connetcion", AdditionalFields = "Device", ErrorMessage = "شماره پورت در این دستگاه قبلا استفاده شده است!")]
+        [Remote("PortNumberIsValid", "Connection", AdditionalFields = "Device", ErrorMessage = "شماره پورت در این دستگاه قبلا استفاده شده است!")]
         [Display(Name = "شماره پورت")]
         public string PortNumber { get; set; }
         

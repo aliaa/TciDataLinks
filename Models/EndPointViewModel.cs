@@ -13,6 +13,8 @@ namespace TciDataLinks.Models
     {
         public int Index { get; set; }
 
+        public List<PassiveConnectionViewModel> PassiveConnectionViewModels { get; set; } = new List<PassiveConnectionViewModel>();
+
         public string GetPlaceDisplayName(IReadOnlyDbContext db)
         {
             var device = db.FindById<Device>(Device);

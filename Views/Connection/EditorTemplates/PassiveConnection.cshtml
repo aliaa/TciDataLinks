@@ -1,0 +1,40 @@
+﻿@model TciDataLinks.Models.PassiveConnectionViewModel
+@inject IReadOnlyDbContext db
+
+@{ 
+    int hue = (Model.EndPointIndex * 35 + 60) % 360;
+}
+
+<div class="card my-3">
+    <div class="card-header text-center" style="background-color: hsl(@hue , 25%, 77%); color: hsl(@hue , 80%, 22%);">
+        @Model.GetPlaceDisplayName(db)
+    </div>
+    <div class="card-body" style="background-color: hsl(@hue , 40%, 77%); color: hsl(@hue , 80%, 22%);">
+        <input type="hidden" asp-for="EndPointIndex" />
+        <input type="hidden" asp-for="Index" />
+        <input type="hidden" asp-for="PatchPanel" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
+            <div class="form-group col-md-3">
+                <label asp-for="PortNumber" class="control-label"></label>
+                <input asp-for="PortNumber" class="form-control" />
+                <span asp-validation-for="PortNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="Connector" class="control-label"></label>
+                <select asp-for="Connector" class="form-control">
+                    @foreach (var item in Enum.GetNames(typeof(EndPoint.ConnectorType)))
+                    {
+                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ConnectorType), item)</option>
+                    }
+                </select>
+                <span asp-validation-for="Connector" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="DistanceToNextPoint" class="control-label"></label>
+                <input asp-for="DistanceToNextPoint" class="form-control" />
+                <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</div>

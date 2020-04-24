@@ -160,5 +160,16 @@ namespace TciDataLinks.Controllers
             }
             return Json(Enumerable.Empty<object>());
         }
+
+        public IActionResult PatchPanels(string rack)
+        {
+            if (ObjectId.TryParse(rack, out ObjectId rackId))
+            {
+                var patchPanels = db.FindGetResults<PatchPanel>(p => p.Rack == rackId)
+                    .Select(p => new { id = p.Id.ToString(), text = p.ToString() });
+                return Json(patchPanels);
+            }
+            return Json(Enumerable.Empty<object>());
+        }
     }
 }

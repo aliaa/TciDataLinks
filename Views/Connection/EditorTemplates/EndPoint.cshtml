@@ -83,9 +83,15 @@
                 </div>
             </div>
         </div>
+        <div id="divPassives_@Model.Index" class="my-4">
+            @for (var i = 0; i < Model.PassiveConnectionViewModels.Count; i++)
+            {
+                @Html.EditorFor(m => Model.PassiveConnectionViewModels[i], "PassiveConnection");
+            }
+        </div>
+        <div class="text-center my-4">
+            <input id="btnNewPassive" type="button" class="btn btn-secondary" value="اتصال Passive جدید" onclick="ShowNewPassiveDialog(@Model.Index)" />
+            <input id="btnRemoveLastPassive" type="button" class="btn btn-outline-danger mx-4 d-none" value="حذف آخرین اتصال Passive" onclick="RemoveLastPassive(@Model.Index)" />
+        </div>
     </div>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

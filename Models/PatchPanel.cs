@@ -23,5 +23,10 @@ namespace TciDataLinks.Models
         [BsonRepresentation(BsonType.String)]
         public PatchPanelType Type { get; set; }
         public string Name { get; set; }
+
+        public override string ToString()
+        {
+            return RackRow + " : " + Name;
+        }
     }
 }
