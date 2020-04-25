@@ -13,7 +13,7 @@ namespace TciDataLinks.Models
     public class PlaceBase : MongoEntity
     {
         public ObjectId Parent { get; set; }
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         [BsonIgnore]
         public readonly PlaceType PlaceType;
@@ -52,5 +52,25 @@ namespace TciDataLinks.Models
 
         [BsonRepresentation(BsonType.String)]
         public RackType Type { get; set; } = RackType.Normal19Inch;
+
+        [Display(Name = "ردیف")]
+        public int Line { get; set; }
+
+        [Display(Name = "شماره")]
+        public int Index { get; set; }
+
+        [BsonIgnore]
+        public override string Name 
+        { 
+            get => Line + "/" + Index; 
+            set
+            {
+                var vals = value.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                if (vals.Length < 2)
+                    throw new Exception();
+                Line = int.Parse(vals[0]);
+                Index = int.Parse(vals[1]);
+            }
+        }
     }
 }
