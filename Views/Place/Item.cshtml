@@ -8,28 +8,28 @@
 <div>
     <span>@Model.City.Name</span>
     <span>&gt;</span>
-    <a asp-action="Item" asp-route-type="Center" asp-route-id="@Model.Center.Id.ToString()">مرکز @Model.Center.Name</a>
+    <a asp-action="Item" asp-route-type="Center" asp-route-id="@Model.Center.Id.ToString()">مرکز @Model.Center</a>
     @if (Model.Building != null)
     {
         <span>&gt;</span>
-        <a asp-action="Item" asp-route-type="Building" asp-route-id="@Model.Building.Id.ToString()">ساختمان @Model.Building.Name</a>
+        <a asp-action="Item" asp-route-type="Building" asp-route-id="@Model.Building.Id.ToString()">ساختمان @Model.Building</a>
     }
     @if (Model.Room != null)
     {
         <span>&gt;</span>
-        <a asp-action="Item" asp-route-type="Room" asp-route-id="@Model.Room.Id.ToString()">سالن/اتاق @Model.Room.Name</a>
+        <a asp-action="Item" asp-route-type="Room" asp-route-id="@Model.Room.Id.ToString()">سالن/اتاق @Model.Room</a>
     }
     @if (Model.Rack != null)
     {
         <span>&gt;</span>
-        <a asp-action="Item" asp-route-type="Rack" asp-route-id="@Model.Rack.Id.ToString()">راک @Model.Rack.Name</a>
+        <a asp-action="Item" asp-route-type="Rack" asp-route-id="@Model.Rack.Id.ToString()">راک @Model.Rack</a>
     }
 </div>
 
 @if (Model.SubItems.Any())
 {
     <div class="row mt-5">
-        <div class="col-md-6">
+        <div class="col-lg-6">
             <h3>لیست @(Utils.GetDisplayNameOfMember(typeof(PlaceType), Model.NextLevelType.ToString()))های @Model.ToString() </h3>
             <ul class="mt-4">
                 @foreach (var item in Model.SubItems)
@@ -39,7 +39,7 @@
                         if (item.PlaceType == PlaceType.Device)
                         {
                             <li>
-                                <a asp-controller="Device" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item.Name</a>
+                                <a asp-controller="Device" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item</a>
                             </li>
                         }
                     }
@@ -47,7 +47,7 @@
                     {
                         <li>
                             <a asp-action="Item" asp-route-type="@Model.NextLevelType" asp-route-id="@item.Id.ToString()">
-                                @Utils.GetDisplayNameOfMember(typeof(PlaceType), Model.NextLevelType.ToString()) @item.Name
+                                @Utils.GetDisplayNameOfMember(typeof(PlaceType), Model.NextLevelType.ToString()) @item
                             </a>
                         </li>
                     }
@@ -56,12 +56,12 @@
         </div>
         @if (Model.NextLevelType == PlaceType.Device)
         {
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <h3>لیست رابطهای Passive @Model.ToString()</h3>
                 <ul class="mt-4">
                     @foreach (var item in Model.SubItems.Where(i => i.PlaceType == PlaceType.PatchPanel))
                     {
-                        <li><a asp-controller="PatchPanel" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item.Name</a></li>
+                        <li><a asp-controller="PatchPanel" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item</a></li>
                     }
                 </ul>
             </div>

@@ -9,9 +9,10 @@
 <h4 class="mt-4">@Model.ToString()</h4>
 <hr />
 <form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
-        <div class="form-group col-md-4">
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="City" class="control-label"></label>
             <select asp-for="City" class="form-control">
                 <option disabled selected="selected">انتخاب کنید</option>
@@ -22,38 +23,41 @@
             </select>
             <span asp-validation-for="City" class="text-danger"></span>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Center" class="control-label"></label>
             <select asp-for="Center" asp-items="ViewBag.Centers" class="form-control"></select>
             <span asp-validation-for="Center" class="text-danger"></span>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Building" class="control-label"></label>
             <select asp-for="Building" asp-items="ViewBag.Buildings" class="form-control">
                 <option disabled selected>انتخاب کنید یا وارد کنید</option>
             </select>
             <span asp-validation-for="Building" class="text-danger"></span>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Room" class="control-label"></label>
             <select asp-for="Room" asp-items="ViewBag.Rooms" class="form-control">
                 <option disabled selected>انتخاب کنید یا وارد کنید</option>
             </select>
             <span asp-validation-for="Room" class="text-danger"></span>
         </div>
-        <div class="form-group col-md-4">
-            <label asp-for="Rack" class="control-label"></label>
-            <select asp-for="Rack" asp-items="ViewBag.Racks" class="form-control">
-                <option disabled selected>انتخاب کنید یا وارد کنید</option>
-            </select>
-            <span asp-validation-for="Rack" class="text-danger"></span>
+        <div class="form-group col-lg-3 col-sm-6">
+            <label asp-for="RackLine" class="control-label"></label>
+            <input asp-for="RackLine" class="form-control" />
+            <span asp-validation-for="RackLine" class="text-danger"></span>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-lg-3 col-sm-6">
+            <label asp-for="RackIndex" class="control-label"></label>
+            <input asp-for="RackIndex" class="form-control" />
+            <span asp-validation-for="RackIndex" class="text-danger"></span>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="RackRow" class="control-label"></label>
             <input asp-for="RackRow" class="form-control" />
             <span asp-validation-for="RackRow" class="text-danger"></span>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Type" class="control-label"></label>
             <select asp-for="Type" class="form-control">
                 @foreach (var t in Enum.GetNames(typeof(Device.DeviceType)))
@@ -63,7 +67,7 @@
             </select>
             <span asp-validation-for="Type" class="text-danger"></span>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Network" class="control-label"></label>
             <select asp-for="Network" class="form-control">
                 @foreach (var n in Enum.GetNames(typeof(Device.NetworkType)))
@@ -73,12 +77,12 @@
             </select>
             <span asp-validation-for="Network" class="text-danger"></span>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Model" class="control-label"></label>
             <input asp-for="Model" class="form-control" />
             <span asp-validation-for="Model" class="text-danger"></span>
         </div>
-        <div class="form-group col-md-4">
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Address" class="control-label"></label>
             <input asp-for="Address" class="form-control" />
             <span asp-validation-for="Address" class="text-danger"></span>
@@ -140,15 +144,5 @@
         });
     });
 
-    $('#Room').on('select2:select', function (e) {
-        var roomId = e.params.data.id;
-        $.get("/Device/Racks?room=" + roomId, function (res) {
-            $("#Rack").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
-            $("#Rack").select2({
-                data: res,
-                ...select2Settings
-            });
-        });
-    });
 </script>
 }

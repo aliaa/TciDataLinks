@@ -27,12 +27,15 @@ namespace TciDataLinks.Models
         [Display(Name = "اتاق")]
         public string Room { get; set; }
 
-        [Required(ErrorMessage = "نام راک الزامی میباشد!")]
-        [Display(Name = "راک")]
-        public string Rack { get; set; }
+        [Required(ErrorMessage = "ردیف راک الزامی میباشد!")]
+        [Display(Name = "ردیف راک")]
+        public int RackLine { get; set; }
 
-        [Required(ErrorMessage = "شماره ردیف راک الزامی می باشد!")]
-        [Display(Name = "شماره ردیف راک")]
+        [Required(ErrorMessage = "شماره راک الزامی میباشد!")]
+        [Display(Name = "شماره راک")]
+        public int RackIndex { get; set; }
+
+        [Display(Name = "شماره ردیف داخل راک")]
         public int RackRow { get; set; }
 
     }

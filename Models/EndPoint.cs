@@ -37,6 +37,7 @@ namespace TciDataLinks.Models
 
         public enum PatchCordType
         {
+            [Display(Name = "مشخص نشده")]
             None,
             [Display(Name = "Single-Mode")]
             SingleMode,
@@ -79,12 +80,12 @@ namespace TciDataLinks.Models
         [Display(Name = "شماره پورت")]
         public string PortNumber { get; set; }
         
-        [Display(Name = "سرعت پورت")]
-        [Required(ErrorMessage = "سرعت پورت اجباریست")]
+        [Display(Name = "ظرفیت لینک")]
+        [Required(ErrorMessage = "ظرفیت لینک اجباریست")]
         public int Speed { get; set; }
 
         [BsonRepresentation(BsonType.String)]
-        [Display(Name = "واحد سرعت")]
+        [Display(Name = "واحد ظرفیت لینک")]
         public SpeedUnitEnum SpeedUnit { get; set; } = SpeedUnitEnum.Gbps;
         
         [BsonRepresentation(BsonType.String)]
@@ -102,5 +103,8 @@ namespace TciDataLinks.Models
         [Display(Name = "فاصله تا اتصال بعدی (متر)")]
         [Required(ErrorMessage = "فاصله اجباریست")]
         public int DistanceToNextPoint { get; set; }
+
+        [Display(Name = "توضیح")]
+        public string Description { get; set; }
     }
 }

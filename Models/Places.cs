@@ -22,6 +22,11 @@ namespace TciDataLinks.Models
         {
             PlaceType = type;
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public class Building : PlaceBase 
@@ -71,6 +76,11 @@ namespace TciDataLinks.Models
                 Line = int.Parse(vals[0]);
                 Index = int.Parse(vals[1]);
             }
+        }
+
+        public override string ToString()
+        {
+            return "ردیف " + Line + " شماره " + Index;
         }
     }
 }

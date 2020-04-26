@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using Omu.ValueInjecter;
 using TciCommon.Models;
 using TciDataLinks.Models;
@@ -38,26 +39,25 @@ namespace TciDataLinks.Controllers
                 ModelState.AddModelError("Center", "مرکز درست انتخاب نشده است.");
                 return View(m);
             }
-            if (!ObjectId.TryParse(m.Rack, out rackId))
+            
+            if (!ObjectId.TryParse(m.Building, out buildingId))
             {
-                if (!ObjectId.TryParse(m.Building, out buildingId))
-                {
-                    var building = new Building { Name = m.Building, Parent = m.Center };
-                    db.Save(building);
-                    buildingId = building.Id;
-                }
-                if (!ObjectId.TryParse(m.Room, out roomId))
-                {
-                    var room = new Room { Name = m.Room, Parent = buildingId };
-                    db.Save(room);
-                    roomId = room.Id;
-                }
-                if (!ObjectId.TryParse(m.Rack, out rackId))
-                {
-                    var rack = new Rack { Name = m.Rack, Parent = roomId };
-                    db.Save(rack);
-                    rackId = rack.Id;
-                }
+                var building = new Building { Name = m.Building, Parent = m.Center };
+                db.Save(building);
+                buildingId = building.Id;
+            }
+            if (!ObjectId.TryParse(m.Room, out roomId))
+            {
+                var room = new Room { Name = m.Room, Parent = buildingId };
+                db.Save(room);
+                roomId = room.Id;
+            }
+            rackId = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex).Project(r => r.Id).FirstOrDefault();
+            if (rackId == ObjectId.Empty)
+            {
+                var rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex };
+                db.Save(rack);
+                rackId = rack.Id;
             }
 
             var patchPanel = Mapper.Map<PatchPanel>(m);
@@ -73,7 +73,9 @@ namespace TciDataLinks.Controllers
             var model = Mapper.Map<PatchPanelViewModel>(patchPanel);
             var rack = db.FindById<Rack>(patchPanel.Rack);
             model.RackType = rack.Type;
-            model.Rack = rack.Id.ToString();
+            model.RackLine = rack.Line;
+            model.RackIndex = rack.Index;
+            model.RackRow = patchPanel.RackRow;
             model.Room = rack.Parent.ToString();
             var parent = db.FindById<Room>(rack.Parent).Parent;
             model.Building = parent.ToString();
@@ -88,8 +90,8 @@ namespace TciDataLinks.Controllers
                 .Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString(), Selected = b.Id.ToString() == model.Building });
             ViewBag.Rooms = db.FindGetResults<Room>(r => r.Parent == ObjectId.Parse(model.Building))
                 .Select(r => new SelectListItem { Text = r.Name, Value = r.Id.ToString(), Selected = r.Id.ToString() == model.Room });
-            ViewBag.Racks = db.FindGetResults<Rack>(r => r.Parent == ObjectId.Parse(model.Room))
-                .Select(r => new SelectListItem { Text = r.Name, Value = r.Id.ToString(), Selected = r.Id.ToString() == model.Rack });
+            //ViewBag.Racks = db.FindGetResults<Rack>(r => r.Parent == ObjectId.Parse(model.Room))
+            //    .Select(r => new SelectListItem { Text = r.Name, Value = r.Id.ToString(), Selected = r.Id.ToString() == model.Rack });
             return View(model);
         }
 
@@ -103,26 +105,25 @@ namespace TciDataLinks.Controllers
                 ModelState.AddModelError("Center", "مرکز درست انتخاب نشده است.");
                 return View(m);
             }
-            if (!ObjectId.TryParse(m.Rack, out rackId))
+            
+            if (!ObjectId.TryParse(m.Building, out buildingId))
             {
-                if (!ObjectId.TryParse(m.Building, out buildingId))
-                {
-                    var building = new Building { Name = m.Building, Parent = m.Center };
-                    db.Save(building);
-                    buildingId = building.Id;
-                }
-                if (!ObjectId.TryParse(m.Room, out roomId))
-                {
-                    var room = new Room { Name = m.Room, Parent = buildingId };
-                    db.Save(room);
-                    roomId = room.Id;
-                }
-                if (!ObjectId.TryParse(m.Rack, out rackId))
-                {
-                    var rack = new Rack { Name = m.Rack, Parent = roomId, Type = m.RackType };
-                    db.Save(rack);
-                    rackId = rack.Id;
-                }
+                var building = new Building { Name = m.Building, Parent = m.Center };
+                db.Save(building);
+                buildingId = building.Id;
+            }
+            if (!ObjectId.TryParse(m.Room, out roomId))
+            {
+                var room = new Room { Name = m.Room, Parent = buildingId };
+                db.Save(room);
+                roomId = room.Id;
+            }
+            rackId = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex).Project(r => r.Id).FirstOrDefault();
+            if (rackId == ObjectId.Empty)
+            {
+                var rack = new Rack { Parent = roomId, Type = m.RackType, Line = m.RackLine, Index = m.RackIndex };
+                db.Save(rack);
+                rackId = rack.Id;
             }
             var patchPanel = db.FindById<PatchPanel>(m.Id);
             patchPanel.InjectFrom(m);

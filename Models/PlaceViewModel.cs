@@ -79,7 +79,7 @@ namespace TciDataLinks.Models
 
         public override string ToString()
         {
-            return Utils.GetDisplayNameOfMember(typeof(PlaceType), Type.ToString()) + " " + Current.Name;
+            return Utils.GetDisplayNameOfMember(typeof(PlaceType), Type.ToString()) + " " + Current.ToString();
         }
     }
 }

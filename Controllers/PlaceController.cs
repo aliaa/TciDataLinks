@@ -124,7 +124,7 @@ namespace TciDataLinks.Controllers
         public IActionResult Buildings(string center)
         {
             var buildings = db.FindGetResults<Building>(b => b.Parent == ObjectId.Parse(center))
-                .Select(r => new { id = r.Id.ToString(), text = r.Name });
+                .Select(r => new { id = r.Id.ToString(), text = r.ToString() });
             return Json(buildings);
         }
 
@@ -133,7 +133,7 @@ namespace TciDataLinks.Controllers
             if (ObjectId.TryParse(building, out ObjectId buildingId))
             {
                 var rooms = db.FindGetResults<Room>(r => r.Parent == buildingId)
-                    .Select(r => new { id = r.Id.ToString(), text = r.Name });
+                    .Select(r => new { id = r.Id.ToString(), text = r.ToString() });
                 return Json(rooms);
             }
             return Json(Enumerable.Empty<object>());
@@ -144,7 +144,7 @@ namespace TciDataLinks.Controllers
             if (ObjectId.TryParse(room, out ObjectId roomId))
             {
                 var racks = db.FindGetResults<Rack>(r => r.Parent == roomId)
-                    .Select(r => new { id = r.Id.ToString(), text = r.Name });
+                    .Select(r => new { id = r.Id.ToString(), text = r.ToString() });
                 return Json(racks);
             }
             return Json(Enumerable.Empty<object>());
