@@ -100,14 +100,7 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-<script src="~/lib/select2/js/select2.full.min.js"></script>
 <script>
-    var select2Settings = {
-        tags: true,
-        theme: "bootstrap4",
-        language: "fa"
-    };
-
     $("#Building").select2(select2Settings);
     $("#Room").select2(select2Settings);
     $("#Rack").select2(select2Settings);
@@ -127,8 +120,9 @@
         $.get("/Device/Buildings?center=" + centerId, function (res) {
             $("#Building").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
             $("#Building").select2({
+                tags: true,
                 data: res,
-                ...select2Settings
+                ...select2BaseSettings
             });
         });
     });
@@ -138,8 +132,9 @@
         $.get("/Device/Rooms?building=" + buildingId, function (res) {
             $("#Room").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
             $("#Room").select2({
+                tags: true,
                 data: res,
-                ...select2Settings
+                ...select2BaseSettings
             });
         });
     });

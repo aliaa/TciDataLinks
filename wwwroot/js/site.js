@@ -23,3 +23,8 @@ function resetValidation() {
     $("form").removeData("unobtrusiveValidation");
     $.validator.unobtrusive.parse("form");
 }
+
+var select2BaseSettings = {
+    theme: "bootstrap4",
+    language: "fa"
+};

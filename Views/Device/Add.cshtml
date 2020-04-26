@@ -97,14 +97,8 @@
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-<script src="~/lib/select2/js/select2.full.min.js"></script>
-<script>
-    var select2Settings = {
-        tags: true,
-        theme: "bootstrap4",
-        language: "fa"
-    };
 
+<script>
     $("#City").change(function () {
         var cityId = $(this).val();
         $.get("/Place/Centers?city=" + cityId, function (res) {
@@ -119,8 +113,9 @@
         var centerId = $(this).val();
         $.get("/Place/Buildings?center=" + centerId, function (res) {
             $("#Building").select2({
+                tags: true,
                 data: res,
-                ...select2Settings
+                ...select2BaseSettings
             });
         });
     });
@@ -129,8 +124,9 @@
         var buildingId = e.params.data.id;
         $.get("/Place/Rooms?building=" + buildingId, function (res) {
             $("#Room").select2({
+                tags: true,
                 data: res,
-                ...select2Settings
+                ...select2BaseSettings
             });
         });
     });

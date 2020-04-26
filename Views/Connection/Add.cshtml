@@ -134,6 +134,7 @@
             $.each(res, function (index, item) {
                 $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
+            $("#Center").select2(select2BaseSettings);
         });
     });
 
@@ -247,7 +248,7 @@
             $("#btnSubmit").addClass("d-none");
     });
 
-    function ShowNewPassiveDialog(index) {
+    function ShowNewPassiveDialog(index) 
         $("#newPassiveEndPointIndex").val(index);
         $("#newPassiveModal").modal();
     }
