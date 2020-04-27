@@ -219,6 +219,8 @@
     }
 
     $("#btnAddNewEndPoint").on("click", function () {
+        var roomId = $("#Room").val();
+        var rackId = $("#Rack").val();
         var deviceId = $("#Device").val();
         if (IsDeviceAlreadyAdded(deviceId)) {
             showToast("دستگاه انتخاب شده قبلا اضافه شده است!", "danger");
@@ -226,7 +228,7 @@
         }
         var i = $("#divEndPoints").children().length;
         $.ajax({
-            url: "/Connection/AddEndPoint?index=" + i + "&device=" + deviceId,
+            url: "/Connection/AddEndPoint?index=" + i + "&room=" + roomId + "&rack=" + rackId + "&device=" + deviceId,
                 success: function (partialView) {
                     var item = $.parseHTML(partialView);
                     item = ConvertInputsToBeAsArrayItem(item, "@nameof(Model.EndPoints)", i);
@@ -248,7 +250,7 @@
             $("#btnSubmit").addClass("d-none");
     });
 
-    function ShowNewPassiveDialog(index) 
+    function ShowNewPassiveDialog(index) {
         $("#newPassiveEndPointIndex").val(index);
         $("#newPassiveModal").modal();
     }

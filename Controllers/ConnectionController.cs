@@ -47,11 +47,13 @@ namespace TciDataLinks.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult AddEndPoint(int index, ObjectId device)
+        public IActionResult AddEndPoint(int index, ObjectId room, ObjectId rack, ObjectId device)
         {
             return GetEditorTemplatePartialView<EndPoint>(new EndPointViewModel
             { 
                 Index = index, 
+                Room = room,
+                Rack = rack,
                 Device = device
             });
         }

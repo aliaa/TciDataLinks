@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>f50929ee-3561-46e7-b712-e2ef6b0df0fe</UserSecretsId>
     <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
