@@ -29,7 +29,9 @@ namespace TciDataLinks.Models
             [Display(Name = "رادیو Combo")]
             Radio_Combo,
             [Display(Name = "رادیو Pasolink")]
-            Radio_Pasolink
+            Radio_Pasolink,
+            SDH,
+            PDH
         }
 
         [Display(Name = "پچ پنل")]
