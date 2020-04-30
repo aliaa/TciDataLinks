@@ -11,6 +11,8 @@
         <div class="text-center">@Model.GetPlaceDisplayName(db)</div>
     </div>
     <div class="card-body" style="background-color: hsl(@hue , 40%, 88%);">
+        <input type="hidden" asp-for="Room" />
+        <input type="hidden" asp-for="Rack" />
         <input type="hidden" asp-for="Device" />
         <input type="hidden" asp-for="Index" />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
