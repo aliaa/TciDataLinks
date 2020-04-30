@@ -154,10 +154,8 @@
         var id = $(this).val();
         $.get("/Place/Rooms?building=" + id, function (res) {
             $("#Room").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
-            $("#NewPassiveRoom").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
             $.each(res, function (index, item) {
                 $("#Room").append("<option value='" + item.id + "'>" + item.text + "</option>");
-                $("#NewPassiveRoom").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
         });
     });
@@ -219,8 +217,7 @@
     }
 
     $("#btnAddNewEndPoint").on("click", function () {
-        var roomId = $("#Room").val();
-        var rackId = $("#Rack").val();
+        var buildingId = $("#Building").val();
         var deviceId = $("#Device").val();
         if (IsDeviceAlreadyAdded(deviceId)) {
             showToast("دستگاه انتخاب شده قبلا اضافه شده است!", "danger");
@@ -228,7 +225,7 @@
         }
         var i = $("#divEndPoints").children().length;
         $.ajax({
-            url: "/Connection/AddEndPoint?index=" + i + "&room=" + roomId + "&rack=" + rackId + "&device=" + deviceId,
+            url: "/Connection/AddEndPoint?index=" + i + "&building=" + buildingId + "&device=" + deviceId,
                 success: function (partialView) {
                     var item = $.parseHTML(partialView);
                     item = ConvertInputsToBeAsArrayItem(item, "@nameof(Model.EndPoints)", i);
@@ -251,15 +248,26 @@
     });
 
     function ShowNewPassiveDialog(index) {
-        
         $("#newPassiveEndPointIndex").val(index);
-        $("#newPassiveModal").modal();
+        $("#NewPassiveRack").find("option").remove().end().append("<option disabled selected>انتخاب کنید</option>");
+        $("#NewPassivePatchPanel").find("option").remove().end().append("<option disabled selected>انتخاب کنید</option>");
+        $("#btnAddNewPassive").addClass("d-none");
+        var buildingId = $("#EndPoints_" + index + "__Building").val();
+        $.get("/Place/Rooms?building=" + buildingId, function (res) {
+            $("#NewPassiveRoom").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            $.each(res, function (index, item) {
+                $("#NewPassiveRoom").append("<option value='" + item.id + "'>" + item.text + "</option>");
+            });
+            $("#newPassiveModal").modal();
+        });
     }
 
     $("#btnAddNewPassive").on("click", function () {
         var endPointIndex = $("#newPassiveEndPointIndex").val();
         var index = $("#divPassives_" + endPointIndex).children().length;
         var patchPanel = $("#NewPassivePatchPanel").val();
+        if (!patchPanel)
+            return;
         if ($("#divPassives_" + endPointIndex).find("input[value='" + patchPanel + "']").length > 0) {
             showToast("این پچ پنل قبلا به این اتصال اضافه شده است!", "danger");
             return;

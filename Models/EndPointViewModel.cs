@@ -13,8 +13,7 @@ namespace TciDataLinks.Models
     {
         public int Index { get; set; }
 
-        public ObjectId Room { get; set; }
-        public ObjectId Rack { get; set; }
+        public ObjectId Building { get; set; }
 
         public List<PassiveConnectionViewModel> PassiveConnectionViewModels { get; set; } = new List<PassiveConnectionViewModel>();
 

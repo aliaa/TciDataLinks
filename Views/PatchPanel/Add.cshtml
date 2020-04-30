@@ -95,10 +95,17 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
 <script>
+    var dropdownsToClear = [$("#Center"), $("#Building"), $("#Room")];
+
+    function ClearDropdownsAfter(offset) {
+        for (var i = offset; i < dropdownsToClear.length; i++)
+            dropdownsToClear[i].find("option").remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
+    }
+
     $("#City").change(function () {
+        ClearDropdownsAfter(0);
         var cityId = $(this).val();
         $.get("/Place/Centers?city=" + cityId, function (res) {
-            $("#Center").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
             $.each(res, function (index, item) {
                 $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
@@ -106,6 +113,7 @@
     });
 
     $("#Center").change(function () {
+        ClearDropdownsAfter(1);
         var centerId = $(this).val();
         $.get("/Place/Buildings?center=" + centerId, function (res) {
             $("#Building").select2({
@@ -117,6 +125,7 @@
     });
 
     $("#Building").on('select2:select', function (e) {
+        ClearDropdownsAfter(2);
         var buildingId = e.params.data.id;
         $.get("/Place/Rooms?building=" + buildingId, function (res) {
             $("#Room").select2({
