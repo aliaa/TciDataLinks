@@ -14,11 +14,13 @@
         {
             int hue = (i * 35 + 60) % 360;
             <div class="my-3 card" style="background-color: hsl(@hue , 25%, 88%); color: hsl(@hue , 80%, 32%);">
-                <div class="card-header">
+                <div class="card-header" data-toggle="collapse" data-target="#endpoint_@i" style="cursor:pointer;">
                     <div class="float-right">اتصال @(i+1)</div>
-                    <div class="text-center">@Model.EndPoints[i].GetPlaceDisplayName(db)</div>
+                    <div class="text-center">
+                        @Model.EndPoints[i].GetPlaceDisplayName(db)
+                    </div>
                 </div>
-                <div class="card-body row">
+                <div class="card-body row collapse" id="endpoint_@i">
                     <div class="col-lg-3 col-sm-6">
                         <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.PortType)):</label>
                         <span class="text-value">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PortTypeEnum), Model.EndPoints[i].PortType.ToString())</span>
