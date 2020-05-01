@@ -28,3 +28,7 @@ var select2BaseSettings = {
     theme: "bootstrap4",
     language: "fa"
 };
+
+function removeOptionsOfDropDown(ddl, initMsg = "انتخاب کنید") {
+    ddl.find("option").remove().end().append("<option disabled selected>" + initMsg + "</option>");
+}

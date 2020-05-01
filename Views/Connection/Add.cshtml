@@ -130,7 +130,7 @@
         ClearDropdownsAfter(0);
         var id = $(this).val();
         $.get("/Place/Centers?city=" + id, function (res) {
-            $("#Center").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            removeOptionsOfDropDown($("#Center"));
             $.each(res, function (index, item) {
                 $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
@@ -142,7 +142,7 @@
         ClearDropdownsAfter(1);
         var id = $(this).val();
         $.get("/Place/Buildings?center=" + id, function (res) {
-            $("#Building").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            removeOptionsOfDropDown($("#Building"));
             $.each(res, function (index, item) {
                 $("#Building").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
@@ -153,7 +153,7 @@
         ClearDropdownsAfter(2);
         var id = $(this).val();
         $.get("/Place/Rooms?building=" + id, function (res) {
-            $("#Room").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            removeOptionsOfDropDown($("#Room"));
             $.each(res, function (index, item) {
                 $("#Room").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
@@ -164,7 +164,7 @@
         ClearDropdownsAfter(3);
         var id = $(this).val();
         $.get("/Place/Racks?room=" + id, function (res) {
-            $("#Rack").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            removeOptionsOfDropDown($("#Rack"));
             $.each(res, function (index, item) {
                 $("#Rack").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
@@ -172,8 +172,8 @@
     });
 
     $("#NewPassiveRoom").change(function () {
-        $("#NewPassiveRack").find("option").remove().end().append("<option disabled selected>انتخاب کنید</option>");
-        $("#NewPassivePatchPanel").find("option").remove().end().append("<option disabled selected>انتخاب کنید</option>");
+        removeOptionsOfDropDown($("#NewPassiveRack"));
+        removeOptionsOfDropDown($("#NewPassivePatchPanel"));
         var id = $(this).val();
         $.get("/Place/Racks?room=" + id, function (res) {
             $.each(res, function (index, item) {
@@ -186,7 +186,7 @@
         ClearDropdownsAfter(4);
         var id = $(this).val();
         $.get("/Place/Devices?rack=" + id, function (res) {
-            $("#Device").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            removeOptionsOfDropDown($("#Device"));
             $.each(res, function (index, item) {
                 $("#Device").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
@@ -194,10 +194,10 @@
     });
 
     $("#NewPassiveRack").change(function () {
-        $("#NewPassivePatchPanel").find("option").remove().end().append("<option disabled selected>انتخاب کنید</option>");
+        removeOptionsOfDropDown($("#NewPassivePatchPanel"));
         var id = $(this).val();
         $.get("/Place/PatchPanels?rack=" + id, function (res) {
-            $("#NewPassivePatchPanel").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            removeOptionsOfDropDown($("#NewPassivePatchPanel"));
             $.each(res, function (index, item) {
                 $("#NewPassivePatchPanel").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
@@ -249,12 +249,12 @@
 
     function ShowNewPassiveDialog(index) {
         $("#newPassiveEndPointIndex").val(index);
-        $("#NewPassiveRack").find("option").remove().end().append("<option disabled selected>انتخاب کنید</option>");
-        $("#NewPassivePatchPanel").find("option").remove().end().append("<option disabled selected>انتخاب کنید</option>");
+        removeOptionsOfDropDown($("#NewPassiveRack"));
+        removeOptionsOfDropDown($("#NewPassivePatchPanel"));
         $("#btnAddNewPassive").addClass("d-none");
         var buildingId = $("#EndPoints_" + index + "__Building").val();
         $.get("/Place/Rooms?building=" + buildingId, function (res) {
-            $("#NewPassiveRoom").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+            removeOptionsOfDropDown($("#NewPassiveRoom"));
             $.each(res, function (index, item) {
                 $("#NewPassiveRoom").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
