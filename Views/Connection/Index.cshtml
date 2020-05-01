@@ -1,5 +1,128 @@
-﻿@{
+﻿@model ConnectionSearchViewModel
+@inject IEnumerable<City> Cities
+
+@{
     ViewData["Title"] = "جستجوی لینک ها";
 }
 
 <a asp-action="Add" class="btn btn-info">تعریف لینک جدید</a>
+
+<h1 class="mt-5">جستجوی لینک ها</h1>
+
+<form asp-action="Index">
+    <div class="row mt-5">
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label class="control-label">شهر</label>
+            <select asp-for="City" class="form-control">
+                <option disabled selected>انتخاب کنید</option>
+                @foreach (var city in Cities)
+                {
+                    <option value="@city.Id.ToString()">@city.Name</option>
+                }
+            </select>
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="Center" class="control-label"></label>
+            <select asp-for="Center" class="form-control"></select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="Building" class="control-label"></label>
+            <select asp-for="Building" class="form-control"></select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="Room" class="control-label"></label>
+            <select asp-for="Room" class="form-control"></select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="Rack" class="control-label"></label>
+            <select asp-for="Rack" class="form-control"></select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="Device" class="control-label"></label>
+            <select asp-for="Device" class="form-control"></select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="SearchType" class="control-label"></label>
+            <select asp-for="SearchType" class="form-control">
+                @foreach (var item in Enum.GetNames(typeof(ConnectionSearchViewModel.EndPointSearchType)))
+                {
+                    <option value="@item">@Utils.GetDisplayNameOfMember(typeof(ConnectionSearchViewModel.EndPointSearchType), item)</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="mt-2">
+        <input type="submit" class="btn btn-primary" value="جستجوی لینک" />
+    </div>
+</form>
+
+<div id="divSearchResult" class="mt-5">
+    @for (int i = 0; i < Model.SearchResult.Count; i++)
+    {
+        @Html.DisplayFor(m => Model.SearchResult[i], "ConnectionView");
+    }
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var dropdownsToClear = [$("#Center"), $("#Building"), $("#Room"), $("#Rack"), $("#Device")];
+
+        function ClearDropdownsAfter(offset) {
+            for (var i = offset; i < dropdownsToClear.length; i++)
+                removeOptionsOfDropDown(dropdownsToClear[i]);
+        }
+
+        $("#City").change(function () {
+            ClearDropdownsAfter(0);
+            var id = $(this).val();
+            $.get("/Place/Centers?city=" + id, function (res) {
+                $.each(res, function (index, item) {
+                    $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
+                $("#Center").select2(select2BaseSettings);
+            });
+        });
+
+        $("#Center").change(function () {
+            ClearDropdownsAfter(1);
+            var id = $(this).val();
+            $.get("/Place/Buildings?center=" + id, function (res) {
+                $.each(res, function (index, item) {
+                    $("#Building").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
+            });
+        });
+
+        $("#Building").change(function () {
+            ClearDropdownsAfter(2);
+            var id = $(this).val();
+            $.get("/Place/Rooms?building=" + id, function (res) {
+                $.each(res, function (index, item) {
+                    $("#Room").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
+            });
+        });
+
+        $("#Room").change(function () {
+            ClearDropdownsAfter(3);
+            var id = $(this).val();
+            $.get("/Place/Racks?room=" + id, function (res) {
+                $.each(res, function (index, item) {
+                    $("#Rack").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
+            });
+        });
+
+        $("#Rack").change(function () {
+            ClearDropdownsAfter(4);
+            var id = $(this).val();
+            $.get("/Place/Devices?rack=" + id, function (res) {
+                $.each(res, function (index, item) {
+                    $("#Device").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
+            });
+        });
+    </script>
+}

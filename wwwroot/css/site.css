@@ -87,3 +87,8 @@ body {
     left: 2rem;
     position: fixed;
 }
+
+.text-value {
+    font-weight: bold;
+    color: rgba(0,0,0,.5);
+}

@@ -24,7 +24,14 @@ namespace TciDataLinks.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View(new ConnectionSearchViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult Index(ConnectionSearchViewModel model)
+        {
+            model.SearchResult = db.All<Connection>().Select(c => Mapper.Map<ConnectionViewModel>(c)).ToList();
+            return View(model);
         }
 
         public IActionResult Add()
@@ -36,15 +43,23 @@ namespace TciDataLinks.Controllers
         public IActionResult Add(ConnectionViewModel model)
         {
             var connection = Mapper.Map<Connection>(model);
-            foreach (var vm in model.EndPoints)
-            {
-                var endPoint = Mapper.Map<EndPoint>(vm);
-                connection.EndPoints.Add(endPoint);
-                foreach (var passive in vm.PassiveConnectionViewModels)
-                    endPoint.PassiveConnections.Add(Mapper.Map<PassiveConnection>(passive));
-            }
             db.Save(connection);
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Edit(ObjectId id)
+        {
+            var connection = db.FindById<Connection>(id);
+            var model = Mapper.Map<ConnectionViewModel>(connection);
+            ViewData.Add("EditMode", true);
+            return View("Add", model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(ConnectionViewModel model)
+        {
+            ViewData.Add("EditMode", true);
+            return View("Add", model);
         }
 
         public IActionResult AddEndPoint(int index, ObjectId building, ObjectId device)

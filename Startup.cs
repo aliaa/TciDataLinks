@@ -145,6 +145,32 @@ namespace TciDataLinks
                 }
                 return res;
             };
+
+            Mapper.AddMap<Connection, ConnectionViewModel>(src => 
+            {
+                var res = Mapper.MapDefault<ConnectionViewModel>(src);
+                foreach (var e in src.EndPoints)
+                {
+                    var evm = Mapper.Map<EndPointViewModel>(e);
+                    foreach (var p in e.PassiveConnections)
+                        evm.PassiveConnectionViewModels.Add(Mapper.Map<PassiveConnectionViewModel>(p));
+                    res.EndPoints.Add(evm);
+                }
+                return res;
+            });
+
+            Mapper.AddMap<ConnectionViewModel, Connection>(src =>
+            {
+                var res = Mapper.MapDefault<Connection>(src);
+                foreach (var evm in src.EndPoints)
+                {
+                    var e = Mapper.Map<EndPoint>(evm);
+                    foreach (var pvm in evm.PassiveConnectionViewModels)
+                        e.PassiveConnections.Add(Mapper.Map<PassiveConnection>(pvm));
+                    res.EndPoints.Add(e);
+                }
+                return res;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
