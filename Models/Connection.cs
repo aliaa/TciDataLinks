@@ -8,6 +8,5 @@ namespace TciDataLinks.Models
 {
     public class Connection : MongoEntity
     {
-        public List<EndPoint> EndPoints { get; set; } = new List<EndPoint>();
     }
 }

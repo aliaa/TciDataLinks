@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EasyMongoNet;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TciDataLinks.Models
 {
-    public class EndPoint
+    public class EndPoint : MongoEntity
     {
         public enum PortTypeEnum
         {
@@ -67,6 +68,8 @@ namespace TciDataLinks.Models
             G62,
         }
 
+        public ObjectId Connection { get; set; }
+        public int Index { get; set; }
         public ObjectId Device { get; set; }
 
         public List<PassiveConnection> PassiveConnections { get; set; } = new List<PassiveConnection>();
@@ -76,7 +79,7 @@ namespace TciDataLinks.Models
         public PortTypeEnum PortType { get; set; }
 
         [Required(ErrorMessage = "شماره پورت اجباریست")]
-        [Remote("PortNumberIsValid", "Connection", AdditionalFields = "Device", ErrorMessage = "شماره پورت در این دستگاه قبلا استفاده شده است!")]
+        //[Remote("PortNumberIsValid", "Connection", AdditionalFields = "Device", ErrorMessage = "شماره پورت در این دستگاه قبلا استفاده شده است!")]
         [Display(Name = "شماره پورت")]
         public string PortNumber { get; set; }
         
@@ -103,6 +106,12 @@ namespace TciDataLinks.Models
         [Display(Name = "فاصله تا اتصال بعدی (متر)")]
         [Required(ErrorMessage = "فاصله اجباریست")]
         public int DistanceToNextPoint { get; set; }
+
+        [Display(Name = "پروتکشن دیتا")]
+        public bool DataProtection { get; set; }
+
+        [Display(Name = "پروتکشن سیستمهای دسترسی")]
+        public bool TransmissionProtection { get; set; }
 
         [Display(Name = "توضیح")]
         public string Description { get; set; }

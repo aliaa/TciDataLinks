@@ -1,7 +1,7 @@
 ﻿$(".nav-link[href='" + window.location.pathname + "'").addClass("active");
 
 function ConvertInputsToBeAsArrayItem(elem, arrayName, index, changeId = true) {
-    $(elem).find("input, select").each(function (i, e) {
+    $(elem).find("input, select, textarea").each(function (i, e) {
         if (changeId)
             $(e).attr("id", arrayName + "_" + index + "__" + $(e).attr("id"));
         $(e).attr("name", arrayName + "[" + index + "]." + $(e).attr("name"));

@@ -1,18 +1,13 @@
 ﻿using EasyMongoNet;
 using MongoDB.Bson;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using TciCommon.Models;
 
 namespace TciDataLinks.Models
 {
     public class EndPointViewModel : EndPoint
     {
-        public int Index { get; set; }
-
         public ObjectId Building { get; set; }
 
         public List<PassiveConnectionViewModel> PassiveConnectionViewModels { get; set; } = new List<PassiveConnectionViewModel>();

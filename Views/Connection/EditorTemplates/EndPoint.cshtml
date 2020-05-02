@@ -1,7 +1,7 @@
 ﻿@model TciDataLinks.Models.EndPointViewModel
 @inject IReadOnlyDbContext db
 
-@{ 
+@{
     int hue = (Model.Index * 35 + 60) % 360;
 }
 
@@ -11,6 +11,7 @@
         <div class="text-center">@Model.GetPlaceDisplayName(db)</div>
     </div>
     <div class="card-body" style="background-color: hsl(@hue , 40%, 88%);">
+        <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="Building" />
         <input type="hidden" asp-for="Device" />
         <input type="hidden" asp-for="Index" />
@@ -81,6 +82,20 @@
                     <label asp-for="DistanceToNextPoint" class="control-label"></label>
                     <input asp-for="DistanceToNextPoint" class="form-control" />
                     <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="form-group">
+                    <label>
+                        <input asp-for="DataProtection" /> @Html.DisplayNameFor(model => model.DataProtection)
+                    </label>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="form-group">
+                    <label>
+                        <input asp-for="TransmissionProtection" /> @Html.DisplayNameFor(model => model.TransmissionProtection)
+                    </label>
                 </div>
             </div>
             <div class="col-lg-12">

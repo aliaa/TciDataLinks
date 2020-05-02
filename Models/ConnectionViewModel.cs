@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace TciDataLinks.Models
 {
-    public class ConnectionViewModel
+    public class ConnectionViewModel : Connection
     {
-        public ObjectId Id { get; set; }
         public List<EndPointViewModel> EndPoints { get; set; } = new List<EndPointViewModel>();
     }
 }

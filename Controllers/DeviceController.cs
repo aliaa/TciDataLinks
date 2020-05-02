@@ -136,5 +136,30 @@ namespace TciDataLinks.Controllers
             return Json(!exists);
         }
 
+        public IEnumerable<Device> FindDevices(ObjectId parentId, PlaceType parentType)
+        {
+            if (parentType == PlaceType.Rack)
+                return db.FindGetResults<Device>(d => d.Rack == parentId);
+            else
+            {
+                List<ObjectId> racks;
+                if (parentType == PlaceType.Room)
+                    racks = db.Find<Rack>(r => r.Parent == parentId).Project(r => r.Id).ToList();
+                else if (parentType == PlaceType.Building)
+                {
+                    var rooms = db.Find<Room>(r => r.Parent == parentId).Project(r => r.Id).ToList();
+                    racks = db.Find<Rack>(r => rooms.Contains(r.Parent)).Project(r => r.Id).ToList();
+                }
+                else if (parentType == PlaceType.Center)
+                {
+                    var buildings = db.Find<Building>(b => b.Parent == parentId).Project(b => b.Id).ToList();
+                    var rooms = db.Find<Room>(r => buildings.Contains(r.Parent)).Project(r => r.Id).ToList();
+                    racks = db.Find<Rack>(r => rooms.Contains(r.Parent)).Project(r => r.Id).ToList();
+                }
+                else
+                    throw new NotImplementedException();
+                return db.FindGetResults<Device>(d => racks.Contains(d.Rack));
+            }
+        }
     }
 }

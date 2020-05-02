@@ -38,7 +38,7 @@ namespace TciDataLinks.Models
         public ObjectId PatchPanel { get; set; }
 
         [Required(ErrorMessage = "شماره پورت اجباریست")]
-        [Remote("PortNumberIsValid", "Connection", AdditionalFields = "PatchPanel", ErrorMessage = "شماره پورت در این پچ پنل قبلا استفاده شده است!")]
+        //[Remote("PortNumberIsValid", "Connection", AdditionalFields = "PatchPanel", ErrorMessage = "شماره پورت در این پچ پنل قبلا استفاده شده است!")]
         [Display(Name = "شماره پورت")]
         public string PortNumber { get; set; }
 

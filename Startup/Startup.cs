@@ -17,7 +17,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Bson;
 using Newtonsoft.Json.Serialization;
-using Omu.ValueInjecter;
 using TciCommon.Models;
 using TciDataLinks.Models;
 
@@ -78,7 +77,8 @@ namespace TciDataLinks
                         // https://github.com/aspnet/Announcements/issues/194
                         options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     })
-                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+                .SetCompatibilityVersion(CompatibilityVersion.Latest)
+                .AddControllersAsServices();
 
             services.AddSingleton<HtmlEncoder>(HtmlEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Arabic));
 
@@ -111,66 +111,7 @@ namespace TciDataLinks
                 options.AutomaticAuthentication = false;
             });
 
-            ConfigureMapper();
-        }
-
-        private static void ConfigureMapper()
-        {
-            Mapper.DefaultMap = (src, resType, tag) =>
-            {
-                var res = Activator.CreateInstance(resType);
-                res.InjectFrom(src);
-
-                var srcTypeProps = src.GetType().GetProperties();
-                var resTypeProps = resType.GetProperties();
-
-                foreach (var resProp in resTypeProps.Where(p => p.PropertyType == typeof(ObjectId)))
-                {
-                    var matchSrcProp = srcTypeProps.FirstOrDefault(p => p.Name == resProp.Name && p.PropertyType == typeof(string));
-                    if (matchSrcProp != null)
-                    {
-                        string id = (string)matchSrcProp.GetValue(src);
-                        if (ObjectId.TryParse(id, out ObjectId objId))
-                            resProp.SetValue(res, objId);
-                    }
-                }
-                foreach (var srcProp in srcTypeProps.Where(p => p.PropertyType == typeof(ObjectId)))
-                {
-                    var matchResProp = resTypeProps.FirstOrDefault(p => p.Name == srcProp.Name && p.PropertyType == typeof(string));
-                    if (matchResProp != null)
-                    {
-                        var objId = (ObjectId)srcProp.GetValue(src);
-                        matchResProp.SetValue(res, objId.ToString());
-                    }
-                }
-                return res;
-            };
-
-            Mapper.AddMap<Connection, ConnectionViewModel>(src => 
-            {
-                var res = Mapper.MapDefault<ConnectionViewModel>(src);
-                foreach (var e in src.EndPoints)
-                {
-                    var evm = Mapper.Map<EndPointViewModel>(e);
-                    foreach (var p in e.PassiveConnections)
-                        evm.PassiveConnectionViewModels.Add(Mapper.Map<PassiveConnectionViewModel>(p));
-                    res.EndPoints.Add(evm);
-                }
-                return res;
-            });
-
-            Mapper.AddMap<ConnectionViewModel, Connection>(src =>
-            {
-                var res = Mapper.MapDefault<Connection>(src);
-                foreach (var evm in src.EndPoints)
-                {
-                    var e = Mapper.Map<EndPoint>(evm);
-                    foreach (var pvm in evm.PassiveConnectionViewModels)
-                        e.PassiveConnections.Add(Mapper.Map<PassiveConnection>(pvm));
-                    res.EndPoints.Add(e);
-                }
-                return res;
-            });
+            ConfigureMapper.Configure();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
