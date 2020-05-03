@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EasyMongoNet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -11,6 +12,7 @@ using TciDataLinks.Models;
 
 namespace TciDataLinks.Controllers
 {
+    [Authorize]
     public class PlaceController : BaseController
     {
         private IEnumerable<City> cities = null;

@@ -110,7 +110,7 @@ namespace TciDataLinks.Models
         [Display(Name = "پروتکشن دیتا")]
         public bool DataProtection { get; set; }
 
-        [Display(Name = "پروتکشن سیستمهای دسترسی")]
+        [Display(Name = "پروتکشن سیستمهای انتقال")]
         public bool TransmissionProtection { get; set; }
 
         [Display(Name = "توضیح")]

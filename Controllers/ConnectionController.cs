@@ -29,6 +29,8 @@ namespace TciDataLinks.Controllers
             return View(new ConnectionSearchViewModel());
         }
 
+        private const int SEARCH_RESULT_LIMIT = 200;
+
         [HttpPost]
         public IActionResult Index(ConnectionSearchViewModel model)
         {
@@ -51,11 +53,24 @@ namespace TciDataLinks.Controllers
                     throw new NotImplementedException();
                 devices = deviceController.FindDevices(parentId, parentType).Select(d => d.Id).ToList();
             }
+
+            var fb = Builders<EndPoint>.Filter;
+            var filters = new List<FilterDefinition<EndPoint>>
+            {
+                fb.In(e => e.Device, devices)
+            };
+            if (model.SearchType == ConnectionSearchViewModel.EndPointSearchType.First)
+                filters.Add(fb.Eq(e => e.Index, 0));
+            else if (model.SearchType == ConnectionSearchViewModel.EndPointSearchType.NotFirst)
+                filters.Add(fb.Gt(e => e.Index, 0));
+
             var connections = db.Aggregate<EndPoint>()
-                .Match(e => devices.Contains(e.Device))
+                .Match(fb.And(filters))
                 .Group(id => id.Connection, g => new { g.Key })
-                .Lookup(nameof(Connection),"Key", "_id", "as")
-                .Unwind("as").ReplaceRoot<Connection>("$as").ToList();
+                .Lookup(nameof(Connection), "Key", "_id", "as")
+                .Unwind("as").ReplaceRoot<Connection>("$as")
+                .Limit(SEARCH_RESULT_LIMIT)
+                .ToList();
             model.SearchResult = connections.Select(c => Mapper.Map<ConnectionViewModel>(c)).ToList();
             foreach (var c in model.SearchResult)
             {
@@ -82,7 +97,7 @@ namespace TciDataLinks.Controllers
                 e.Connection = connection.Id;
                 db.Save(e);
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Edit), new { id = connection.Id });
         }
 
         public IActionResult Edit(ObjectId id)
@@ -124,7 +139,7 @@ namespace TciDataLinks.Controllers
             foreach (var e in deletedEndPoints)
                 db.DeleteOne<EndPoint>(e);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Edit), new { id = connection.Id });
         }
 
         public IActionResult AddEndPoint(int index, ObjectId building, ObjectId device)

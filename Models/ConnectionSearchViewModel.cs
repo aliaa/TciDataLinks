@@ -17,8 +17,8 @@ namespace TciDataLinks.Models
             First,
             [Display(Name = "اتصالهای بعدی")]
             NotFirst,
-            [Display(Name = "فقط اتصال آخر")]
-            Last,
+            //[Display(Name = "فقط اتصال آخر")]
+            //Last,
         }
 
         [Required(ErrorMessage = "انتخاب شهر اجباری است")]
