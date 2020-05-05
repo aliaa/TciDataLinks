@@ -25,6 +25,14 @@
       "provider": "cdnjs",
       "library": "select2-bootstrap-theme@0.1.0-beta.10",
       "destination": "wwwroot/lib/select2-bootstrap-theme/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "gojs@2.1.15",
+      "destination": "wwwroot/lib/gojs/",
+      "files": [
+        "go.js"
+      ]
     }
   ]
 }

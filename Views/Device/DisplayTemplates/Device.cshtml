@@ -1,0 +1,41 @@
+﻿@model TciDataLinks.Models.DeviceViewModel
+@inject IReadOnlyDbContext db
+
+<div class="card my-5" style="background-color:#eee;">
+    <div class="card-header">
+        @Model.GetPlaceDisplay(db)
+        <div class="float-left">
+            <a class="edit" asp-action="Edit" asp-route-id="@Model.Id.ToString()" title="ویرایش">
+                <img src="~/lib/bootstrap-icons/icons/pencil.svg" width="24" />
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <label>@Html.DisplayNameFor(m => m.Type):</label>
+                <span class="text-value">
+                    @Utils.GetDisplayNameOfMember(typeof(Device.DeviceType), Model.Type.ToString())
+                </span>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <label>@Html.DisplayNameFor(m => m.Network):</label>
+                <span class="text-value">
+                    @Utils.GetDisplayNameOfMember(typeof(Device.NetworkType), Model.Network.ToString())
+                </span>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <label>@Html.DisplayNameFor(m => m.Model):</label>
+                <span class="text-value">
+                    @Model.Model
+                </span>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <label>@Html.DisplayNameFor(m => m.Address):</label>
+                <span class="text-value">
+                    @Model.Address
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

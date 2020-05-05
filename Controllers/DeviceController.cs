@@ -22,6 +22,13 @@ namespace TciDataLinks.Controllers
         {
             this.cities = cities;
         }
+
+        public IActionResult Item(ObjectId id)
+        {
+            var device = db.FindById<Device>(id);
+            var model = Mapper.Map<DeviceViewModel>(device);
+            return View(model);
+        }
         
         public IActionResult Add()
         {

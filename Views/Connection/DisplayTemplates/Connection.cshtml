@@ -17,7 +17,7 @@
                 <div class="card-header" data-toggle="collapse" data-target="#endpoint_@Model.Id.ToString()_@i" style="cursor:pointer;">
                     <div class="float-right">اتصال @(i+1)</div>
                     <div class="text-center">
-                        @Model.EndPoints[i].GetPlaceDisplayName(db)
+                        @Model.EndPoints[i].GetPlaceDisplay(db)
                     </div>
                 </div>
                 <div class="card-body collapse" id="endpoint_@Model.Id.ToString()_@i">

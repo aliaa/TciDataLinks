@@ -1,6 +1,11 @@
 ﻿using AliaaCommon;
+using EasyMongoNet;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using Omu.ValueInjecter;
 using System.ComponentModel.DataAnnotations;
+using System.Text;
+using TciCommon.Models;
 
 namespace TciDataLinks.Models
 {
@@ -20,9 +25,16 @@ namespace TciDataLinks.Models
         [Display(Name = "آدرس IP یا NodeID")]
         public string Address { get; set; }
 
+        public ObjectId Rack { get; set; }
+
         public override string ToString()
         {
             return Utils.GetDisplayNameOfMember(typeof(Device.DeviceType), Type.ToString()) + " " + Model;
+        }
+
+        public string GetPlaceDisplay(IReadOnlyDbContext db)
+        {
+            return Mapper.Map<Device>(this).GetPlaceDisplay(db);
         }
     }
 }

@@ -58,33 +58,24 @@
     </div>
 </form>
 
-<ul class="nav nav-tabs mt-5">
-    <li class="nav-item active">
-        <a class="nav-link active" href="#divSearchResultList">لیست نتیجه</a>
-    </li>
-    <li>
-        <a class="nav-link active" href="#divSearchResultGraph">گراف نتیجه</a>
-    </li>
-</ul>
-
-<div class="tab-content mt-5">
-    <div id="divSearchResultList" class="tab-pane fade in active">
+<div class="mt-5">
+    <div id="divSearchResultList">
         @for (int i = 0; i < Model.SearchResult.Count; i++)
         {
             @Html.DisplayFor(m => Model.SearchResult[i]);
         }
     </div>
-
-    <div id="divSearchResultGraph" class="tab-pane fade">گراف</div>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
     <script>
         $(window).ready(function () {
             var city = $("#City").val();
-            if (city)
+            if (city) {
                 $("#City").triggerHandler("change");
+            }
         });
 
         var dropdownsToClear = [$("#Center"), $("#Building"), $("#Room"), $("#Rack"), $("#Device")];
@@ -101,7 +92,12 @@
                 $.each(res, function (index, item) {
                     $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
                 });
-                $("#Center").select2(select2BaseSettings);
+                if ("@Model.Center") {
+                    $("#Center").val("@Model.Center");
+                    $("#Center").trigger("change");
+                }
+                //$("#Center").select2(select2BaseSettings);
+
             });
         });
 

@@ -1,3 +1,63 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@inject IEnumerable<City> Cities
+
+@{
+    ViewData["Title"] = "گراف شبکه";
+}
+
+<h1>گراف شبکه</h1>
+
+<div class="row mt-5">
+    <div class="col-lg-3 col-sm-6 form-group">
+        <label class="control-label">شهر</label>
+        <select id="City" class="form-control">
+            @foreach (var city in Cities)
+            {
+                <option value="@city.Id.ToString()">@city.Name</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-3 col-sm-6 form-group">
+        <label class="control-label">مرکز</label>
+        <select id="Center" class="form-control"></select>
+    </div>
+</div>
+<div class="mt-2">
+    <button id="btnShowGraph" class="btn btn-primary">نمایش گراف</button>
+</div>
+
+<div id="divResult" class="d-none mt-5">
+    <div id="divGraph" style="border: solid 1px black; height: 600px;"></div>
+</div>
+
+
+@section Scripts {
+    <script src="~/lib/gojs/go.js"></script>
+    <script src="~/js/go-init.js"></script>
+    <script>
+        $(window).ready(function () {
+            var city = $("#City").val();
+            if (city) {
+                $("#City").triggerHandler("change");
+            }
+        });
+
+        $("#City").change(function () {
+            removeOptionsOfDropDown($("#Center"), null);
+            var id = $(this).val();
+            $.get("/Place/Centers?city=" + id, function (res) {
+                $.each(res, function (index, item) {
+                    $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
+                //$("#Center").select2(select2BaseSettings);
+
+            });
+        });
+
+        $("#btnShowGraph").click(function () {
+            $("#divResult").removeClass("d-none");
+            $.get("/Connection/Graph?Center=" + $("#Center").val(), function (res) {
+                initGojs("divGraph", res);
+            });
+        });
+    </script>
 }

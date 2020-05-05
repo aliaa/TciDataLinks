@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using Omu.ValueInjecter;
 using TciCommon.Models;
 using TciDataLinks.Models;
@@ -178,5 +179,81 @@ namespace TciDataLinks.Controllers
         //    //TODO
         //    return Json(true);
         //}
+
+        public IActionResult Graph(ObjectId center)
+        {
+            var graph = new Graph();
+            var centerObj = db.FindById<CommCenter>(center);
+            var centerNode = new GraphNode 
+            { 
+                key = "Center_" + centerObj.Id, 
+                text = "مرکز " + centerObj.Name, 
+                isGroup = true 
+            };
+            graph.Nodes.Add(centerNode);
+            var deviceIds = new List<ObjectId>();
+            foreach (var building in db.FindGetResults<Building>(b => b.Parent == center))
+            {
+                var buildingNode = new GraphNode 
+                { 
+                    key = "Building_" + building.Id, 
+                    text = "ساختمان " + building.Name, 
+                    group = centerNode.key, 
+                    isGroup = true 
+                };
+                graph.Nodes.Add(buildingNode);
+                foreach (var room in db.FindGetResults<Room>(r => r.Parent == building.Id))
+                {
+                    var roomNode = new GraphNode
+                    {
+                        key = "Room_" + room.Id,
+                        text = "سالن " + room.Name,
+                        group = buildingNode.key,
+                        isGroup = true
+                    };
+                    graph.Nodes.Add(roomNode);
+                    foreach (var rack in db.FindGetResults<Rack>(r => r.Parent == room.Id))
+                    {
+                        var rackNode = new GraphNode
+                        {
+                            key = "Rack_" + rack.Id,
+                            text = "راک " + rack.ToString(),
+                            group = roomNode.key,
+                            isGroup = true
+                        };
+                        graph.Nodes.Add(rackNode);
+                        foreach (var device in db.FindGetResults<Device>(d => d.Rack == rack.Id))
+                        {
+                            deviceIds.Add(device.Id);
+                            var deviceNode = new GraphNode
+                            {
+                                key = "Device_" + device.Id,
+                                text = "دستگاه " + device.ToString(),
+                                group = rackNode.key
+                            };
+                            graph.Nodes.Add(deviceNode);
+                        }
+                        foreach (var pp in db.FindGetResults<PatchPanel>(p => p.Rack == rack.Id))
+                        {
+                            var ppNode = new GraphNode
+                            {
+                                key = "PatchPanel_" + pp.Id,
+                                text = "پچ پنل " + pp.ToString(),
+                                group = rackNode.key
+                            };
+                            graph.Nodes.Add(ppNode);
+                        }
+                    }
+                }
+            }
+
+            var endPoints = db.FindGetResults<EndPoint>(e => deviceIds.Contains(e.Device)).GroupBy(key => key.Connection).ToList();
+            foreach (var ep in endPoints)
+            {
+                
+            }
+
+            return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        }
     }
 }

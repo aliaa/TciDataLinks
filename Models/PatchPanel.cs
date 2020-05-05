@@ -26,7 +26,7 @@ namespace TciDataLinks.Models
 
         public override string ToString()
         {
-            return RackRow + " : " + Name;
+            return Name;
         }
     }
 }

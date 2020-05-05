@@ -30,5 +30,7 @@ var select2BaseSettings = {
 };
 
 function removeOptionsOfDropDown(ddl, initMsg = "انتخاب کنید") {
-    ddl.find("option").remove().end().append("<option disabled selected>" + initMsg + "</option>");
+    ddl.find("option").remove().end();
+    if (initMsg)
+        ddl.append("<option disabled selected>" + initMsg + "</option>");
 }

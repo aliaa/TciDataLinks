@@ -24,6 +24,9 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">گراف شبکه</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" asp-controller="Place" asp-action="Index">مکان ها و تجهیزات</a>
                             </li>
                             <li class="nav-item">

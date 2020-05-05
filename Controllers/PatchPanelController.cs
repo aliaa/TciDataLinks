@@ -23,6 +23,13 @@ namespace TciDataLinks.Controllers
             this.cities = cities;
         }
 
+        public IActionResult Item(ObjectId id)
+        {
+            var patchPanel = db.FindById<PatchPanel>(id);
+            var model = Mapper.Map<PatchPanelViewModel>(patchPanel);
+            return View(model);
+        }
+
         public IActionResult Add()
         {
             ViewBag.Cities = cities;
