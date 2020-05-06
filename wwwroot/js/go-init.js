@@ -49,7 +49,7 @@
                     toShortLength: 2
                 },
                 gojs(go.Shape,  //  the link shape
-                    { name: "OBJSHAPE", stroke: "green" }),
+                    { name: "OBJSHAPE", stroke: "red", strokeWidth: 2 }),
                 //gojs(go.Shape,  //  the arrowhead
                 //  { name: "ARWSHAPE", toArrow: "Standard" }),
                 {
@@ -79,7 +79,7 @@
                         {
                             name: "OBJSHAPE",
                             parameter1: 14,
-                            fill: "rgba(0,100,255,0.15)"
+                            fill: "rgba(0,200,100,0.1)"
                         },
                         new go.Binding("desiredSize", "ds")),
                     gojs(go.Placeholder,
@@ -113,7 +113,7 @@
         function (e) {
             var part = e.subject.part;
             if (part instanceof go.Link) {
-
+                window.location = "/Connection/Item/" + part.data.connectionId;
             }
             else {
                 var split = part.data.key.split("_");
