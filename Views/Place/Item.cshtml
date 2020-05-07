@@ -5,7 +5,19 @@
     ViewData["Title"] = Model.Current.Name;
 }
 
-<div>
+@if (Model.Rack != null)
+{
+    <div class="mt-4">
+        <a asp-controller="Device" asp-action="Add" class="btn btn-info"
+           asp-route-city="@Model.City.Id" asp-route-center="@Model.Center.Id" asp-route-building="@Model.Building.Id"
+           asp-route-room="@Model.Room.Id" asp-route-rack="@Model.Rack.Id">دستگاه جدید</a>
+        <a asp-controller="PatchPanel" asp-action="Add" class="btn btn-info mx-3"
+           asp-route-city="@Model.City.Id" asp-route-center="@Model.Center.Id" asp-route-building="@Model.Building.Id"
+           asp-route-room="@Model.Room.Id" asp-route-rack="@Model.Rack.Id">رابط Passive جدید</a>
+    </div>
+}
+
+<div class="mt-4">
     <span>@Model.City.Name</span>
     <span>&gt;</span>
     <a asp-action="Item" asp-route-type="Center" asp-route-id="@Model.Center.Id.ToString()">مرکز @Model.Center</a>

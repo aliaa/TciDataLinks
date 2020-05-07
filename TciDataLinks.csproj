@@ -23,6 +23,10 @@
     <ProjectReference Include="..\TciCommon\TciCommonStandard\TciCommonStandard.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\select2-bootstrap4-theme\" />
+  </ItemGroup>
+
 
 
 </Project>

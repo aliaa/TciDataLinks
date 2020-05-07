@@ -30,10 +30,40 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
-        public IActionResult Add()
+        public IActionResult Add(ObjectId city, ObjectId center, ObjectId building, ObjectId room, ObjectId rack)
         {
+            var model = new PatchPanelViewModel
+            {
+                City = city,
+                Center = center,
+                Building = building.ToString(),
+                Room = room.ToString(),
+                Rack = rack
+            };
             ViewBag.Cities = cities;
-            return View();
+            if (city != ObjectId.Empty)
+            {
+                ViewBag.Centers = db.Find<CommCenter>(c => c.City == city).Project(c => new { c.Id, c.Name }).ToEnumerable()
+                    .Select(c => new SelectListItem(text: c.Name, value: c.Id.ToString(), selected: c.Id == center));
+            }
+            if (center != ObjectId.Empty)
+            {
+                ViewBag.Buildings = db.FindGetResults<Building>(b => b.Parent == center)
+                    .Select(b => new SelectListItem(text: b.Name, value: b.Id.ToString(), selected: b.Id == building));
+            }
+            if (building != ObjectId.Empty)
+            {
+                ViewBag.Rooms = db.FindGetResults<Room>(r => r.Parent == building)
+                    .Select(r => new SelectListItem(text: r.Name, value: r.Id.ToString(), selected: r.Id == room));
+            }
+            if (rack != ObjectId.Empty)
+            {
+                var rackObj = db.FindById<Rack>(rack);
+                model.Rack = rack;
+                model.RackLine = rackObj.Line;
+                model.RackIndex = rackObj.Index;
+            }
+            return View(model);
         }
 
         [HttpPost]

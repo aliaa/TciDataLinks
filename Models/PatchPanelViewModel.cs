@@ -9,6 +9,8 @@ namespace TciDataLinks.Models
 
         [Display(Name = "نوع پچ پنل")]
         public PatchPanel.PatchPanelType Type { get; set; }
+
+        [Required(ErrorMessage = "نام اجباریست!")]
         [Display(Name = "نام")]
         public string Name { get; set; }
 

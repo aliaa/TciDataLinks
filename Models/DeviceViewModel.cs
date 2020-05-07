@@ -24,9 +24,7 @@ namespace TciDataLinks.Models
         [Remote("DeviceAddressIsValid", "Device", AdditionalFields = "Id", ErrorMessage = "آدرس وارد شده قبلا موجود میباشد!")]
         [Display(Name = "آدرس IP یا NodeID")]
         public string Address { get; set; }
-
-        public ObjectId Rack { get; set; }
-
+        
         public override string ToString()
         {
             return Utils.GetDisplayNameOfMember(typeof(Device.DeviceType), Type.ToString()) + " " + Model;

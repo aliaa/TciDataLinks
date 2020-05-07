@@ -23,19 +23,19 @@
         </div>
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Center" class="control-label"></label>
-            <select asp-for="Center" class="form-control"></select>
+            <select asp-for="Center" class="form-control" asp-items="ViewBag.Centers"></select>
             <span asp-validation-for="Center" class="text-danger"></span>
         </div>
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Building" class="control-label"></label>
-            <select asp-for="Building" class="form-control">
+            <select asp-for="Building" class="form-control" asp-items="ViewBag.Buildings">
                 <option disabled selected>انتخاب کنید یا وارد کنید</option>
             </select>
             <span asp-validation-for="Building" class="text-danger"></span>
         </div>
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Room" class="control-label"></label>
-            <select asp-for="Room" class="form-control">
+            <select asp-for="Room" class="form-control" asp-items="ViewBag.Rooms">
                 <option disabled selected>انتخاب کنید یا وارد کنید</option>
             </select>
             <span asp-validation-for="Room" class="text-danger"></span>
@@ -110,10 +110,10 @@
         ClearDropdownsAfter(0);
         var cityId = $(this).val();
         $.get("/Place/Centers?city=" + cityId, function (res) {
-            $.each(res, function (index, item) {
-                $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
+            $("#Center").select2({
+                data: res,
+                ...select2BaseSettings
             });
-            $("#Center").select2(select2BaseSettings);
         });
     });
 

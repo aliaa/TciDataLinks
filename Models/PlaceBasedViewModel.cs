@@ -38,5 +38,6 @@ namespace TciDataLinks.Models
         [Display(Name = "شماره ردیف داخل راک")]
         public int RackRow { get; set; }
 
+        public ObjectId Rack { get; set; }
     }
 }
