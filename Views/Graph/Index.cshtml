@@ -58,7 +58,7 @@
         var diagram = null;
         $("#btnShowGraph").click(function () {
             $("#divResult").removeClass("d-none");
-            $.get("/Connection/Graph?Center=" + $("#Center").val(), function (res) {
+            $.get("/Graph/Center/" + $("#Center").val(), function (res) {
                 diagram = initGojs("divGraph", res);
             });
         });

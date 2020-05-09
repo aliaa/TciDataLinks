@@ -67,14 +67,14 @@ namespace TciDataLinks.Controllers
             if (returnUrl != null && Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
             else
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(GraphController.Index), "Graph");
         }
 
         public IActionResult Logout()
         {
             HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 new AuthenticationProperties { IsPersistent = false }).Wait();
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(AccountController.Login), "Account");
         }
 
         [Authorize]

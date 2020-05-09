@@ -145,7 +145,7 @@
         function LoadConnectionGraph(id) {
             var divGraph = $("#divGraph_" + id);
             if (divGraph.children().length == 0) {
-                $.get("/Connection/ConnectionGraph/" + id, function (res) {
+                $.get("/Graph/Connection/" + id, function (res) {
                     initGojs("divGraph_" + id, res);
                 });
             }
