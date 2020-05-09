@@ -69,7 +69,8 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    
+    <script src="~/lib/gojs/go.js"></script>
+    <script src="~/js/go-init.js"></script>
     <script>
         $(window).ready(function () {
             var city = $("#City").val();
@@ -140,5 +141,14 @@
                 });
             });
         });
+
+        function LoadConnectionGraph(id) {
+            var divGraph = $("#divGraph_" + id);
+            if (divGraph.children().length == 0) {
+                $.get("/Connection/ConnectionGraph/" + id, function (res) {
+                    initGojs("divGraph_" + id, res);
+                });
+            }
+        }
     </script>
 }

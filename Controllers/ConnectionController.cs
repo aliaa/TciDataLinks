@@ -270,11 +270,14 @@ namespace TciDataLinks.Controllers
                     if (lastKey != null)
                         graph.Links.Add(new GraphLink { from = lastKey, to = deviceKey, connectionId = c.Key.ToString() });
                     lastKey = deviceKey;
-                    foreach (var pp in ep.PassiveConnections)
+                    foreach (var pc in ep.PassiveConnections)
                     {
-                        var ppKey = "PatchPanel_" + pp.PatchPanel;
+                        var ppKey = "PatchPanel_" + pc.PatchPanel;
                         if (!graph.Nodes.Any(n => n.key == ppKey))
+                        {
+                            var pp = db.FindById<PatchPanel>(pc.PatchPanel);
                             graph.Nodes.Add(new GraphNode { key = ppKey, text = pp.ToString(), group = "Rack_" + device.Rack });
+                        }
                         graph.Links.Add(new GraphLink { from = lastKey, to = ppKey, connectionId = c.Key.ToString() });
                         lastKey = ppKey;
                     }
@@ -306,6 +309,35 @@ namespace TciDataLinks.Controllers
             if (!graph.Nodes.Any(n => n.key == rackKey))
                 graph.Nodes.Add(new GraphNode { key = rackKey, text = "راک " + rack.ToString(), group = roomKey, isGroup = true });
             graph.Nodes.Add(new GraphNode { key = deviceKey, text = device.ToString(), group = rackKey });
+        }
+
+        public IActionResult ConnectionGraph(ObjectId id)
+        {
+            var graph = new Graph();
+            var endPoints = db.Find<EndPoint>(e => e.Connection == id).SortBy(e => e.Index).ToList();
+            string lastKey = null;
+            foreach (var ep in endPoints)
+            {
+                var device = db.FindById<Device>(ep.Device);
+                CheckDeviceParents(graph, device);
+                var deviceKey = "Device_" + ep.Device;
+                if (lastKey != null)
+                    graph.Links.Add(new GraphLink { from = lastKey, to = deviceKey, connectionId = id.ToString() });
+                lastKey = deviceKey;
+                foreach (var pc in ep.PassiveConnections)
+                {
+                    var ppKey = "PatchPanel_" + pc.PatchPanel;
+                    if (!graph.Nodes.Any(n => n.key == ppKey))
+                    {
+                        var pp = db.FindById<PatchPanel>(pc.PatchPanel);
+                        graph.Nodes.Add(new GraphNode { key = ppKey, text = pp.ToString(), group = "Rack_" + device.Rack });
+                    }
+                    graph.Links.Add(new GraphLink { from = lastKey, to = ppKey, connectionId = id.ToString() });
+                    lastKey = ppKey;
+                }
+            }
+
+            return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
     }
 }

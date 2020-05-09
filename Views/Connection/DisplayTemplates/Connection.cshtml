@@ -14,13 +14,13 @@
         {
             int hue = (i * 35 + 60) % 360;
             <div class="my-3 card" style="background-color: hsl(@hue , 25%, 88%); color: hsl(@hue , 80%, 32%);">
-                <div class="card-header" data-toggle="collapse" data-target="#endpoint_@Model.Id.ToString()_@i" style="cursor:pointer;">
+                <div class="card-header" data-toggle="collapse" data-target="#endpoint_@(Model.Id)_@i" style="cursor:pointer;">
                     <div class="float-right">اتصال @(i+1)</div>
                     <div class="text-center">
                         @Model.EndPoints[i].GetPlaceDisplay(db)
                     </div>
                 </div>
-                <div class="card-body collapse" id="endpoint_@Model.Id.ToString()_@i">
+                <div class="card-body collapse" id="endpoint_@(Model.Id)_@i">
                     <div class="row">
                         <div class="col-lg-3 col-sm-6">
                             <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.PortType)):</label>
@@ -101,5 +101,12 @@
                 </div>
             </div>
         }
+        <div class="my-3 card bg-light">
+            <div class="card-header" data-toggle="collapse" data-target="#graph_card_body_@Model.Id" 
+                 style="cursor:pointer;" onclick="LoadConnectionGraph('@Model.Id')">گراف شبکه</div>
+            <div class="card-body collapse" id="graph_card_body_@Model.Id">
+                <div id="divGraph_@Model.Id" style="border: solid 1px black; height: 500px;"></div>
+            </div>
+        </div>
     </div>
 </div>

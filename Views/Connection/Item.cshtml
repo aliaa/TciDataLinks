@@ -4,10 +4,26 @@
     ViewData["Title"] = "جزئیات لینک";
 }
 
-    <div>
-        <h4>جزئیات لینک</h4>
-        <hr />
-        <div class="mt-5">
-            @Html.DisplayFor(m => Model, "Connection")
-        </div>
+<div>
+    <h4>جزئیات لینک</h4>
+    <hr />
+    <div class="mt-5">
+        @Html.DisplayFor(m => Model, "Connection")
     </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/gojs/go.js"></script>
+    <script src="~/js/go-init.js"></script>
+
+    <script>
+        function LoadConnectionGraph(id) {
+            var divGraph = $("#divGraph_" + id);
+            if (divGraph.children().length == 0) {
+                $.get("/Connection/ConnectionGraph/" + id, function (res) {
+                    initGojs("divGraph_" + id, res);
+                });
+            }
+        }
+    </script>
+}
