@@ -24,5 +24,15 @@ namespace TciDataLinks.Models
         public string from { get; set; }
         public string to { get; set; }
         public string connectionId { get; set; }
+        public string color
+        {
+            get
+            {
+                var hue = 0;
+                if (connectionId != null)
+                    hue = Math.Abs(connectionId.GetHashCode()) % 240;
+                return new AliaaCommon.HSLColor(hue, 240.0, 120.0).ToHexString();
+            }
+        }
     }
 }

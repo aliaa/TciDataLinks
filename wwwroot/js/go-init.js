@@ -49,7 +49,8 @@
                     toShortLength: 2
                 },
                 gojs(go.Shape,  //  the link shape
-                    { name: "OBJSHAPE", stroke: "red", strokeWidth: 2 }),
+                    { name: "OBJSHAPE", strokeWidth: 2 },
+                    new go.Binding("stroke", "color")),
                 //gojs(go.Shape,  //  the arrowhead
                 //  { name: "ARWSHAPE", toArrow: "Standard" }),
                 {
@@ -128,6 +129,7 @@
                 }
             }
         });
+    return myDiagram;
 }
 
 
