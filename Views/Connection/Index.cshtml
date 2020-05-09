@@ -69,8 +69,6 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/lib/gojs/go.js"></script>
-    <script src="~/js/go-init.js" asp-append-version="true"></script>
     <script>
         $(window).ready(function () {
             var city = $("#City").val();
