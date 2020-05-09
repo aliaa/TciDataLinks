@@ -80,11 +80,11 @@
                         {
                             name: "OBJSHAPE",
                             parameter1: 14,
-                            fill: "rgba(0,200,100,0.1)"
+                            fill: "rgba(0,0,0,0.09)"
                         },
                         new go.Binding("desiredSize", "ds")),
                     gojs(go.Placeholder,
-                        { padding: 32 })
+                        { padding: 28 })
                 ),
                 gojs(go.TextBlock,
                     {

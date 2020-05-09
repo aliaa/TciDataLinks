@@ -259,14 +259,23 @@ namespace TciDataLinks.Controllers
             var connections = db.FindGetResults<EndPoint>(e => deviceIds.Contains(e.Device)).GroupBy(key => key.Connection);
             foreach (var c in connections)
             {
-                var endPoints = c.ToList();
+                var endPoints = db.Find<EndPoint>(e => e.Connection == c.Key).SortBy(e => e.Index).ToList();
                 string lastKey = null;
                 for (int i = 0; i < endPoints.Count; i++)
                 {
                     var ep = endPoints[i];
                     var device = db.FindById<Device>(ep.Device);
                     var deviceKey = "Device_" + ep.Device;
-                    CheckDeviceParents(graph, device);
+                    var anotherCenter = CheckDeviceParents(graph, device, centerNode.key);
+                    if (anotherCenter != null)
+                    {
+                        if (lastKey != anotherCenter)
+                        {
+                            graph.Links.Add(new GraphLink { from = lastKey, to = anotherCenter, connectionId = c.Key.ToString() });
+                            lastKey = anotherCenter;
+                        }
+                        continue;
+                    }
                     if (lastKey != null)
                         graph.Links.Add(new GraphLink { from = lastKey, to = deviceKey, connectionId = c.Key.ToString() });
                     lastKey = deviceKey;
@@ -287,11 +296,11 @@ namespace TciDataLinks.Controllers
             return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
 
-        private void CheckDeviceParents(Graph graph, Device device)
+        private string CheckDeviceParents(Graph graph, Device device, string restrictCenterKey = null)
         {
             var deviceKey = "Device_" + device.Id;
             if (graph.Nodes.Any(n => n.key == deviceKey))
-                return;
+                return null;
             var rack = db.FindById<Rack>(device.Rack);
             var rackKey = "Rack_" + rack.Id;
             var room = db.FindById<Room>(rack.Parent);
@@ -302,6 +311,8 @@ namespace TciDataLinks.Controllers
             var centerKey = "Center_" + center.Id;
             if (!graph.Nodes.Any(n => n.key == centerKey))
                 graph.Nodes.Add(new GraphNode { key = centerKey, text = "مرکز " + center.Name, isGroup = true });
+            if (restrictCenterKey != null && centerKey != restrictCenterKey)
+                return centerKey;
             if(!graph.Nodes.Any(n => n.key == buildingKey))
                 graph.Nodes.Add(new GraphNode { key = buildingKey, text = "ساختمان " + building.Name, group = centerKey, isGroup = true });
             if (!graph.Nodes.Any(n => n.key == roomKey))
@@ -309,6 +320,7 @@ namespace TciDataLinks.Controllers
             if (!graph.Nodes.Any(n => n.key == rackKey))
                 graph.Nodes.Add(new GraphNode { key = rackKey, text = "راک " + rack.ToString(), group = roomKey, isGroup = true });
             graph.Nodes.Add(new GraphNode { key = deviceKey, text = device.ToString(), group = rackKey });
+            return null;
         }
 
         public IActionResult ConnectionGraph(ObjectId id)
