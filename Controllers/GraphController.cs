@@ -135,9 +135,16 @@ namespace TciDataLinks.Controllers
             return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
 
-        private string CheckDeviceParents(Graph graph, Device device, string restrictCenterKey = null)
+        private string CheckDeviceParents(Graph graph, BaseDevice device, string restrictCenterKey = null)
         {
-            var deviceKey = "Device_" + device.Id;
+            string deviceKey;
+            if (device is Device)
+                deviceKey = "Device_" + device.Id;
+            else if (device is PatchPanel)
+                deviceKey = "PatchPanel_" + device.Id;
+            else
+                throw new NotImplementedException();
+
             if (graph.Nodes.Any(n => n.key == deviceKey))
                 return null;
             var rack = db.FindById<Rack>(device.Rack);
@@ -181,7 +188,7 @@ namespace TciDataLinks.Controllers
                     if (!graph.Nodes.Any(n => n.key == ppKey))
                     {
                         var pp = db.FindById<PatchPanel>(pc.PatchPanel);
-                        graph.Nodes.Add(new GraphNode { key = ppKey, text = pp.ToString(), group = "Rack_" + device.Rack });
+                        CheckDeviceParents(graph, pp);
                     }
                     graph.Links.Add(new GraphLink { from = lastKey, to = ppKey, connectionId = id.ToString() });
                     lastKey = ppKey;

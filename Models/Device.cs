@@ -9,7 +9,7 @@ using TciCommon.Models;
 namespace TciDataLinks.Models
 {
     [CollectionIndex(new string[] { nameof(Address) })]
-    public class Device : MongoEntity
+    public class Device : BaseDevice
     {
         public enum DeviceType
         {
@@ -35,8 +35,6 @@ namespace TciDataLinks.Models
             Tellabs
         }
 
-        public ObjectId Rack { get; set; }
-        public int RackRow { get; set; }
         [BsonRepresentation(BsonType.String)]
         public DeviceType Type { get; set; }
         [BsonRepresentation(BsonType.String)]

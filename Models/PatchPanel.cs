@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace TciDataLinks.Models
 {
-    public class PatchPanel : MongoEntity
+    public class PatchPanel : BaseDevice
     {
         public enum PatchPanelType
         {
@@ -16,9 +16,6 @@ namespace TciDataLinks.Models
             OCDF_FC,
             DDF_COAX
         }
-
-        public ObjectId Rack { get; set; }
-        public int RackRow { get; set; }
 
         [BsonRepresentation(BsonType.String)]
         public PatchPanelType Type { get; set; }
