@@ -89,9 +89,17 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
-        public IActionResult Add()
+        public IActionResult Add(ObjectId device)
         {
-            return View(new ConnectionViewModel());
+            var vm = new ConnectionViewModel();
+            if (device != ObjectId.Empty)
+            {
+                var deviceObj = db.FindById<Device>(device);
+                var rack = db.FindById<Rack>(deviceObj.Rack);
+                var room = db.FindById<Room>(rack.Parent);
+                vm.EndPoints.Add(new EndPointViewModel { Building = room.Parent, Device = device  });
+            }
+            return View(vm);
         }
 
         [HttpPost]

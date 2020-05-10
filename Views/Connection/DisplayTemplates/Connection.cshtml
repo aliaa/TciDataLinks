@@ -1,7 +1,7 @@
 ﻿@model TciDataLinks.Models.ConnectionViewModel
 @inject IDbContext db
 
-<div class="card my-5" style="background-color:#eee;">
+<div class="card my-5">
     <div class="card-header">
         <div class="float-left">
             <a class="edit" asp-action="Edit" asp-route-id="@Model.Id.ToString()" title="ویرایش">
@@ -101,7 +101,7 @@
                 </div>
             </div>
         }
-        <div class="my-3 card bg-light">
+        <div class="my-3 card" style="background-color:#eee;">
             <div class="card-header" data-toggle="collapse" data-target="#graph_card_body_@Model.Id" 
                  style="cursor:pointer;" onclick="LoadConnectionGraph('@Model.Id')">گراف شبکه</div>
             <div class="card-body collapse" id="graph_card_body_@Model.Id">
