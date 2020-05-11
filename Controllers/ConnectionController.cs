@@ -67,6 +67,22 @@ namespace TciDataLinks.Controllers
             {
                 fb.In(e => e.Device, devices)
             };
+
+            if (model.PortType != null)
+                filters.Add(fb.Eq(e => e.PortType, model.PortType.Value));
+            if (model.Module != null)
+                filters.Add(fb.Eq(e => e.Module, model.Module.Value));
+            if (model.PatchCord != null)
+                filters.Add(fb.Eq(e => e.PatchCord, model.PatchCord.Value));
+            if (model.Connector != null)
+                filters.Add(fb.Eq(e => e.Connector, model.Connector.Value));
+            if (model.DataProtection != null)
+                filters.Add(fb.Eq(e => e.DataProtection, model.DataProtection.Value));
+            if (model.TransmissionProtection != null)
+                filters.Add(fb.Eq(e => e.TransmissionProtection, model.TransmissionProtection.Value));
+            if (model.Incomplete != null)
+                filters.Add(fb.Eq(e => e.Incomplete, model.Incomplete.Value));
+
             if (model.SearchType == ConnectionSearchViewModel.EndPointSearchType.First)
                 filters.Add(fb.Eq(e => e.Index, 0));
             else if (model.SearchType == ConnectionSearchViewModel.EndPointSearchType.NotFirst)
