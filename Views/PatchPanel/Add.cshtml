@@ -61,6 +61,16 @@
             <span asp-validation-for="RackType" class="text-danger"></span>
         </div>
         <div class="form-group col-lg-3 col-sm-6">
+            <label asp-for="RackSide" class="control-label"></label>
+            <select asp-for="RackSide" class="form-control">
+                @foreach (var s in Enum.GetNames(typeof(Rack.RackSide)))
+                {
+                    <option>@s</option>
+                }
+            </select>
+            <span asp-validation-for="RackSide" class="text-danger"></span>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="RackRow" class="control-label"></label>
             <input asp-for="RackRow" class="form-control" />
             <span asp-validation-for="RackRow" class="text-danger"></span>

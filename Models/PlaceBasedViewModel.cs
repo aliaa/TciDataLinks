@@ -35,6 +35,9 @@ namespace TciDataLinks.Models
         [Display(Name = "شماره راک")]
         public int RackIndex { get; set; }
 
+        [Display(Name = "سمت راک")]
+        public Rack.RackSide RackSide { get; set; }
+
         [Display(Name = "شماره ردیف داخل راک")]
         public int RackRow { get; set; }
 

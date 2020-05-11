@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EasyMongoNet;
+using Omu.ValueInjecter;
+using System.ComponentModel.DataAnnotations;
 
 namespace TciDataLinks.Models
 {
@@ -15,5 +17,10 @@ namespace TciDataLinks.Models
         public string Name { get; set; }
 
         public override string ToString() => Name;
+
+        public string GetPlaceDisplay(IReadOnlyDbContext db)
+        {
+            return Mapper.Map<PatchPanel>(this).GetPlaceDisplay(db);
+        }
     }
 }
