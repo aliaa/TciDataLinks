@@ -65,6 +65,6 @@ namespace TciDataLinks.Models
         [Display(Name = "اطلاعات اتصال ناقص است؟")]
         public bool? Incomplete { get; set; }
 
-        public List<ConnectionViewModel> SearchResult { get; set; } = new List<ConnectionViewModel>();
+        public List<ConnectionViewModel> SearchResult { get; set; } = null;
     }
 }
