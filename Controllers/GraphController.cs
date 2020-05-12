@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using EasyMongoNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -38,7 +37,7 @@ namespace TciDataLinks.Controllers
                 text = "مرکز " + center.Name,
                 isGroup = true
             };
-            graph.Nodes.Add(centerNode);
+            graph.AddNode(centerNode);
             var deviceIds = new List<ObjectId>();
             foreach (var building in db.FindGetResults<Building>(b => b.Parent == id))
             {
@@ -49,7 +48,7 @@ namespace TciDataLinks.Controllers
                     group = centerNode.key,
                     isGroup = true
                 };
-                graph.Nodes.Add(buildingNode);
+                graph.AddNode(buildingNode);
                 foreach (var room in db.FindGetResults<Room>(r => r.Parent == building.Id))
                 {
                     var roomNode = new GraphNode
@@ -59,7 +58,7 @@ namespace TciDataLinks.Controllers
                         group = buildingNode.key,
                         isGroup = true
                     };
-                    graph.Nodes.Add(roomNode);
+                    graph.AddNode(roomNode);
                     foreach (var rack in db.FindGetResults<Rack>(r => r.Parent == room.Id))
                     {
                         var rackNode = new GraphNode
@@ -69,7 +68,7 @@ namespace TciDataLinks.Controllers
                             group = roomNode.key,
                             isGroup = true
                         };
-                        graph.Nodes.Add(rackNode);
+                        graph.AddNode(rackNode);
                         foreach (var device in db.FindGetResults<Device>(d => d.Rack == rack.Id))
                         {
                             deviceIds.Add(device.Id);
@@ -79,7 +78,7 @@ namespace TciDataLinks.Controllers
                                 text = device.ToString(),
                                 group = rackNode.key
                             };
-                            graph.Nodes.Add(deviceNode);
+                            graph.AddNode(deviceNode);
                         }
                         foreach (var pp in db.FindGetResults<PatchPanel>(p => p.Rack == rack.Id))
                         {
@@ -89,7 +88,7 @@ namespace TciDataLinks.Controllers
                                 text = pp.ToString(),
                                 group = rackNode.key
                             };
-                            graph.Nodes.Add(ppNode);
+                            graph.AddNode(ppNode);
                         }
                     }
                 }
@@ -104,29 +103,28 @@ namespace TciDataLinks.Controllers
                 {
                     var ep = endPoints[i];
                     var device = db.FindById<Device>(ep.Device);
-                    var deviceKey = "Device_" + ep.Device;
-                    var anotherCenter = CheckDeviceParents(graph, device, centerNode.key);
+                    CheckDeviceParents(graph, device, out string deviceKey, out string anotherCenter, centerNode.key);
                     if (anotherCenter != null)
                     {
                         if (lastKey != anotherCenter)
                         {
-                            graph.Links.Add(new GraphLink { from = lastKey, to = anotherCenter, connectionId = c.Key.ToString() });
+                            graph.AddLink(new GraphLink { from = lastKey, to = anotherCenter, connectionId = c.Key.ToString() });
                             lastKey = anotherCenter;
                         }
                         continue;
                     }
                     if (lastKey != null)
-                        graph.Links.Add(new GraphLink { from = lastKey, to = deviceKey, connectionId = c.Key.ToString() });
+                        graph.AddLink(new GraphLink { from = lastKey, to = deviceKey, connectionId = c.Key.ToString() });
                     lastKey = deviceKey;
                     foreach (var pc in ep.PassiveConnections)
                     {
                         var ppKey = "PatchPanel_" + pc.PatchPanel;
-                        if (!graph.Nodes.Any(n => n.key == ppKey))
+                        if (!graph.ContainsNodeKey(ppKey))
                         {
                             var pp = db.FindById<PatchPanel>(pc.PatchPanel);
-                            graph.Nodes.Add(new GraphNode { key = ppKey, text = pp.ToString(), group = "Rack_" + device.Rack });
+                            graph.AddNode(new GraphNode { key = ppKey, text = pp.ToString(), group = "Rack_" + device.Rack });
                         }
-                        graph.Links.Add(new GraphLink { from = lastKey, to = ppKey, connectionId = c.Key.ToString() });
+                        graph.AddLink(new GraphLink { from = lastKey, to = ppKey, connectionId = c.Key.ToString() });
                         lastKey = ppKey;
                     }
                 }
@@ -135,9 +133,14 @@ namespace TciDataLinks.Controllers
             return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
 
-        private string CheckDeviceParents(Graph graph, BaseDevice device, string restrictCenterKey = null)
+        private void CheckDeviceParents(Graph graph, BaseDevice device, out string deviceKey)
         {
-            string deviceKey;
+            CheckDeviceParents(graph, device, out deviceKey, out _);
+        }
+
+        private void CheckDeviceParents(Graph graph, BaseDevice device, out string deviceKey, out string anotherCenter, string restrictCenterKey = null)
+        {
+            anotherCenter = null;
             if (device is Device)
                 deviceKey = "Device_" + device.Id;
             else if (device is PatchPanel)
@@ -145,8 +148,8 @@ namespace TciDataLinks.Controllers
             else
                 throw new NotImplementedException();
 
-            if (graph.Nodes.Any(n => n.key == deviceKey))
-                return null;
+            if (graph.ContainsNodeKey(deviceKey))
+                return;
             var rack = db.FindById<Rack>(device.Rack);
             var rackKey = "Rack_" + rack.Id;
             var room = db.FindById<Room>(rack.Parent);
@@ -155,18 +158,16 @@ namespace TciDataLinks.Controllers
             var buildingKey = "Building_" + building.Id;
             var center = db.FindById<CommCenter>(building.Parent);
             var centerKey = "Center_" + center.Id;
-            if (!graph.Nodes.Any(n => n.key == centerKey))
-                graph.Nodes.Add(new GraphNode { key = centerKey, text = "مرکز " + center.Name, isGroup = true });
+            graph.AddNode(new GraphNode { key = centerKey, text = "مرکز " + center.Name, isGroup = true });
             if (restrictCenterKey != null && centerKey != restrictCenterKey)
-                return centerKey;
-            if (!graph.Nodes.Any(n => n.key == buildingKey))
-                graph.Nodes.Add(new GraphNode { key = buildingKey, text = "ساختمان " + building.Name, group = centerKey, isGroup = true });
-            if (!graph.Nodes.Any(n => n.key == roomKey))
-                graph.Nodes.Add(new GraphNode { key = roomKey, text = "سالن " + room.Name, group = buildingKey, isGroup = true });
-            if (!graph.Nodes.Any(n => n.key == rackKey))
-                graph.Nodes.Add(new GraphNode { key = rackKey, text = "راک " + rack.ToString(), group = roomKey, isGroup = true });
-            graph.Nodes.Add(new GraphNode { key = deviceKey, text = device.ToString(), group = rackKey });
-            return null;
+            {
+                anotherCenter = centerKey;
+                return;
+            }
+            graph.AddNode(new GraphNode { key = buildingKey, text = "ساختمان " + building.Name, group = centerKey, isGroup = true });
+            graph.AddNode(new GraphNode { key = roomKey, text = "سالن " + room.Name, group = buildingKey, isGroup = true });
+            graph.AddNode(new GraphNode { key = rackKey, text = "راک " + rack.ToString(), group = roomKey, isGroup = true });
+            graph.AddNode(new GraphNode { key = deviceKey, text = device.ToString(), group = rackKey });
         }
 
         public IActionResult Connection(ObjectId id)
@@ -177,20 +178,19 @@ namespace TciDataLinks.Controllers
             foreach (var ep in endPoints)
             {
                 var device = db.FindById<Device>(ep.Device);
-                CheckDeviceParents(graph, device);
-                var deviceKey = "Device_" + ep.Device;
+                CheckDeviceParents(graph, device, out string deviceKey);
                 if (lastKey != null)
-                    graph.Links.Add(new GraphLink { from = lastKey, to = deviceKey, connectionId = id.ToString() });
+                    graph.AddLink(new GraphLink { from = lastKey, to = deviceKey, connectionId = id.ToString() });
                 lastKey = deviceKey;
                 foreach (var pc in ep.PassiveConnections)
                 {
                     var ppKey = "PatchPanel_" + pc.PatchPanel;
-                    if (!graph.Nodes.Any(n => n.key == ppKey))
+                    if (!graph.ContainsNodeKey(ppKey))
                     {
                         var pp = db.FindById<PatchPanel>(pc.PatchPanel);
-                        CheckDeviceParents(graph, pp);
+                        CheckDeviceParents(graph, pp, out _);
                     }
-                    graph.Links.Add(new GraphLink { from = lastKey, to = ppKey, connectionId = id.ToString() });
+                    graph.AddLink(new GraphLink { from = lastKey, to = ppKey, connectionId = id.ToString() });
                     lastKey = ppKey;
                 }
             }

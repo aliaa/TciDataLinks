@@ -1,14 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TciDataLinks.Models
 {
     public class Graph
     {
-        public List<GraphNode> Nodes { get; set; } = new List<GraphNode>();
-        public List<GraphLink> Links { get; set; } = new List<GraphLink>();
+        private readonly SortedDictionary<string, GraphNode> nodesDic = new SortedDictionary<string, GraphNode>();
+        private readonly List<GraphLink> links = new List<GraphLink>();
+
+        public bool AddNode(GraphNode node)
+        {
+            if (nodesDic.ContainsKey(node.key))
+                return false;
+            nodesDic.Add(node.key, node);
+            return true;
+        }
+
+        public bool ContainsNodeKey(string key) => nodesDic.ContainsKey(key);
+        public IEnumerable<GraphNode> Nodes => nodesDic.Values;
+
+        public void AddLink(GraphLink link)
+        {
+            links.Add(link);
+        }
+
+        public IEnumerable<GraphLink> Links => links;
     }
 
     public class GraphNode
