@@ -99,46 +99,60 @@ namespace TciDataLinks.Controllers
             {
                 var endPoints = db.Find<EndPoint>(e => e.Connection == c.Key).SortBy(e => e.Index).ToList();
                 string lastKey = null;
-                for (int i = 0; i < endPoints.Count; i++)
+
+                var device = db.FindById<Device>(endPoints[0].Device);
+                AddDeviceHierarchal(graph, device, out string deviceKey, out string anotherCenter, centerNode.key);
+                lastKey = deviceKey;
+                if (anotherCenter == null)
+                {
+                    foreach (var pc in endPoints[0].PassiveConnections)
+                    {
+                        AddDeviceHierarchal(graph, db.FindById<PatchPanel>(pc.PatchPanel), out string ppKey);
+                        graph.AddLink(new GraphLink(lastKey, ppKey, c.Key));
+                        lastKey = ppKey;
+                    }
+                }
+                else
+                    lastKey = anotherCenter;
+                var lastFirstEndPointKey = lastKey;
+
+                for (int i = 1; i < endPoints.Count; i++)
                 {
                     var ep = endPoints[i];
-                    var device = db.FindById<Device>(ep.Device);
-                    CheckDeviceParents(graph, device, out string deviceKey, out string anotherCenter, centerNode.key);
+
+                    device = db.FindById<Device>(ep.Device);
+                    AddDeviceHierarchal(graph, device, out deviceKey, out anotherCenter, centerNode.key);
                     if (anotherCenter != null)
                     {
                         if (lastKey != anotherCenter)
                         {
-                            graph.AddLink(new GraphLink { from = lastKey, to = anotherCenter, connectionId = c.Key.ToString() });
-                            lastKey = anotherCenter;
+                            graph.AddLink(new GraphLink(lastFirstEndPointKey, anotherCenter, c.Key));
+                            lastKey = lastFirstEndPointKey;
                         }
                         continue;
                     }
-                    if (lastKey != null)
-                        graph.AddLink(new GraphLink { from = lastKey, to = deviceKey, connectionId = c.Key.ToString() });
-                    lastKey = deviceKey;
-                    foreach (var pc in ep.PassiveConnections)
+
+                    for (int j = ep.PassiveConnections.Count - 1; j >= 0; j--)
                     {
-                        var ppKey = "PatchPanel_" + pc.PatchPanel;
-                        if (!graph.ContainsNodeKey(ppKey))
-                        {
-                            var pp = db.FindById<PatchPanel>(pc.PatchPanel);
-                            graph.AddNode(new GraphNode { key = ppKey, text = pp.ToString(), group = "Rack_" + device.Rack });
-                        }
-                        graph.AddLink(new GraphLink { from = lastKey, to = ppKey, connectionId = c.Key.ToString() });
+                        var pc = ep.PassiveConnections[j];
+                        AddDeviceHierarchal(graph, db.FindById<PatchPanel>(pc.PatchPanel), out string ppKey);
+                        graph.AddLink(new GraphLink(lastKey, ppKey, c.Key));
                         lastKey = ppKey;
                     }
+                    graph.AddLink(new GraphLink(lastKey, deviceKey, c.Key));
+                    lastKey = lastFirstEndPointKey;
                 }
             }
 
             return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
 
-        private void CheckDeviceParents(Graph graph, BaseDevice device, out string deviceKey)
+        private void AddDeviceHierarchal(Graph graph, BaseDevice device, out string deviceKey)
         {
-            CheckDeviceParents(graph, device, out deviceKey, out _);
+            AddDeviceHierarchal(graph, device, out deviceKey, out _);
         }
 
-        private void CheckDeviceParents(Graph graph, BaseDevice device, out string deviceKey, out string anotherCenter, string restrictCenterKey = null)
+        private void AddDeviceHierarchal(Graph graph, BaseDevice device, out string deviceKey, out string anotherCenter, string restrictCenterKey = null)
         {
             anotherCenter = null;
             if (device is Device)
@@ -147,27 +161,41 @@ namespace TciDataLinks.Controllers
                 deviceKey = "PatchPanel_" + device.Id;
             else
                 throw new NotImplementedException();
-
+            
             if (graph.ContainsNodeKey(deviceKey))
                 return;
+
+            var rackKey = "Rack_" + device.Rack;
+            graph.AddNode(new GraphNode { key = deviceKey, text = device.ToString(), group = rackKey });
+            if (graph.ContainsNodeKey(rackKey))
+                return;
+
             var rack = db.FindById<Rack>(device.Rack);
-            var rackKey = "Rack_" + rack.Id;
+            var roomKey = "Room_" + rack.Parent;
+            graph.AddNode(new GraphNode { key = rackKey, text = "راک " + rack.ToString(), group = roomKey, isGroup = true });
+            if (graph.ContainsNodeKey(roomKey))
+                return;
+
             var room = db.FindById<Room>(rack.Parent);
-            var roomKey = "Room_" + room.Id;
+            var buildingKey = "Building_" + room.Parent;
+            graph.AddNode(new GraphNode { key = roomKey, text = "سالن " + room.Name, group = buildingKey, isGroup = true });
+            if (graph.ContainsNodeKey(buildingKey))
+                return;
+
             var building = db.FindById<Building>(room.Parent);
-            var buildingKey = "Building_" + building.Id;
+            var centerKey = "Center_" + building.Parent;
             var center = db.FindById<CommCenter>(building.Parent);
-            var centerKey = "Center_" + center.Id;
             graph.AddNode(new GraphNode { key = centerKey, text = "مرکز " + center.Name, isGroup = true });
             if (restrictCenterKey != null && centerKey != restrictCenterKey)
             {
                 anotherCenter = centerKey;
+                graph.RemoveNode(roomKey);
+                graph.RemoveNode(rackKey);
+                graph.RemoveNode(deviceKey);
                 return;
             }
+
             graph.AddNode(new GraphNode { key = buildingKey, text = "ساختمان " + building.Name, group = centerKey, isGroup = true });
-            graph.AddNode(new GraphNode { key = roomKey, text = "سالن " + room.Name, group = buildingKey, isGroup = true });
-            graph.AddNode(new GraphNode { key = rackKey, text = "راک " + rack.ToString(), group = roomKey, isGroup = true });
-            graph.AddNode(new GraphNode { key = deviceKey, text = device.ToString(), group = rackKey });
         }
 
         public IActionResult Connection(ObjectId id)
@@ -175,24 +203,28 @@ namespace TciDataLinks.Controllers
             var graph = new Graph();
             var endPoints = db.Find<EndPoint>(e => e.Connection == id).SortBy(e => e.Index).ToList();
             string lastKey = null;
-            foreach (var ep in endPoints)
+
+            AddDeviceHierarchal(graph, db.FindById<Device>(endPoints[0].Device), out lastKey);
+            foreach (var pc in endPoints[0].PassiveConnections)
             {
-                var device = db.FindById<Device>(ep.Device);
-                CheckDeviceParents(graph, device, out string deviceKey);
-                if (lastKey != null)
-                    graph.AddLink(new GraphLink { from = lastKey, to = deviceKey, connectionId = id.ToString() });
-                lastKey = deviceKey;
-                foreach (var pc in ep.PassiveConnections)
+                AddDeviceHierarchal(graph, db.FindById<PatchPanel>(pc.PatchPanel), out string ppKey);
+                graph.AddLink(new GraphLink(lastKey, ppKey, id));
+                lastKey = ppKey;
+            }
+            var lastFirstEndPointKey = lastKey;
+
+            for (int i = 1; i < endPoints.Count; i++)
+            {
+                for (int j = endPoints[i].PassiveConnections.Count - 1; j >= 0; j--)
                 {
-                    var ppKey = "PatchPanel_" + pc.PatchPanel;
-                    if (!graph.ContainsNodeKey(ppKey))
-                    {
-                        var pp = db.FindById<PatchPanel>(pc.PatchPanel);
-                        CheckDeviceParents(graph, pp, out _);
-                    }
-                    graph.AddLink(new GraphLink { from = lastKey, to = ppKey, connectionId = id.ToString() });
+                    var pc = endPoints[i].PassiveConnections[j];
+                    AddDeviceHierarchal(graph, db.FindById<PatchPanel>(pc.PatchPanel), out string ppKey);
+                    graph.AddLink(new GraphLink(lastKey, ppKey, id));
                     lastKey = ppKey;
                 }
+                AddDeviceHierarchal(graph, db.FindById<Device>(endPoints[i].Device), out string deviceKey);
+                graph.AddLink(new GraphLink(lastKey, deviceKey, id));
+                lastKey = lastFirstEndPointKey;
             }
 
             return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });

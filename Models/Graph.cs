@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 
 namespace TciDataLinks.Models
@@ -16,6 +17,7 @@ namespace TciDataLinks.Models
             return true;
         }
 
+        public bool RemoveNode(string key) => nodesDic.Remove(key);
         public bool ContainsNodeKey(string key) => nodesDic.ContainsKey(key);
         public IEnumerable<GraphNode> Nodes => nodesDic.Values;
 
@@ -37,6 +39,15 @@ namespace TciDataLinks.Models
 
     public class GraphLink
     {
+        public GraphLink() { }
+
+        public GraphLink(string from, string to, ObjectId id)
+        {
+            this.from = from;
+            this.to = to;
+            this.connectionId = id.ToString();
+        }
+
         public string from { get; set; }
         public string to { get; set; }
         public string connectionId { get; set; }
