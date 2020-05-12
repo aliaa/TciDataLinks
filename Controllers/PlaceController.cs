@@ -58,7 +58,7 @@ namespace TciDataLinks.Controllers
                     break;
                 case PlaceType.Room:
                     model.Room = db.FindById<Room>(objId);
-                    model.SubItems = db.FindGetResults<Rack>(r => r.Parent == objId);
+                    model.SubItems = db.Find<Rack>(r => r.Parent == objId).SortBy(r => r.Line).ThenBy(r => r.Index).ThenBy(r => r.Side).ToEnumerable();
                     break;
                 case PlaceType.Rack:
                     model.Rack = db.FindById<Rack>(objId);

@@ -98,11 +98,18 @@
                     </label>
                 </div>
             </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="form-group">
+                    <label>
+                        <input asp-for="Incomplete" /> @Html.DisplayNameFor(model => model.Incomplete)
+                    </label>
+                </div>
+            </div>
             <div class="col-lg-12">
                 <div class="form-group">
                     <label asp-for="Description" class="control-label"></label>
                     <textarea asp-for="Description" class="form-control"></textarea>
-                    <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>
+                    <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
             </div>
         </div>

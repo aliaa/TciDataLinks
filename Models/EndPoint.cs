@@ -113,6 +113,9 @@ namespace TciDataLinks.Models
         [Display(Name = "پروتکشن سیستمهای انتقال")]
         public bool TransmissionProtection { get; set; }
 
+        [Display(Name = "اطلاعات اتصال ناقص است")]
+        public bool Incomplete { get; set; }
+
         [Display(Name = "توضیح")]
         public string Description { get; set; }
     }

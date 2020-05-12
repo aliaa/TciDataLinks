@@ -3,6 +3,7 @@
 
 <div class="card my-5" style="background-color:#eee;">
     <div class="card-header">
+        @Model.GetPlaceDisplay(db)
         <div class="float-left">
             <a class="edit" asp-action="Edit" asp-route-id="@Model.Id.ToString()" title="ویرایش">
                 <img src="~/lib/bootstrap-icons/icons/pencil.svg" width="24" />

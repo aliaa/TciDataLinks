@@ -17,7 +17,7 @@
                 <option disabled selected>انتخاب کنید</option>
                 @foreach (var city in Cities)
                 {
-                    <option value="@city.Id.ToString()">@city.Name</option>
+                <option value="@city.Id.ToString()">@city.Name</option>
                 }
             </select>
             <span asp-validation-for="City" class="text-danger"></span>
@@ -48,8 +48,72 @@
             <select asp-for="SearchType" class="form-control">
                 @foreach (var item in Enum.GetNames(typeof(ConnectionSearchViewModel.EndPointSearchType)))
                 {
-                    <option value="@item">@Utils.GetDisplayNameOfMember(typeof(ConnectionSearchViewModel.EndPointSearchType), item)</option>
+                <option value="@item">@Utils.GetDisplayNameOfMember(typeof(ConnectionSearchViewModel.EndPointSearchType), item)</option>
                 }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="PortType" class="control-label"></label>
+            <select asp-for="PortType" class="form-control">
+                <option>همه</option>
+                @foreach (var item in Enum.GetNames(typeof(EndPoint.PortTypeEnum)))
+                {
+                <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PortTypeEnum), item)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="Module" class="control-label"></label>
+            <select asp-for="Module" class="form-control">
+                <option>همه</option>
+                @foreach (var item in Enum.GetNames(typeof(EndPoint.ModuleType)))
+                {
+                <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ModuleType), item)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="PatchCord" class="control-label"></label>
+            <select asp-for="PatchCord" class="form-control">
+                <option>همه</option>
+                @foreach (var item in Enum.GetNames(typeof(EndPoint.PatchCordType)))
+                {
+                <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PatchCordType), item)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="Connector" class="control-label"></label>
+            <select asp-for="Connector" class="form-control">
+                <option>همه</option>
+                @foreach (var item in Enum.GetNames(typeof(EndPoint.ConnectorType)))
+                {
+                <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ConnectorType), item)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="DataProtection" class="control-label"></label>
+            <select asp-for="DataProtection" class="form-control">
+                <option>همه</option>
+                <option value="true">بلی</option>
+                <option value="false">خیر</option>
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="TransmissionProtection" class="control-label"></label>
+            <select asp-for="TransmissionProtection" class="form-control">
+                <option>همه</option>
+                <option value="true">بلی</option>
+                <option value="false">خیر</option>
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="Incomplete" class="control-label"></label>
+            <select asp-for="Incomplete" class="form-control">
+                <option>همه</option>
+                <option value="true">بلی</option>
+                <option value="false">خیر</option>
             </select>
         </div>
     </div>
@@ -58,14 +122,16 @@
     </div>
 </form>
 
+@if (@Model.SearchResult != null)
+{
 <div class="mt-5">
-    <div id="divSearchResultList">
-        @for (int i = 0; i < Model.SearchResult.Count; i++)
-        {
-            @Html.DisplayFor(m => Model.SearchResult[i]);
-        }
-    </div>
+    <p>تعداد نتیجه: @Model.SearchResult.Count</p>
+    @for (int i = 0; i < Model.SearchResult.Count; i++)
+    {
+        @Html.DisplayFor(m => Model.SearchResult[i]);
+    }
 </div>
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

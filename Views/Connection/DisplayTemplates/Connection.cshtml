@@ -58,6 +58,10 @@
                             <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.TransmissionProtection)):</label>
                             <span class="text-value">@(Model.EndPoints[i].TransmissionProtection ? "بلی": "خیر")</span>
                         </div>
+                        <div class="col-lg-3 col-sm-6">
+                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.Incomplete)):</label>
+                            <span class="text-value">@(Model.EndPoints[i].Incomplete ? "بلی": "خیر")</span>
+                        </div>
                         @if (!string.IsNullOrWhiteSpace(Model.EndPoints[i].Description))
                         {
                             <div class="col-lg-9 col-sm-12">

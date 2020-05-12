@@ -3,8 +3,6 @@ using EasyMongoNet;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
-using TciCommon.Models;
 
 namespace TciDataLinks.Models
 {
@@ -45,24 +43,6 @@ namespace TciDataLinks.Models
         public override string ToString()
         {
             return Utils.GetDisplayNameOfMember(typeof(DeviceType), Type.ToString()) + " " + Model;
-        }
-
-        public string GetPlaceDisplay(IReadOnlyDbContext db)
-        {
-            var rack = db.FindById<Rack>(Rack);
-            var room = db.FindById<Room>(rack.Parent);
-            var building = db.FindById<Building>(room.Parent);
-            var center = db.FindById<CommCenter>(building.Parent); ;
-            var city = db.FindById<City>(center.City);
-
-            StringBuilder sb = new StringBuilder();
-            sb.Append(city.Name).Append(" > ")
-                .Append("مرکز ").Append(center.Name).Append(" > ")
-                .Append("ساختمان ").Append(building.Name).Append(" > ")
-                .Append("اتاق/سالن ").Append(room.Name).Append(" > ")
-                .Append("راک ").Append(rack.Name).Append(" > ")
-                .Append("دستگاه ").Append(ToString());
-            return sb.ToString();
         }
     }
 }

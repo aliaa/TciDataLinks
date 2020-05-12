@@ -68,6 +68,7 @@ namespace TciDataLinks.Controllers
                 model.Rack = rack;
                 model.RackLine = rackObj.Line;
                 model.RackIndex = rackObj.Index;
+                model.RackSide = rackObj.Side;
             }
             return View(model);
         }
@@ -95,10 +96,11 @@ namespace TciDataLinks.Controllers
                 db.Save(room);
                 roomId = room.Id;
             }
-            rackId = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex).Project(r => r.Id).FirstOrDefault();
+            rackId = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
+                .Project(r => r.Id).FirstOrDefault();
             if (rackId == ObjectId.Empty)
             {
-                var rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex };
+                var rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex, Side = m.RackSide };
                 db.Save(rack);
                 rackId = rack.Id;
             }
@@ -117,6 +119,7 @@ namespace TciDataLinks.Controllers
             var rack = db.FindById<Rack>(device.Rack);
             model.RackLine = rack.Line;
             model.RackIndex = rack.Index;
+            model.RackSide = rack.Side;
             var parent = rack.Parent;
             model.Room = parent.ToString();
             parent = db.FindById<Room>(parent).Parent;
@@ -157,10 +160,11 @@ namespace TciDataLinks.Controllers
                 db.Save(room);
                 roomId = room.Id;
             }
-            rackId = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex).Project(r => r.Id).FirstOrDefault();
+            rackId = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
+                .Project(r => r.Id).FirstOrDefault();
             if (rackId == ObjectId.Empty)
             {
-                var rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex };
+                var rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex, Side = m.RackSide };
                 db.Save(rack);
                 rackId = rack.Id;
             }

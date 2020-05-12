@@ -41,9 +41,30 @@ namespace TciDataLinks.Models
         [Display(Name = "دستگاه")]
         public string Device { get; set; }
 
+        [Display(Name = "نوع پورت")]
+        public EndPoint.PortTypeEnum? PortType { get; set; }
+
+        [Display(Name = "نوع ماژول")]
+        public EndPoint.ModuleType? Module { get; set; }
+
+        [Display(Name = "نوع پچ کورد")]
+        public EndPoint.PatchCordType? PatchCord { get; set; }
+
+        [Display(Name = "نوع کانکتور")]
+        public EndPoint.ConnectorType? Connector { get; set; }
+
         [Display(Name = "نحوه جستجوی اتصالها")]
         public EndPointSearchType SearchType { get; set; }
 
-        public List<ConnectionViewModel> SearchResult { get; set; } = new List<ConnectionViewModel>();
+        [Display(Name = "پروتکشن دیتا")]
+        public bool? DataProtection { get; set; }
+
+        [Display(Name = "پروتکشن سیستمهای انتقال")]
+        public bool? TransmissionProtection { get; set; }
+
+        [Display(Name = "اطلاعات اتصال ناقص است؟")]
+        public bool? Incomplete { get; set; }
+
+        public List<ConnectionViewModel> SearchResult { get; set; } = null;
     }
 }
