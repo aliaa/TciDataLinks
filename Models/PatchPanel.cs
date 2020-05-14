@@ -4,6 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace TciDataLinks.Models
 {
+    [CollectionSave(WriteLog = true)]
     public class PatchPanel : BaseDevice
     {
         public enum PatchPanelType

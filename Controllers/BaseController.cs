@@ -18,6 +18,7 @@ namespace TciDataLinks.Controllers
         public BaseController(IDbContext db)
         {
             this.db = db;
+            db.GetUserNameFunc = () => UserName;
         }
 
         protected ObjectId? UserId
@@ -30,6 +31,8 @@ namespace TciDataLinks.Controllers
                 return null;
             }
         }
+
+        protected string UserName => HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
         protected IEnumerable<Permission> UserPermissions
         {

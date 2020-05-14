@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 namespace TciDataLinks.Models
 {
     [CollectionIndex(new string[] { nameof(Address) })]
+    [CollectionSave(WriteLog = true)]
     public class Device : BaseDevice
     {
         public enum DeviceType

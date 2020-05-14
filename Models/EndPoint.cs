@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TciDataLinks.Models
 {
+    [CollectionSave(WriteLog = true)]
     public class EndPoint : MongoEntity
     {
         public enum PortTypeEnum

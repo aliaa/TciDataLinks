@@ -85,24 +85,7 @@ namespace TciDataLinks
             var settings = Configuration.GetSection("Settings").Get<Settings>();
             services.AddSingleton(settings);
 
-            // Add mongodb service:
-            string filePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "PersianCharsMap.json");
-            var stringNormalizer = new StringNormalizer(filePath);
-            services.AddSingleton(stringNormalizer);
-
-            var connString = Configuration.GetValue<string>("MongoConnString");
-            var customeConnections = Configuration.GetSection("CustomConnections").Get<List<CustomMongoConnection>>();
-            foreach (var cc in customeConnections)
-                if (cc.ConnectionString == null)
-                    cc.ConnectionString = connString;
-
-            var db = new MongoDbContext(
-                Configuration.GetValue<string>("DBName"), connString,
-                customConnections: customeConnections,
-                objectPreprocessor: stringNormalizer);
-            services.AddSingleton<IDbContext>(db);
-            services.AddSingleton<IReadOnlyDbContext>(db);
-
+            var db = services.AddMongDbContext(Configuration);
             var cities = db.FindGetResults<City>(c => c.Province == ObjectId.Parse(settings.ProvinceId));
             services.AddSingleton(cities);
 
