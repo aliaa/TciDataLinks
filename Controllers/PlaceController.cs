@@ -9,6 +9,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using TciCommon.Models;
 using TciDataLinks.Models;
+using TciDataLinks.ViewModels;
 
 namespace TciDataLinks.Controllers
 {
@@ -88,6 +89,7 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
+        [Authorize(nameof(Permission.EditData))]
         public IActionResult Delete(string type, string id)
         {
             var objId = ObjectId.Parse(id);

@@ -92,3 +92,7 @@ body {
     font-weight: bold;
     color: rgba(0,0,0,.5);
 }
+
+.form-check-input {
+    margin-right: -1.25rem;
+}

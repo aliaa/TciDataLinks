@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TciDataLinks.Models
+namespace TciDataLinks.ViewModels
 {
     public class Graph
     {

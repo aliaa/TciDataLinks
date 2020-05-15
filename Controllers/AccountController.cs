@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
+using System.Linq.Expressions;
+using AliaaCommon.Models;
 using EasyMongoNet;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
+using Omu.ValueInjecter;
 using TciDataLinks.Models;
+using System.Linq;
+using MongoDB.Bson;
+using TciDataLinks.ViewModels;
 
 namespace TciDataLinks.Controllers
 {
@@ -105,6 +110,57 @@ namespace TciDataLinks.Controllers
                     ModelState.AddModelError("CurrentPassword", "رمز فعلی اشتباه میباشد.");
             }
             return View(model);
+        }
+
+        [Authorize(nameof(Permission.ManageUsers))]
+        public IActionResult Index()
+        {
+            var users = db.All<AuthUserX>();
+            return View(users);
+        }
+
+        [Authorize(nameof(Permission.ManageUsers))]
+        public IActionResult Add()
+        {
+            return View(new AddUserViewModel());
+        }
+
+        [Authorize(nameof(Permission.ManageUsers))]
+        [HttpPost]
+        public IActionResult Add(AddUserViewModel model)
+        {
+            var user = Mapper.Map<AuthUserX>(model);
+            db.Save(user);
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult UsernameIsValid(string username, ObjectId id)
+        {
+            var exists = db.Any<AuthUserX>(u => u.Username == username && u.Id != id);
+            return Json(!exists);
+        }
+
+        [Authorize(nameof(Permission.ManageUsers))]
+        public IActionResult Edit(ObjectId id)
+        {
+            var user = db.FindById<AuthUserX>(id);
+            var model = Mapper.Map<EditUserViewModel>(user);
+            return View(model);
+        }
+
+        [Authorize(nameof(Permission.ManageUsers))]
+        [HttpPost]
+        public IActionResult Edit(EditUserViewModel model)
+        {
+            var user = db.FindById<AuthUserX>(model.Id);
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Permissions = model.Permissions;
+            user.Disabled = model.Disabled;
+            if (!string.IsNullOrWhiteSpace(model.Password))
+                user.Password = model.Password;
+            db.Save(user);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

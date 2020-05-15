@@ -3,6 +3,7 @@ using Omu.ValueInjecter;
 using System;
 using System.Linq;
 using TciDataLinks.Models;
+using TciDataLinks.ViewModels;
 
 namespace TciDataLinks
 {

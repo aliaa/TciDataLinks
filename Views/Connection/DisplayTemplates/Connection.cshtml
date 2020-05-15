@@ -1,13 +1,16 @@
-﻿@model TciDataLinks.Models.ConnectionViewModel
-@inject IDbContext db
+﻿@model ConnectionViewModel
+@inject IReadOnlyDbContext db
 
 <div class="card my-5">
     <div class="card-header">
-        <div class="float-left">
-            <a class="edit" asp-action="Edit" asp-route-id="@Model.Id.ToString()" title="ویرایش">
-                <img src="~/lib/bootstrap-icons/icons/pencil.svg" width="24" />
-            </a>
-        </div>
+        @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+        {
+            <div class="float-left">
+                <a class="edit" asp-action="Edit" asp-route-id="@Model.Id.ToString()" title="ویرایش">
+                    <img src="~/lib/bootstrap-icons/icons/pencil.svg" width="24" />
+                </a>
+            </div>
+        }
     </div>
     <div class="card-body">
         @for (int i = 0; i < Model.EndPoints.Count; i++)
@@ -106,7 +109,7 @@
             </div>
         }
         <div class="my-3 card" style="background-color:#eee;">
-            <div class="card-header" data-toggle="collapse" data-target="#graph_card_body_@Model.Id" 
+            <div class="card-header" data-toggle="collapse" data-target="#graph_card_body_@Model.Id"
                  style="cursor:pointer;" onclick="LoadConnectionGraph('@Model.Id')">گراف شبکه</div>
             <div class="card-body collapse" id="graph_card_body_@Model.Id">
                 <div id="divGraph_@Model.Id" style="border: solid 1px black; height: 500px;"></div>

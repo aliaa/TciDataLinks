@@ -1,8 +1,9 @@
 ﻿using EasyMongoNet;
 using Omu.ValueInjecter;
 using System.ComponentModel.DataAnnotations;
+using TciDataLinks.Models;
 
-namespace TciDataLinks.Models
+namespace TciDataLinks.ViewModels
 {
     public class PatchPanelViewModel : PlaceBasedViewModel
     {

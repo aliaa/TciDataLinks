@@ -1,12 +1,15 @@
-﻿@model TciDataLinks.Models.DeviceViewModel
+﻿@model DeviceViewModel
 
 @{
     ViewData["Title"] = "جزئیات دستگاه";
 }
 
-<div>
-    <a asp-controller="Connection" asp-action="Add" asp-route-device="@Model.Id" class="btn btn-info">لینک جدید از این دستگاه</a>
-</div>
+@if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+{
+    <div>
+        <a asp-controller="Connection" asp-action="Add" asp-route-device="@Model.Id" class="btn btn-info">لینک جدید از این دستگاه</a>
+    </div>
+}
 <div class="mt-4">
     <h4>جزئیات دستگاه</h4>
     <hr />

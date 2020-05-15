@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TciCommon.Models;
 
-namespace TciDataLinks.Models
+namespace TciDataLinks.ViewModels
 {
     public class CentersViewModel
     {

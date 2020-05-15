@@ -1,10 +1,9 @@
 ﻿using EasyMongoNet;
 using MongoDB.Bson;
 using System.Collections.Generic;
-using System.Text;
-using TciCommon.Models;
+using TciDataLinks.Models;
 
-namespace TciDataLinks.Models
+namespace TciDataLinks.ViewModels
 {
     public class EndPointViewModel : EndPoint
     {

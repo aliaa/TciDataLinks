@@ -3,10 +3,10 @@ using EasyMongoNet;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace TciDataLinks.Models
 {
+    [CollectionSave(WriteLog = true, Preprocess = true)]
     [CollectionOptions(Name = nameof(AuthUser))]
     public class AuthUserX : AuthUser
     {

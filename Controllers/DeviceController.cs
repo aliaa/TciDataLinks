@@ -11,6 +11,7 @@ using MongoDB.Driver;
 using Omu.ValueInjecter;
 using TciCommon.Models;
 using TciDataLinks.Models;
+using TciDataLinks.ViewModels;
 
 namespace TciDataLinks.Controllers
 {
@@ -36,6 +37,7 @@ namespace TciDataLinks.Controllers
         //    return View();
         //}
 
+        [Authorize(nameof(Permission.EditData))]
         public IActionResult Add(ObjectId city, ObjectId center, ObjectId building, ObjectId room, ObjectId rack)
         {
             var model = new DeviceViewModel
@@ -73,6 +75,7 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
+        [Authorize(nameof(Permission.EditData))]
         [HttpPost]
         public IActionResult Add(DeviceViewModel m)
         {
@@ -112,6 +115,7 @@ namespace TciDataLinks.Controllers
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
 
+        [Authorize(nameof(Permission.EditData))]
         public IActionResult Edit(string id)
         {
             var device = db.FindById<Device>(id);
@@ -138,6 +142,7 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
+        [Authorize(nameof(Permission.EditData))]
         [HttpPost]
         public IActionResult Edit(DeviceViewModel m)
         {

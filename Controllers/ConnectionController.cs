@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using Omu.ValueInjecter;
 using TciCommon.Models;
 using TciDataLinks.Models;
+using TciDataLinks.ViewModels;
 
 namespace TciDataLinks.Controllers
 {
@@ -105,6 +106,7 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
+        [Authorize(nameof(Permission.EditData))]
         public IActionResult Add(ObjectId device)
         {
             var vm = new ConnectionViewModel();
@@ -118,6 +120,7 @@ namespace TciDataLinks.Controllers
             return View(vm);
         }
 
+        [Authorize(nameof(Permission.EditData))]
         [HttpPost]
         public IActionResult Add(ConnectionViewModel model)
         {
@@ -132,6 +135,7 @@ namespace TciDataLinks.Controllers
             return RedirectToAction(nameof(Edit), new { id = connection.Id });
         }
 
+        [Authorize(nameof(Permission.EditData))]
         public IActionResult Edit(ObjectId id)
         {
             var connection = db.FindById<Connection>(id);
@@ -151,6 +155,7 @@ namespace TciDataLinks.Controllers
             return View("Add", model);
         }
 
+        [Authorize(nameof(Permission.EditData))]
         [HttpPost]
         public IActionResult Edit(ConnectionViewModel model)
         {
@@ -174,6 +179,7 @@ namespace TciDataLinks.Controllers
             return RedirectToAction(nameof(Edit), new { id = connection.Id });
         }
 
+        [Authorize(nameof(Permission.EditData))]
         public IActionResult AddEndPoint(int index, ObjectId building, ObjectId device)
         {
             return GetEditorTemplatePartialView<EndPoint>(new EndPointViewModel
@@ -184,6 +190,7 @@ namespace TciDataLinks.Controllers
             });
         }
 
+        [Authorize(nameof(Permission.EditData))]
         public IActionResult AddPassiveConnection(int endPointIndex, int index, ObjectId patchPanel)
         {
             return GetEditorTemplatePartialView<PassiveConnection>(new PassiveConnectionViewModel

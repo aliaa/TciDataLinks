@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json;
 using TciCommon.Models;
 using TciDataLinks.Models;
+using TciDataLinks.ViewModels;
 
 namespace TciDataLinks.Controllers
 {

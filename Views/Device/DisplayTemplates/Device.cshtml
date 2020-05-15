@@ -1,14 +1,17 @@
-﻿@model TciDataLinks.Models.DeviceViewModel
+﻿@model DeviceViewModel
 @inject IReadOnlyDbContext db
 
 <div class="card my-5" style="background-color:#eee;">
     <div class="card-header">
         @Model.GetPlaceDisplay(db)
-        <div class="float-left">
-            <a class="edit" asp-action="Edit" asp-route-id="@Model.Id.ToString()" title="ویرایش">
-                <img src="~/lib/bootstrap-icons/icons/pencil.svg" width="24" />
-            </a>
-        </div>
+        @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+        {
+            <div class="float-left">
+                <a class="edit" asp-action="Edit" asp-route-id="@Model.Id.ToString()" title="ویرایش">
+                    <img src="~/lib/bootstrap-icons/icons/pencil.svg" width="24" />
+                </a>
+            </div>
+        }
     </div>
     <div class="card-body">
         <div class="row">

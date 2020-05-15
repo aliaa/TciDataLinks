@@ -1,6 +1,6 @@
 using System;
 
-namespace TciDataLinks.Models
+namespace TciDataLinks.ViewModels
 {
     public class ErrorViewModel
     {

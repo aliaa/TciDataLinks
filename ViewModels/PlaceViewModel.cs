@@ -1,27 +1,10 @@
 ﻿using AliaaCommon;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using TciDataLinks.Models;
 
-namespace TciDataLinks.Models
+namespace TciDataLinks.ViewModels
 {
-    public enum PlaceType
-    {
-        [Display(Name = "شهر")]
-        City,
-        [Display(Name = "مرکز")]
-        Center,
-        [Display(Name = "ساختمان")]
-        Building,
-        [Display(Name = "سالن/اتاق")]
-        Room,
-        [Display(Name = "راک")]
-        Rack,
-        [Display(Name = "دستگاه")]
-        Device,
-        [Display(Name = "رابط Passive")]
-        PatchPanel
-    }
 
     public class PlaceViewModel
     {

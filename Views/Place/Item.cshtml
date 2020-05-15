@@ -5,7 +5,7 @@
     ViewData["Title"] = Model.Current.Name;
 }
 
-@if (Model.Rack != null)
+@if (Model.Rack != null && User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
 {
     <div class="mt-4">
         <a asp-controller="Device" asp-action="Add" class="btn btn-info"
@@ -51,7 +51,14 @@
                         if (item.PlaceType == PlaceType.Device)
                         {
                             <li>
-                                <a asp-controller="Device" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item</a>
+                                @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+                                {
+                                    <a asp-controller="Device" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item</a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Device" asp-action="Item" asp-route-id="@item.Id.ToString()">@item</a>
+                                }
                             </li>
                         }
                     }
@@ -73,7 +80,16 @@
                 <ul class="mt-4">
                     @foreach (var item in Model.SubItems.Where(i => i.PlaceType == PlaceType.PatchPanel))
                     {
-                        <li><a asp-controller="PatchPanel" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item</a></li>
+                        <li>
+                            @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+                            {
+                                <a asp-controller="PatchPanel" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="PatchPanel" asp-action="Item" asp-route-id="@item.Id.ToString()">@item</a>
+                            }
+                        </li>
                     }
                 </ul>
             </div>
