@@ -37,7 +37,7 @@ namespace TciDataLinks.Controllers
         //    return View();
         //}
 
-        [Authorize(nameof(Permission.EditData))]
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
         public IActionResult Add(ObjectId city, ObjectId center, ObjectId building, ObjectId room, ObjectId rack)
         {
             var model = new DeviceViewModel
@@ -75,7 +75,7 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
-        [Authorize(nameof(Permission.EditData))]
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
         [HttpPost]
         public IActionResult Add(DeviceViewModel m)
         {
@@ -115,7 +115,7 @@ namespace TciDataLinks.Controllers
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
 
-        [Authorize(nameof(Permission.EditData))]
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
         public IActionResult Edit(string id)
         {
             var device = db.FindById<Device>(id);
@@ -142,7 +142,7 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
-        [Authorize(nameof(Permission.EditData))]
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
         [HttpPost]
         public IActionResult Edit(DeviceViewModel m)
         {

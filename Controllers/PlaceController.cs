@@ -89,7 +89,7 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
-        [Authorize(nameof(Permission.EditData))]
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
         public IActionResult Delete(string type, string id)
         {
             var objId = ObjectId.Parse(id);

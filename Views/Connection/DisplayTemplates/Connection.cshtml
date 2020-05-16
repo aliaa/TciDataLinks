@@ -3,7 +3,7 @@
 
 <div class="card my-5">
     <div class="card-header">
-        @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+        @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditConnections)))
         {
             <div class="float-left">
                 <a class="edit" asp-action="Edit" asp-route-id="@Model.Id.ToString()" title="ویرایش">

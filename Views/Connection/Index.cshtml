@@ -5,7 +5,7 @@
     ViewData["Title"] = "جستجوی لینک ها";
 }
 
-@if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+@if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditConnections)))
 {
     <a asp-action="Add" class="btn btn-info">تعریف لینک جدید</a>
 }

@@ -4,7 +4,7 @@
     ViewData["Title"] = "تجهیزات";
 }
 
-@if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+@if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
 {
     <a asp-controller="Device" asp-action="Add" class="btn btn-info">دستگاه جدید</a>
     <a asp-controller="PatchPanel" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>

@@ -31,7 +31,7 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
-        [Authorize(nameof(Permission.EditData))]
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
         public IActionResult Add(ObjectId city, ObjectId center, ObjectId building, ObjectId room, ObjectId rack)
         {
             var model = new PatchPanelViewModel
@@ -69,7 +69,7 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
-        [Authorize(nameof(Permission.EditData))]
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
         [HttpPost]
         public IActionResult Add(PatchPanelViewModel m)
         {
@@ -109,7 +109,7 @@ namespace TciDataLinks.Controllers
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
 
-        [Authorize(nameof(Permission.EditData))]
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
         public IActionResult Edit(string id)
         {
             var patchPanel = db.FindById<PatchPanel>(id);
@@ -139,7 +139,7 @@ namespace TciDataLinks.Controllers
             return View(model);
         }
 
-        [Authorize(nameof(Permission.EditData))]
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
         [HttpPost]
         public IActionResult Edit(PatchPanelViewModel m)
         {

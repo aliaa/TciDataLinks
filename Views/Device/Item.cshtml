@@ -4,7 +4,7 @@
     ViewData["Title"] = "جزئیات دستگاه";
 }
 
-@if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+@if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditConnections)))
 {
     <div>
         <a asp-controller="Connection" asp-action="Add" asp-route-device="@Model.Id" class="btn btn-info">لینک جدید از این دستگاه</a>

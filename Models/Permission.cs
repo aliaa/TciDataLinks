@@ -5,8 +5,10 @@ namespace TciDataLinks.Models
 {
     public enum Permission
     {
-        [Display(Name = "ویرایش داده ها")]
-        EditData,
+        [Display(Name = "ویرایش مکانها و دستگاهها")]
+        EditPlacesAndDevices,
+        [Display(Name = "ویرایش لینک ها")]
+        EditConnections,
         [Display(Name = "مدیریت کاربران")]
         ManageUsers,
     }

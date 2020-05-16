@@ -5,7 +5,7 @@
     ViewData["Title"] = Model.Current.Name;
 }
 
-@if (Model.Rack != null && User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+@if (Model.Rack != null && User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
 {
     <div class="mt-4">
         <a asp-controller="Device" asp-action="Add" class="btn btn-info"
@@ -51,7 +51,7 @@
                         if (item.PlaceType == PlaceType.Device)
                         {
                             <li>
-                                @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+                                @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
                                 {
                                     <a asp-controller="Device" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item</a>
                                 }
@@ -81,7 +81,7 @@
                     @foreach (var item in Model.SubItems.Where(i => i.PlaceType == PlaceType.PatchPanel))
                     {
                         <li>
-                            @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditData)))
+                            @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
                             {
                                 <a asp-controller="PatchPanel" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item</a>
                             }

@@ -43,7 +43,7 @@ namespace TciDataLinks.Models
 
         public override string ToString()
         {
-            return Utils.GetDisplayNameOfMember(typeof(DeviceType), Type.ToString()) + " " + Model;
+            return Utils.GetDisplayNameOfMember(typeof(DeviceType), Type.ToString()) + " " + Model + " (" + Address + ")";
         }
     }
 }

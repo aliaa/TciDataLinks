@@ -65,7 +65,7 @@ namespace TciDataLinks.Controllers
                         var rackNode = new GraphNode
                         {
                             key = "Rack_" + rack.Id,
-                            text = "راک " + rack.ToString(),
+                            text = rack.ToString(),
                             group = roomNode.key,
                             isGroup = true
                         };
@@ -173,7 +173,7 @@ namespace TciDataLinks.Controllers
 
             var rack = db.FindById<Rack>(device.Rack);
             var roomKey = "Room_" + rack.Parent;
-            graph.AddNode(new GraphNode { key = rackKey, text = "راک " + rack.ToString(), group = roomKey, isGroup = true });
+            graph.AddNode(new GraphNode { key = rackKey, text = rack.ToString(), group = roomKey, isGroup = true });
             if (graph.ContainsNodeKey(roomKey))
                 return;
 

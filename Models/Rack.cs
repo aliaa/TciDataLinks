@@ -53,7 +53,7 @@ namespace TciDataLinks.Models
 
         public override string ToString()
         {
-            return "ردیف " + Line + " شماره " + Index + " سمت " + Side;
+            return Line + "-" + Index + "-" + Side;
         }
     }
 }
