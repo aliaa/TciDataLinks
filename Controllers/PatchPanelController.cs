@@ -93,13 +93,19 @@ namespace TciDataLinks.Controllers
                 db.Save(room);
                 roomId = room.Id;
             }
-            rackId = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
-                .Project(r => r.Id).FirstOrDefault();
+            var rack = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
+                .FirstOrDefault();
+            rackId = rack.Id;
             if (rackId == ObjectId.Empty)
             {
-                var rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex };
+                rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex, Type = m.RackType };
                 db.Save(rack);
                 rackId = rack.Id;
+            }
+            else if(rack.Type != m.RackType && !db.Any<Device>(d => d.Rack == rackId))
+            {
+                rack.Type = m.RackType;
+                db.Save(rack);
             }
 
             var patchPanel = Mapper.Map<PatchPanel>(m);
@@ -163,14 +169,21 @@ namespace TciDataLinks.Controllers
                 db.Save(room);
                 roomId = room.Id;
             }
-            rackId = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
-                .Project(r => r.Id).FirstOrDefault();
+            var rack = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
+                .FirstOrDefault();
+            rackId = rack.Id;
             if (rackId == ObjectId.Empty)
             {
-                var rack = new Rack { Parent = roomId, Type = m.RackType, Line = m.RackLine, Index = m.RackIndex, Side = m.RackSide };
+                rack = new Rack { Parent = roomId, Type = m.RackType, Line = m.RackLine, Index = m.RackIndex, Side = m.RackSide };
                 db.Save(rack);
                 rackId = rack.Id;
             }
+            else if (rack.Type != m.RackType && !db.Any<Device>(d => d.Rack == rackId))
+            {
+                rack.Type = m.RackType;
+                db.Save(rack);
+            }
+
             var patchPanel = db.FindById<PatchPanel>(m.Id);
             patchPanel.InjectFrom(m);
             patchPanel.Rack = rackId;
