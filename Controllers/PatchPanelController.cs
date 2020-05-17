@@ -95,17 +95,20 @@ namespace TciDataLinks.Controllers
             }
             var rack = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
                 .FirstOrDefault();
-            rackId = rack.Id;
-            if (rackId == ObjectId.Empty)
+            if (rack == null)
             {
                 rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex, Type = m.RackType };
                 db.Save(rack);
                 rackId = rack.Id;
             }
-            else if(rack.Type != m.RackType && !db.Any<Device>(d => d.Rack == rackId))
+            else
             {
-                rack.Type = m.RackType;
-                db.Save(rack);
+                rackId = rack.Id;
+                if (rack.Type != m.RackType && !db.Any<Device>(d => d.Rack == rack.Id))
+                {
+                    rack.Type = m.RackType;
+                    db.Save(rack);
+                }
             }
 
             var patchPanel = Mapper.Map<PatchPanel>(m);
@@ -171,17 +174,20 @@ namespace TciDataLinks.Controllers
             }
             var rack = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
                 .FirstOrDefault();
-            rackId = rack.Id;
-            if (rackId == ObjectId.Empty)
+            if (rack == null)
             {
                 rack = new Rack { Parent = roomId, Type = m.RackType, Line = m.RackLine, Index = m.RackIndex, Side = m.RackSide };
                 db.Save(rack);
                 rackId = rack.Id;
             }
-            else if (rack.Type != m.RackType && !db.Any<Device>(d => d.Rack == rackId))
+            else
             {
-                rack.Type = m.RackType;
-                db.Save(rack);
+                rackId = rack.Id;
+                if (rack.Type != m.RackType && !db.Any<Device>(d => d.Rack == rackId))
+                {
+                    rack.Type = m.RackType;
+                    db.Save(rack);
+                }
             }
 
             var patchPanel = db.FindById<PatchPanel>(m.Id);
@@ -191,5 +197,12 @@ namespace TciDataLinks.Controllers
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
 
+        public IActionResult Delete(ObjectId id)
+        {
+            var pp = db.FindById<PatchPanel>(id);
+            if (!db.Any<EndPoint>(e => e.PassiveConnections.Any(p => p.PatchPanel == id)))
+                db.DeleteOne<PatchPanel>(id);
+            return RedirectToAction("Item", "Place", new { type = "Rack", id = pp.Rack.ToString() });
+        }
     }
 }

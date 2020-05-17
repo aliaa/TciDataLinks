@@ -213,5 +213,13 @@ namespace TciDataLinks.Controllers
                 return db.FindGetResults<Device>(d => racks.Contains(d.Rack));
             }
         }
+
+        public IActionResult Delete(ObjectId id)
+        {
+            var device = db.FindById<Device>(id);
+            if (!db.Any<EndPoint>(e => e.Device == id))
+                db.DeleteOne<Device>(id);
+            return RedirectToAction("Item", "Place", new { type = "Rack", id = device.Rack.ToString() });
+        }
     }
 }

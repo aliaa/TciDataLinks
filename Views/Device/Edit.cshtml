@@ -1,4 +1,5 @@
 ﻿@model DeviceViewModel
+@inject IReadOnlyDbContext db
 
 @{
     ViewData["Title"] = "ویرایش دستگاه";
@@ -98,8 +99,12 @@
             <span asp-validation-for="Address" class="text-danger"></span>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group mt-4">
         <input type="submit" value="ویرایش" class="btn btn-primary" />
+        @if (!db.Any<EndPoint>(e => e.Device == Model.Id))
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger mx-4">حذف دستگاه</a>
+        }
     </div>
 </form>
 
@@ -110,44 +115,44 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-<script>
-    $("#Building").select2(select2Settings);
-    $("#Room").select2(select2Settings);
-    $("#Rack").select2(select2Settings);
+    <script>
+        $("#Building").select2(select2Settings);
+        $("#Room").select2(select2Settings);
+        $("#Rack").select2(select2Settings);
 
-    $("#City").change(function () {
-        var cityId = $(this).val();
-        $.get("/Device/Centers?city=" + cityId, function (res) {
-            $("#Center").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
-            $.each(res, function (index, item) {
-                $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
+        $("#City").change(function () {
+            var cityId = $(this).val();
+            $.get("/Device/Centers?city=" + cityId, function (res) {
+                $("#Center").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
+                $.each(res, function (index, item) {
+                    $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
             });
         });
-    });
 
-    $("#Center").change(function () {
-        var centerId = $(this).val();
-        $.get("/Device/Buildings?center=" + centerId, function (res) {
-            $("#Building").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
-            $("#Building").select2({
-                tags: true,
-                data: res,
-                ...select2BaseSettings
+        $("#Center").change(function () {
+            var centerId = $(this).val();
+            $.get("/Device/Buildings?center=" + centerId, function (res) {
+                $("#Building").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
+                $("#Building").select2({
+                    tags: true,
+                    data: res,
+                    ...select2BaseSettings
+                });
             });
         });
-    });
 
-    $("#Building").on('select2:select', function (e) {
-        var buildingId = e.params.data.id;
-        $.get("/Device/Rooms?building=" + buildingId, function (res) {
-            $("#Room").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
-            $("#Room").select2({
-                tags: true,
-                data: res,
-                ...select2BaseSettings
+        $("#Building").on('select2:select', function (e) {
+            var buildingId = e.params.data.id;
+            $.get("/Device/Rooms?building=" + buildingId, function (res) {
+                $("#Room").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
+                $("#Room").select2({
+                    tags: true,
+                    data: res,
+                    ...select2BaseSettings
+                });
             });
         });
-    });
 
-</script>
+    </script>
 }

@@ -8,6 +8,9 @@ using System.ComponentModel.DataAnnotations;
 namespace TciDataLinks.Models
 {
     [CollectionSave(WriteLog = true)]
+    [CollectionIndex(new string[] { nameof(Connection) })]
+    [CollectionIndex(new string[] { nameof(Device) })]
+    [CollectionIndex(new string[] { nameof(PassiveConnections)+"."+nameof(PassiveConnection.PatchPanel) })]
     public class EndPoint : MongoEntity
     {
         public enum PortTypeEnum

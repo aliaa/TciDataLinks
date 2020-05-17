@@ -1,4 +1,5 @@
 ﻿@model PatchPanelViewModel
+@inject IReadOnlyDbContext db
 
 @{
     ViewData["Title"] = "ویرایش رابط Passive";
@@ -95,8 +96,12 @@
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group mt-4">
         <input type="submit" value="ویرایش" class="btn btn-primary" />
+        @if (!db.Any<EndPoint>(e => e.PassiveConnections.Any(p => p.PatchPanel == Model.Id)))
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger mx-4">حذف پچ پنل</a>
+        }
     </div>
 </form>
 
