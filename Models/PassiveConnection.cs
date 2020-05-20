@@ -31,7 +31,8 @@ namespace TciDataLinks.Models
             [Display(Name = "رادیو Pasolink")]
             Radio_Pasolink,
             SDH,
-            PDH
+            PDH,
+            S320,
         }
 
         [Display(Name = "پچ پنل")]

@@ -201,6 +201,14 @@ namespace TciDataLinks.Controllers
             });
         }
 
+        [Authorize(nameof(Permission.EditConnections))]
+        public IActionResult Delete(ObjectId id)
+        {
+            db.DeleteMany<EndPoint>(e => e.Connection == id);
+            db.DeleteOne<Connection>(c => c.Id == id);
+            return RedirectToAction(nameof(Index));
+        }
+
         //[AcceptVerbs("GET", "POST")]
         //public IActionResult PortNumberIsValid(string portNumber, ObjectId device, ObjectId patchPanel)
         //{

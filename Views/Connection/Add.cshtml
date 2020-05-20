@@ -74,7 +74,11 @@ else
     
     <div class="form-group">
         <input type="button" id="btnDeleteLastConnection" value="حذف آخرین اتصال" class="btn btn-outline-danger d-none" />
-        <input type="submit" id="btnSubmit" value="ذخیره" class="btn btn-primary mr-4 d-none" />
+        <input type="submit" id="btnSubmit" value="ذخیره" class="btn btn-primary mr-3 d-none" />
+        @if(ViewData.ContainsKey("EditMode"))
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger mr-3" onclick="return confirm('آیا برای حذف مطمئن هستید؟');">حذف لینک</a>
+        }
     </div>
 </form>
 

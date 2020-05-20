@@ -100,7 +100,7 @@
         <input type="submit" value="ویرایش" class="btn btn-primary" />
         @if (!db.Any<EndPoint>(e => e.PassiveConnections.Any(p => p.PatchPanel == Model.Id)))
         {
-            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger mx-4">حذف پچ پنل</a>
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger mx-3" onclick="return confirm('آیا برای حذف مطمئن هستید؟');">حذف پچ پنل</a>
         }
     </div>
 </form>
