@@ -16,8 +16,8 @@ namespace TciDataLinks.ViewModels
             var room = db.FindById<Room>(rack.Parent);
             
             StringBuilder sb = new StringBuilder();
-            sb.Append("اتاق/سالن ").Append(room.Name).Append(" > ")
-                .Append("راک ").Append(rack.Name).Append(" > ")
+            sb.Append("اتاق/سالن ").Append(room.Name).Append(" &lArr; ")
+                .Append("راک ").Append(rack.Name).Append(" &lArr; ")
                 .Append("پچ پنل ").Append(patchPanel.Name);
             return sb.ToString();
         }

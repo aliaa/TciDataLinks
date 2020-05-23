@@ -39,16 +39,8 @@ namespace TciDataLinks.Models
         [BsonIgnore]
         public override string Name
         {
-            get => Line + "/" + Index + "/" + Side;
-            set
-            {
-                var vals = value.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                if (vals.Length < 3)
-                    throw new Exception();
-                Line = int.Parse(vals[0]);
-                Index = int.Parse(vals[1]);
-                Side = (RackSide)Enum.Parse(typeof(RackSide), vals[2]);
-            }
+            get => "ردیف " + Line + " شماره " + Index + " سمت " + Side;
+            set { }
         }
 
         public override string ToString()

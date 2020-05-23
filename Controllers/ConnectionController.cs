@@ -94,6 +94,7 @@ namespace TciDataLinks.Controllers
                 .Group(id => id.Connection, g => new { g.Key })
                 .Lookup(nameof(Connection), "Key", "_id", "as")
                 .Unwind("as").ReplaceRoot<Connection>("$as")
+                .SortByDescending(c => c.IdInt)
                 .Limit(SEARCH_RESULT_LIMIT)
                 .ToList();
             model.SearchResult = connections.Select(c => Mapper.Map<ConnectionViewModel>(c)).ToList();
@@ -125,6 +126,7 @@ namespace TciDataLinks.Controllers
         public IActionResult Add(ConnectionViewModel model)
         {
             var connection = Mapper.Map<Connection>(model);
+            connection.IdInt = db.Find<Connection>(_ => true).SortByDescending(c => c.IdInt).Project(c => c.IdInt).FirstOrDefault() + 1;
             db.Save(connection);
             foreach (var evm in model.EndPoints)
             {

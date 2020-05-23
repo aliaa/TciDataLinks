@@ -1,8 +1,11 @@
 ﻿@model ConnectionViewModel
 @inject IReadOnlyDbContext db
 
-<div class="card my-5">
+<div class="card my-5" style="background-color:#e2ecf9">
     <div class="card-header">
+        <div class="d-inline-block">
+            لینک @Model.IdInt
+        </div>
         @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditConnections)))
         {
             <div class="float-left">
@@ -20,7 +23,7 @@
                 <div class="card-header" data-toggle="collapse" data-target="#endpoint_@(Model.Id)_@i" style="cursor:pointer;">
                     <div class="float-right">اتصال @(i+1)</div>
                     <div class="text-center">
-                        @Model.EndPoints[i].GetPlaceDisplay(db)
+                        @Html.Raw(Model.EndPoints[i].GetPlaceDisplay(db))
                     </div>
                 </div>
                 <div class="card-body collapse" id="endpoint_@(Model.Id)_@i">

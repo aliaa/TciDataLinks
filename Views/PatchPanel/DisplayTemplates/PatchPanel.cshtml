@@ -3,7 +3,7 @@
 
 <div class="card my-5" style="background-color:#eee;">
     <div class="card-header">
-        @Model.GetPlaceDisplay(db)
+        @Html.Raw(Model.GetPlaceDisplay(db))
         @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
         {
             <div class="float-left">

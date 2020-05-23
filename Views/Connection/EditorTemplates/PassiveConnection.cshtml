@@ -8,7 +8,7 @@
 <div class="card my-3">
     <div class="card-header text-center" style="background-color: hsl(@hue , 25%, 77%); color: hsl(@hue , 80%, 22%);">
         <div class="float-right">اتصال @(Model.EndPointIndex+1) - @(Model.Index + 1)</div>
-        <div class="text-center">@Model.GetPlaceDisplayName(db)</div>
+        <div class="text-center">@Html.Raw(Model.GetPlaceDisplayName(db))</div>
     </div>
     <div class="card-body" style="background-color: hsl(@hue , 40%, 77%); color: hsl(@hue , 80%, 22%);">
         <input type="hidden" asp-for="EndPointIndex" />

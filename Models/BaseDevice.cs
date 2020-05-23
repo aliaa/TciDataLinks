@@ -19,11 +19,11 @@ namespace TciDataLinks.Models
             var city = db.FindById<City>(center.City);
 
             StringBuilder sb = new StringBuilder();
-            sb.Append(city.Name).Append(" > ")
-                .Append("مرکز ").Append(center.Name).Append(" > ")
-                .Append("ساختمان ").Append(building.Name).Append(" > ")
-                .Append("اتاق/سالن ").Append(room.Name).Append(" > ")
-                .Append("راک ").Append(rack.Name).Append(" > ")
+            sb.Append(city.Name).Append(" &lArr; ")
+                .Append("مرکز ").Append(center.Name).Append(" &lArr; ")
+                .Append("ساختمان ").Append(building.Name).Append(" &lArr; ")
+                .Append("اتاق/سالن ").Append(room.Name).Append(" &lArr; ")
+                .Append("راک ").Append(rack.Name).Append(" &lArr; ")
                 .Append("دستگاه ").Append(ToString());
             return sb.ToString();
         }
