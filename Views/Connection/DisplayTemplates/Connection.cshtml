@@ -83,7 +83,7 @@
                             <div class="card m-2 rounded-lg">
                                 <div class="card-header text-center" style="background-color: hsl(@hue , 25%, 77%); color: hsl(@hue , 80%, 22%);">
                                     <div class="float-right">اتصال @(i+1) - @(j + 1)</div>
-                                    <div class="text-center">@passive.GetPlaceDisplayName(db)</div>
+                                    <div class="text-center">@Html.Raw(passive.GetPlaceDisplayName(db))</div>
                                 </div>
                                 <div class="card-body" style="background-color: hsl(@hue , 40%, 77%); color: hsl(@hue , 80%, 22%);">
                                     <div class="row">

@@ -56,7 +56,7 @@
                 {
                     toolTip:  //  define a tooltip for each link that displays its information
                         gojs("ToolTip",
-                            gojs(go.TextBlock, { margin: 4 },
+                            gojs(go.TextBlock, { margin: 4, stroke: 'red' },
                                 new go.Binding("text", "text"))
                         )
                 }

@@ -44,7 +44,7 @@
         $("#City").change(function () {
             removeOptionsOfDropDown($("#Center"), null);
             var id = $(this).val();
-            $.get("/Place/Centers?city=" + id, function (res) {
+            $.get("/Place/Centers?city=" + id + "&onlyUsed=true", function (res) {
                 $.each(res, function (index, item) {
                     $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
                 });

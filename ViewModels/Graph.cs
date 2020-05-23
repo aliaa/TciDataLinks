@@ -41,16 +41,21 @@ namespace TciDataLinks.ViewModels
     {
         public GraphLink() { }
 
-        public GraphLink(string from, string to, ObjectId id)
+        public GraphLink(string from, string to, ObjectId id, string text)
         {
             this.from = from;
             this.to = to;
             this.connectionId = id.ToString();
+            this.text = text;
         }
+
+        public GraphLink(string from, string to, ObjectId id, string fromPort, string toPort)
+            : this(from, to, id, "Port: " + fromPort + " ==> " + toPort) { }
 
         public string from { get; set; }
         public string to { get; set; }
         public string connectionId { get; set; }
+        public string text { get; set; }
         public string color
         {
             get

@@ -161,24 +161,22 @@ namespace TciDataLinks.Controllers
         [HttpPost]
         public IActionResult Edit(ConnectionViewModel model)
         {
-            var connection = Mapper.Map<Connection>(model);
-            db.Save(connection);
             var endPointsId = new List<ObjectId>();
             int i = 0;
             foreach (var evm in model.EndPoints)
             {
                 var e = Mapper.Map<EndPoint>(evm);
                 e.Index = i++;
-                e.Connection = connection.Id;
+                e.Connection = model.Id;
                 db.Save(e);
                 endPointsId.Add(e.Id);
             }
-            var deletedEndPoints = db.Find<EndPoint>(e => e.Connection == connection.Id).Project(e => e.Id).ToEnumerable()
+            var deletedEndPoints = db.Find<EndPoint>(e => e.Connection == model.Id).Project(e => e.Id).ToEnumerable()
                 .Where(e => !endPointsId.Contains(e));
             foreach (var e in deletedEndPoints)
                 db.DeleteOne<EndPoint>(e);
 
-            return RedirectToAction(nameof(Edit), new { id = connection.Id });
+            return RedirectToAction(nameof(Edit), new { id = model.Id });
         }
 
         [Authorize(nameof(Permission.EditConnections))]

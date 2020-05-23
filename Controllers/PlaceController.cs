@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using TciCommon.Models;
 using TciDataLinks.Models;
 using TciDataLinks.ViewModels;
@@ -117,12 +119,21 @@ namespace TciDataLinks.Controllers
             return RedirectToAction("Item", new { type, id });
         }
 
-        public IActionResult Centers(string city)
+        public IActionResult Centers(string city, bool onlyUsed = false)
         {
             var centers = db.Find<CommCenter>(c => c.City == ObjectId.Parse(city))
-                .Project(c => new { c.Id, c.Name }).ToEnumerable()
-                .Select(c => new { id = c.Id.ToString(), text = c.Name });
-            return Json(centers);
+                .Project(c => new { c.Id, c.Name })
+                .SortBy(c => c.Name).ToEnumerable()
+                .Select(c => new { c.Id, c.Name });
+            if (onlyUsed)
+            {
+                var usedCenters = db.Aggregate<Building>()
+                    .Group(key => key.Parent, g => new { g.Key })
+                    .ToEnumerable()
+                    .Select(x => x.Key).ToHashSet();
+                centers = centers.Where(c => usedCenters.Contains(c.Id));
+            }
+            return Json(centers.Select(c => new { id = c.Id.ToString(), text = c.Name }));
         }
 
         public IActionResult Buildings(string center)
