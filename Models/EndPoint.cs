@@ -54,7 +54,7 @@ namespace TciDataLinks.Models
         {
             RJ45,
             BNC,
-            SMA,
+            SMB,
             [Display(Name = "FC/PC")]
             FCPC,
             [Display(Name = "FC/APC")]
