@@ -38,6 +38,12 @@ namespace TciDataLinks.Models
             XFP,
             [Display(Name = "GLC-T")]
             GLC_T,
+            [Display(Name = "X2-10GB")]
+            X2_10GB,
+            [Display(Name = "XENPAK-10GB")]
+            XENPAK_10GB,
+            [Display(Name = "CFP-100GB")]
+            CFP_100GB
         }
 
         public enum PatchCordType

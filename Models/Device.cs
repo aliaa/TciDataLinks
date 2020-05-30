@@ -31,7 +31,8 @@ namespace TciDataLinks.Models
             Cisco,
             Huawei,
             ZTE,
-            Tellabs
+            Tellabs,
+            WiFi,
         }
 
         [BsonRepresentation(BsonType.String)]

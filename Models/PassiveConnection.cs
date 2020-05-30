@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TciDataLinks.Models
 {
@@ -23,7 +18,7 @@ namespace TciDataLinks.Models
             [Display(Name = "فیبر نوری")]
             FiberOptics,
             S200,
-            S380,
+            S385,
             IBAS,
             Line_MUX,
             [Display(Name = "رادیو Combo")]
@@ -33,6 +28,7 @@ namespace TciDataLinks.Models
             SDH,
             PDH,
             S320,
+            WRI,
         }
 
         [Display(Name = "پچ پنل")]
