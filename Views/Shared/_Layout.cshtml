@@ -38,6 +38,12 @@
                                     <a class="nav-link" asp-controller="Account" asp-action="Index">مدیریت کاربران</a>
                                 </li>
                             }
+                            @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.ViewUserLogs)))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Account" asp-action="Log">لاگ کاربران</a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="ChangePassword">تغییر رمز عبور</a>
                             </li>

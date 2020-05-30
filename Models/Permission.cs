@@ -11,5 +11,7 @@ namespace TciDataLinks.Models
         EditConnections,
         [Display(Name = "مدیریت کاربران")]
         ManageUsers,
+        [Display(Name = "مشاهده لاگ کاربران")]
+        ViewUserLogs,
     }
 }
