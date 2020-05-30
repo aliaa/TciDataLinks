@@ -1,5 +1,4 @@
 ﻿using EasyMongoNet;
-using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ namespace TciDataLinks.Models
     [CollectionSave(WriteLog = true)]
     [CollectionIndex(new string[] { nameof(Connection) })]
     [CollectionIndex(new string[] { nameof(Device) })]
-    [CollectionIndex(new string[] { nameof(PassiveConnections)+"."+nameof(PassiveConnection.PatchPanel) })]
+    [CollectionIndex(new string[] { nameof(PassiveConnections) + "." + nameof(PassiveConnection.PatchPanel) })]
     public class EndPoint : MongoEntity
     {
         public enum PortTypeEnum
@@ -92,7 +91,7 @@ namespace TciDataLinks.Models
         //[Remote("PortNumberIsValid", "Connection", AdditionalFields = "Device", ErrorMessage = "شماره پورت در این دستگاه قبلا استفاده شده است!")]
         [Display(Name = "شماره پورت")]
         public string PortNumber { get; set; }
-        
+
         [Display(Name = "ظرفیت لینک")]
         [Required(ErrorMessage = "ظرفیت لینک اجباریست")]
         public int Speed { get; set; }
@@ -100,7 +99,7 @@ namespace TciDataLinks.Models
         [BsonRepresentation(BsonType.String)]
         [Display(Name = "واحد ظرفیت لینک")]
         public SpeedUnitEnum SpeedUnit { get; set; } = SpeedUnitEnum.Gbps;
-        
+
         [BsonRepresentation(BsonType.String)]
         [Display(Name = "نوع ماژول")]
         public ModuleType Module { get; set; }

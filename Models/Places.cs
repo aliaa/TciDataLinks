@@ -43,12 +43,12 @@ namespace TciDataLinks.Models
         }
     }
 
-    public class Building : PlaceBase 
+    public class Building : PlaceBase
     {
         public Building() : base(PlaceType.Building) { }
     }
 
-    public class Room : PlaceBase 
+    public class Room : PlaceBase
     {
         public Room() : base(PlaceType.Room) { }
     }

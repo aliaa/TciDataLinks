@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EasyMongoNet;
+﻿using EasyMongoNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TciCommon.Models;
 using TciDataLinks.Models;
 using TciDataLinks.ViewModels;
@@ -20,7 +17,7 @@ namespace TciDataLinks.Controllers
     {
         private IEnumerable<City> cities = null;
 
-        public PlaceController(IDbContext db, IEnumerable<City> cities) : base(db) 
+        public PlaceController(IDbContext db, IEnumerable<City> cities) : base(db)
         {
             this.cities = cities;
         }
@@ -81,7 +78,7 @@ namespace TciDataLinks.Controllers
                 model.Room = db.FindById<Room>(model.Rack.Parent);
             if (model.Room != null && model.Building == null)
                 model.Building = db.FindById<Building>(model.Room.Parent);
-            if(model.Building != null && model.Center == null)
+            if (model.Building != null && model.Center == null)
             {
                 var center = db.FindById<CommCenter>(model.Building.Parent);
                 var city = cities.First(c => c.Id == center.City);
@@ -100,7 +97,7 @@ namespace TciDataLinks.Controllers
             switch (t)
             {
                 case PlaceType.Building:
-                    if(!db.Any<Room>(r => r.Parent == objId))
+                    if (!db.Any<Room>(r => r.Parent == objId))
                         deleted = db.DeleteOne<Building>(objId).DeletedCount > 0;
                     break;
                 case PlaceType.Room:

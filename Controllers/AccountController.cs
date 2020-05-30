@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Text;
-using System.Linq.Expressions;
-using AliaaCommon.Models;
+﻿using AliaaCommon.Models;
 using EasyMongoNet;
+using EasyMongoNet.Model;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Omu.ValueInjecter;
-using TciDataLinks.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using MongoDB.Bson;
+using System.Security.Claims;
+using System.Text;
+using TciDataLinks.Models;
 using TciDataLinks.ViewModels;
-using EasyMongoNet.Model;
 
 namespace TciDataLinks.Controllers
 {
@@ -174,7 +173,7 @@ namespace TciDataLinks.Controllers
             if (user != "all")
                 filters.Add(fb.Eq(a => a.Username, user));
             if (type == "Link")
-                filters.Add(fb.In(a => a.CollectionName, new string[] {nameof(Connection), nameof(EndPoint) }));
+                filters.Add(fb.In(a => a.CollectionName, new string[] { nameof(Connection), nameof(EndPoint) }));
             else
                 filters.Add(fb.Eq(a => a.CollectionName, type));
             var result = db.Find<UserActivity>(fb.And(filters))
@@ -189,12 +188,12 @@ namespace TciDataLinks.Controllers
                 .SortByDescending(a => a.Time).Limit(1000).ToList();
             foreach (var item in result)
             {
-                if(item.Type == nameof(EndPoint))
+                if (item.Type == nameof(EndPoint))
                 {
                     item.Type = nameof(Connection);
                     if (item.ActivityType != ActivityType.Delete)
                         item.ObjId = db.FindById<EndPoint>(item.ObjId)?.Connection ?? ObjectId.Empty;
-                }    
+                }
             }
 
             ViewBag.User = user;

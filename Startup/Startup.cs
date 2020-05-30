@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.Encodings.Web;
-using System.Text.Unicode;
-using AliaaCommon;
 using EasyMongoNet;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -17,6 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Bson;
 using Newtonsoft.Json.Serialization;
+using System;
+using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using TciCommon.Models;
 using TciDataLinks.Models;
 
@@ -60,9 +56,9 @@ namespace TciDataLinks
                 options.AddPolicy("Admin", policy => policy.RequireClaim("IsAdmin"));
             });
 
-            var mvcBuilder = services.AddControllersWithViews(config => 
-            { 
-                config.ModelBinderProviders.Insert(0, new ObjectIdModelBinderProvider()); 
+            var mvcBuilder = services.AddControllersWithViews(config =>
+            {
+                config.ModelBinderProviders.Insert(0, new ObjectIdModelBinderProvider());
             });
 #if (DEBUG)
             mvcBuilder.AddRazorRuntimeCompilation();

@@ -1,5 +1,3 @@
-using System;
-
 namespace TciDataLinks.ViewModels
 {
     public class ErrorViewModel

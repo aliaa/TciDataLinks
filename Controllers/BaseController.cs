@@ -1,12 +1,10 @@
-﻿using System;
+﻿using EasyMongoNet;
+using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using EasyMongoNet;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using TciCommon.Models;
 using TciDataLinks.Models;
 
 namespace TciDataLinks.Controllers
@@ -41,7 +39,7 @@ namespace TciDataLinks.Controllers
                 if (User == null)
                     return Enumerable.Empty<Permission>();
                 Claim claim = User.Claims.FirstOrDefault(c => c.Type == nameof(Permission));
-                if(claim == null)
+                if (claim == null)
                     return Enumerable.Empty<Permission>();
                 return claim.Value.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(c => (Permission)Enum.Parse(typeof(Permission), c));
             }

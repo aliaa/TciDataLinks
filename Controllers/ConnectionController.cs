@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using EasyMongoNet;
+﻿using EasyMongoNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Omu.ValueInjecter;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TciCommon.Models;
 using TciDataLinks.Models;
 using TciDataLinks.ViewModels;
@@ -18,7 +18,7 @@ namespace TciDataLinks.Controllers
     {
         private readonly IEnumerable<City> cities = null;
         private readonly DeviceController deviceController;
-        public ConnectionController(IDbContext db, IEnumerable<City> cities, DeviceController deviceController) : base(db) 
+        public ConnectionController(IDbContext db, IEnumerable<City> cities, DeviceController deviceController) : base(db)
         {
             this.cities = cities;
             this.deviceController = deviceController;
@@ -116,7 +116,7 @@ namespace TciDataLinks.Controllers
                 var deviceObj = db.FindById<Device>(device);
                 var rack = db.FindById<Rack>(deviceObj.Rack);
                 var room = db.FindById<Room>(rack.Parent);
-                vm.EndPoints.Add(new EndPointViewModel { Building = room.Parent, Device = device  });
+                vm.EndPoints.Add(new EndPointViewModel { Building = room.Parent, Device = device });
             }
             return View(vm);
         }
@@ -183,8 +183,8 @@ namespace TciDataLinks.Controllers
         public IActionResult AddEndPoint(int index, ObjectId building, ObjectId device)
         {
             return GetEditorTemplatePartialView<EndPoint>(new EndPointViewModel
-            { 
-                Index = index, 
+            {
+                Index = index,
                 Building = building,
                 Device = device
             });

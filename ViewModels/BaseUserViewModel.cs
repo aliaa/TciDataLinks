@@ -19,7 +19,7 @@ namespace TciDataLinks.ViewModels
         [Display(Name = "نام خانوادگی")]
         public string LastName { get; set; }
 
-        [Remote("UsernameIsValid", "Account", AdditionalFields ="Id", ErrorMessage = "نام کاربری قبلا موجود میباشد!")]
+        [Remote("UsernameIsValid", "Account", AdditionalFields = "Id", ErrorMessage = "نام کاربری قبلا موجود میباشد!")]
         [Required]
         [Display(Name = "نام کاربری")]
         public string Username { get; set; }

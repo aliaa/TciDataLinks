@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using EasyMongoNet;
+﻿using EasyMongoNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TciCommon.Models;
 using TciDataLinks.Models;
 using TciDataLinks.ViewModels;
@@ -168,7 +168,7 @@ namespace TciDataLinks.Controllers
                 deviceKey = "PatchPanel_" + device.Id;
             else
                 throw new NotImplementedException();
-            
+
             if (graph.ContainsNodeKey(deviceKey))
                 return;
 

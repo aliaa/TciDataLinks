@@ -4,7 +4,7 @@ namespace TciDataLinks.ViewModels
 {
     public class ChangePasswordViewModel
     {
-        [Display(Name ="رمز فعلی")]
+        [Display(Name = "رمز فعلی")]
         public string CurrentPassword { get; set; }
 
         [Display(Name = "رمز جدید")]

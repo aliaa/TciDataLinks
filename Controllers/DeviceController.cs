@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using EasyMongoNet;
+﻿using EasyMongoNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Omu.ValueInjecter;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using TciCommon.Models;
 using TciDataLinks.Models;
 using TciDataLinks.ViewModels;
@@ -19,7 +18,7 @@ namespace TciDataLinks.Controllers
     public class DeviceController : BaseController
     {
         private IEnumerable<City> cities = null;
-        public DeviceController(IDbContext db, IEnumerable<City> cities) : base(db) 
+        public DeviceController(IDbContext db, IEnumerable<City> cities) : base(db)
         {
             this.cities = cities;
         }
@@ -59,7 +58,7 @@ namespace TciDataLinks.Controllers
                 ViewBag.Buildings = db.FindGetResults<Building>(b => b.Parent == center)
                     .Select(b => new SelectListItem(text: b.Name, value: b.Id.ToString(), selected: b.Id == building));
             }
-            if(building != ObjectId.Empty)
+            if (building != ObjectId.Empty)
             {
                 ViewBag.Rooms = db.FindGetResults<Room>(r => r.Parent == building)
                     .Select(r => new SelectListItem(text: r.Name, value: r.Id.ToString(), selected: r.Id == room));

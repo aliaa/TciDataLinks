@@ -1,7 +1,5 @@
 ﻿using MongoDB.Bson;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using TciDataLinks.Models;
 
 namespace TciDataLinks.ViewModels
 {
