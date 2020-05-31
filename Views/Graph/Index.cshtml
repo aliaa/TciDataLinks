@@ -26,7 +26,13 @@
 </div>
 
 <div id="divResult" class="d-none mt-5">
-    <div id="divGraph" dir="ltr" style="border: solid 1px black; height: 700px; margin-left:-2em; margin-right:-2em;"></div>
+    <div id="divGraph" dir="ltr" style="border: solid 1px black; height: 700px; margin-left:-3em; margin-right:-3em;"></div>
+    @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.ChangeGraphOrders)))
+    {
+        <div class="mt-4">
+            <button id="btnSaveOrders" class="btn btn-primary">ذخیره چینش</button>
+        </div>
+    }
     <p class="mt-4">توجه: برای رفتن به جزئیات هر کدام از اشکال موجود، روی آن دوبار کلیک کنید.</p>
     <p class="mb-4">توجه: برای زوم کردن، موس را روی گراف نگه داشته، دکمه <kbd>Ctrl</kbd> را نگه داشته و اسکرول موس را بچرخانید.</p>
 </div>
@@ -61,5 +67,13 @@
             });
         });
 
+        $("#btnSaveOrders").click(function () {
+            var list = [];
+            diagram.nodes.each(function (n) {
+                list.push({ key: n.data.key, loc: { x: n.location.x, y: n.location.y } });
+            });
+            var data = { center: $("#Center").val(), nodeLocations: list };
+            $.ajax({ url: "/Graph/SaveOrders", type: "POST", data: JSON.stringify(data), contentType: "application/json" });
+        });
     </script>
 }

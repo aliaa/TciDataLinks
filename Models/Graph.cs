@@ -1,8 +1,9 @@
-﻿using MongoDB.Bson;
+﻿using EasyMongoNet;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 
-namespace TciDataLinks.ViewModels
+namespace TciDataLinks.Models
 {
     public class Graph
     {
@@ -27,6 +28,15 @@ namespace TciDataLinks.ViewModels
         }
 
         public IEnumerable<GraphLink> Links => links;
+
+        public void SetLocations(Dictionary<string, NodeLocation> locations)
+        {
+            foreach (var key in locations.Keys)
+            {
+                if (nodesDic.ContainsKey(key))
+                    nodesDic[key].loc = locations[key];
+            }
+        }
     }
 
     public class GraphNode
@@ -35,6 +45,22 @@ namespace TciDataLinks.ViewModels
         public string group { get; set; }
         public string text { get; set; }
         public bool isGroup { get; set; } = false;
+        public NodeLocation loc { get; set; }
+    }
+
+    public class NodeLocation
+    {
+        public float x { get; set; }
+        public float y { get; set; }
+        public bool s { get; set; }
+    }
+
+    [CollectionIndex(new string[] { nameof(Center), nameof(Key) })]
+    public class NodeLocationWithKey : MongoEntity
+    {
+        public ObjectId Center { get; set; }
+        public string Key { get; set; }
+        public NodeLocation Loc { get; set; }
     }
 
     public class GraphLink

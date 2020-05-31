@@ -13,5 +13,7 @@ namespace TciDataLinks.Models
         ManageUsers,
         [Display(Name = "مشاهده لاگ کاربران")]
         ViewUserLogs,
+        [Display(Name = "تغییر چینش گراف")]
+        ChangeGraphOrders,
     }
 }

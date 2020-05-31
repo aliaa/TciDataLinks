@@ -151,6 +151,8 @@ namespace TciDataLinks.Controllers
                 }
             }
 
+            var locations = db.FindGetResults<NodeLocationWithKey>(x => x.Center == id).ToDictionary(k => k.Key, v => v.Loc);
+            graph.SetLocations(locations);
             return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
 
@@ -238,6 +240,32 @@ namespace TciDataLinks.Controllers
             }
 
             return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        }
+
+        public class Req
+        {
+            public ObjectId center { get; set; }
+            public List<NodeLocationWithKey> nodeLocations { get; set; }
+        }
+
+        [Authorize(nameof(Permission.ChangeGraphOrders))]
+        [HttpPost]
+        public IActionResult SaveOrders([FromBody] Req req)
+        {
+            var existing = db.Find<NodeLocationWithKey>(x => x.Center == req.center).ToEnumerable().ToDictionary(k => k.Key);
+            foreach (var item in req.nodeLocations)
+            {
+                item.Center = req.center;
+                if (existing.ContainsKey(item.Key))
+                    existing[item.Key].Loc = item.Loc;
+                else
+                    existing.Add(item.Key, item);
+            }
+            foreach (var item in existing.Values)
+            {
+                db.Save(item);
+            }
+            return Ok();
         }
     }
 }

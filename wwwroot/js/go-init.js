@@ -1,4 +1,11 @@
 ﻿function initGojs(divId, data) {
+
+    for (var i = 0; i < data.Nodes.length; i++) {
+        if (data.Nodes[i].loc) {
+            data.Nodes[i].loc = new go.Point(data.Nodes[i].loc.x, data.Nodes[i].loc.y);
+        }
+    }
+
     var gojs = go.GraphObject.make;  // for conciseness in defining templates
 
     if ($("#" + divId).children().length == 0) {
