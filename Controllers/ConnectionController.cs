@@ -1,4 +1,6 @@
-﻿using EasyMongoNet;
+﻿using AliaaCommon;
+using EasyMongoNet;
+using EasyMongoNet.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -27,10 +29,45 @@ namespace TciDataLinks.Controllers
         public IActionResult Item(ObjectId id)
         {
             var conn = db.FindById<Connection>(id);
-            var vm = Mapper.Map<ConnectionViewModel>(conn);
-            foreach (var ep in db.Find<EndPoint>(e => e.Connection == id).SortBy(e => e.Index).ToEnumerable())
-                vm.EndPoints.Add(Mapper.Map<EndPointViewModel>(ep));
+            var vm = ConnectionToViewModel(conn);
             return View(vm);
+        }
+
+        private ConnectionViewModel ConnectionToViewModel(Connection c, bool addMoreDetails = false)
+        {
+            var vm = Mapper.Map<ConnectionViewModel>(c);
+            foreach (var e in db.Find<EndPoint>(e => e.Connection == c.Id).SortBy(e => e.Index).ToEnumerable())
+            {
+                var evm = Mapper.Map<EndPointViewModel>(e);
+                if(addMoreDetails)
+                {
+                    var rackId = db.FindById<Device>(evm.Device).Rack;
+                    var roomId = db.FindById<Rack>(rackId).Parent;
+                    var buildingId = db.FindById<Room>(roomId).Parent;
+                    evm.Building = buildingId;
+                }
+                vm.EndPoints.Add(evm);
+            }
+
+            var endPointsIds = vm.EndPoints.Select(e => e.Id).ToList();
+            var createActivity = db.FindFirst<UserActivity>(a => endPointsIds.Contains(a.ObjId) && a.ActivityType == ActivityType.Insert);
+            var lastEditActivity = db.Find<UserActivity>(a => endPointsIds.Contains(a.ObjId) && a.ActivityType == ActivityType.Update)
+                .SortByDescending(a => a.Time).FirstOrDefault();
+            if (createActivity != null)
+            {
+                vm.CreateDate = PersianDateUtils.GetPersianDateString(createActivity.Time);
+                var user = db.FindFirst<AuthUserX>(u => u.Username == createActivity.Username);
+                if (user != null)
+                    vm.CreatedUser = user.DisplayName;
+            }
+            if (lastEditActivity != null)
+            {
+                vm.LastEditDate = PersianDateUtils.GetPersianDateString(lastEditActivity.Time);
+                var user = db.FindFirst<AuthUserX>(u => u.Username == lastEditActivity.Username);
+                if (user != null)
+                    vm.EditedUser = user.DisplayName;
+            }
+            return vm;
         }
 
         public IActionResult Index()
@@ -97,12 +134,7 @@ namespace TciDataLinks.Controllers
                 .SortByDescending(c => c.IdInt)
                 .Limit(SEARCH_RESULT_LIMIT)
                 .ToList();
-            model.SearchResult = connections.Select(c => Mapper.Map<ConnectionViewModel>(c)).ToList();
-            foreach (var c in model.SearchResult)
-            {
-                c.EndPoints = db.Find<EndPoint>(e => e.Connection == c.Id).SortBy(e => e.Index).ToEnumerable()
-                    .Select(e => Mapper.Map<EndPointViewModel>(e)).ToList();
-            }
+            model.SearchResult = connections.Select(c => ConnectionToViewModel(c)).ToList();
             model.City = null;
             return View(model);
         }
@@ -140,21 +172,10 @@ namespace TciDataLinks.Controllers
         [Authorize(nameof(Permission.EditConnections))]
         public IActionResult Edit(ObjectId id)
         {
-            var connection = db.FindById<Connection>(id);
-            var model = Mapper.Map<ConnectionViewModel>(connection);
-            foreach (var e in db.Find<EndPoint>(e => e.Connection == id).SortBy(e => e.Index).ToEnumerable())
-            {
-                var evm = Mapper.Map<EndPointViewModel>(e);
-                var rackId = db.FindById<Device>(evm.Device).Rack;
-                var roomId = db.FindById<Rack>(rackId).Parent;
-                var buildingId = db.FindById<Room>(roomId).Parent;
-                evm.Building = buildingId;
-                foreach (var pvm in evm.PassiveConnectionViewModels)
-                    pvm.EndPointIndex = e.Index;
-                model.EndPoints.Add(evm);
-            }
+            var c = db.FindById<Connection>(id);
+            var vm = ConnectionToViewModel(c, addMoreDetails: true);
             ViewData.Add("EditMode", true);
-            return View("Add", model);
+            return View("Add", vm);
         }
 
         [Authorize(nameof(Permission.EditConnections))]

@@ -41,25 +41,26 @@ namespace TciDataLinks
                 return res;
             };
 
-            Mapper.AddMap<EndPoint, EndPointViewModel>(src =>
+            Mapper.AddMap<EndPoint, EndPointViewModel>(e =>
             {
-                var res = Mapper.MapDefault<EndPointViewModel>(src);
+                var evm = Mapper.MapDefault<EndPointViewModel>(e);
                 int i = 0;
-                foreach (var p in src.PassiveConnections)
+                foreach (var p in e.PassiveConnections)
                 {
                     var pvm = Mapper.Map<PassiveConnectionViewModel>(p);
                     pvm.Index = i++;
-                    res.PassiveConnectionViewModels.Add(pvm);
+                    pvm.EndPointIndex = e.Index;
+                    evm.PassiveConnectionViewModels.Add(pvm);
                 }
-                return res;
+                return evm;
             });
 
-            Mapper.AddMap<EndPointViewModel, EndPoint>(src =>
+            Mapper.AddMap<EndPointViewModel, EndPoint>(evm =>
             {
-                var res = Mapper.MapDefault<EndPoint>(src);
-                foreach (var pvm in src.PassiveConnectionViewModels)
-                    res.PassiveConnections.Add(Mapper.Map<PassiveConnection>(pvm));
-                return res;
+                var e = Mapper.MapDefault<EndPoint>(evm);
+                foreach (var pvm in evm.PassiveConnectionViewModels)
+                    e.PassiveConnections.Add(Mapper.Map<PassiveConnection>(pvm));
+                return e;
             });
         }
     }

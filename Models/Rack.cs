@@ -42,9 +42,6 @@ namespace TciDataLinks.Models
             set { }
         }
 
-        public override string ToString()
-        {
-            return Line + "-" + Index + "-" + Side;
-        }
+        public override string ToString() => Name;
     }
 }

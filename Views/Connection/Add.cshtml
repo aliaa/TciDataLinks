@@ -3,7 +3,30 @@
 
 @if (ViewData.ContainsKey("EditMode"))
 {
-    <h1>ویرایش لینک</h1>
+    <div class="row text-black-50">
+        @if (Model.CreateDate != null)
+        {
+            <div class="col-lg-6">
+                ایجاد شده در @Model.CreateDate
+                @if (Model.CreatedUser != null)
+                {
+                    <span>توسط <b>@Model.CreatedUser</b></span>
+                }
+            </div>
+        }
+        @if (Model.LastEditDate != null)
+        {
+            <div class="col-lg-6">
+                آخرین ویرایش در @Model.LastEditDate
+                @if (Model.EditedUser != null)
+                {
+                    <span>توسط <b>@Model.EditedUser</b></span>
+                }
+            </div>
+        }
+    </div>
+    <hr/>
+    <h1 class="mt-5">ویرایش لینک</h1>
 }
 else
 {
@@ -71,11 +94,11 @@ else
             @Html.EditorFor(m => Model.EndPoints[i], "EndPoint");
         }
     </div>
-    
+
     <div class="form-group">
         <input type="button" id="btnDeleteLastConnection" value="حذف آخرین اتصال" class="btn btn-outline-danger d-none" />
         <input type="submit" id="btnSubmit" value="ذخیره" class="btn btn-primary mr-3 d-none" />
-        @if(ViewData.ContainsKey("EditMode"))
+        @if (ViewData.ContainsKey("EditMode"))
         {
             <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger mr-3" onclick="return confirm('آیا برای حذف مطمئن هستید؟');">حذف لینک</a>
         }
@@ -118,7 +141,7 @@ else
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-<script>
+    <script>
     $(document).ready(function () {
         var endPointsCount = $('#divEndPoints').children().length;
         if (endPointsCount >= 2) {
@@ -299,5 +322,5 @@ else
         if ($("#divPassives_" + index).children().length == 0)
             $("#EndPoints_" + index + "__btnRemoveLastPassive").addClass("d-none");
     }
-</script>
+    </script>
 }

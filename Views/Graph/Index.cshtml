@@ -20,6 +20,16 @@
         <label class="control-label">مرکز</label>
         <select id="Center" class="form-control"></select>
     </div>
+    <div class="col-lg-3 col-sm-6 form-group">
+        <label class="control-label">نوع شبکه</label>
+        <select id="NetworkType" class="form-control">
+            <option value="all">همه</option>
+            @foreach(var t in Enum.GetNames(typeof(Device.NetworkType)))
+            {
+                <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Device.NetworkType), t)</option>
+            }
+        </select>
+    </div>
 </div>
 <div class="mt-2">
     <button id="btnShowGraph" class="btn btn-primary">نمایش گراف</button>
@@ -62,7 +72,11 @@
         var diagram = null;
         $("#btnShowGraph").click(function () {
             $("#divResult").removeClass("d-none");
-            $.get("/Graph/Center/" + $("#Center").val(), function (res) {
+            var url = "/Graph/Center/" + $("#Center").val();
+            var networkType = $("#NetworkType").val();
+            if (networkType != "all")
+                url = url + "?NetworkType=" + networkType;
+            $.get(url, function (res) {
                 diagram = initGojs("divGraph", res);
             });
         });

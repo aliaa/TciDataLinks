@@ -5,16 +5,25 @@
     ViewData["Title"] = Model.Current.Name;
 }
 
-@if (Model.Rack != null && User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
+@if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
 {
-    <div class="mt-4">
-        <a asp-controller="Device" asp-action="Add" class="btn btn-info"
-           asp-route-city="@Model.City.Id" asp-route-center="@Model.Center.Id" asp-route-building="@Model.Building.Id"
-           asp-route-room="@Model.Room.Id" asp-route-rack="@Model.Rack.Id">دستگاه جدید</a>
-        <a asp-controller="PatchPanel" asp-action="Add" class="btn btn-info mx-3"
-           asp-route-city="@Model.City.Id" asp-route-center="@Model.Center.Id" asp-route-building="@Model.Building.Id"
-           asp-route-room="@Model.Room.Id" asp-route-rack="@Model.Rack.Id">رابط Passive جدید</a>
-    </div>
+    @if (Model.Current.PlaceType == PlaceType.Room)
+    {
+        <div class="mt-4">
+            <button id="btnNewRack" class="btn btn-info">راک جدید</button>
+        </div>
+    }
+    @if (Model.Rack != null)
+    {
+        <div class="mt-4">
+            <a asp-controller="Device" asp-action="Add" class="btn btn-info"
+               asp-route-city="@Model.City.Id" asp-route-center="@Model.Center.Id" asp-route-building="@Model.Building.Id"
+               asp-route-room="@Model.Room.Id" asp-route-rack="@Model.Rack.Id">دستگاه جدید</a>
+            <a asp-controller="PatchPanel" asp-action="Add" class="btn btn-info mx-3"
+               asp-route-city="@Model.City.Id" asp-route-center="@Model.Center.Id" asp-route-building="@Model.Building.Id"
+               asp-route-room="@Model.Room.Id" asp-route-rack="@Model.Rack.Id">رابط Passive جدید</a>
+        </div>
+    }
 }
 
 <div class="mt-4">
@@ -42,7 +51,7 @@
 {
     <div class="row mt-5">
         <div class="col-lg-6">
-            <h3>لیست @(Utils.GetDisplayNameOfMember(typeof(PlaceType), Model.NextLevelType.ToString()))های @Model.ToString() </h3>
+            <h3>@(Utils.GetDisplayNameOfMember(typeof(PlaceType), Model.NextLevelType.ToString()))های @Model.ToString() </h3>
             <ul class="mt-4">
                 @foreach (var item in Model.SubItems)
                 {
@@ -76,7 +85,7 @@
         @if (Model.NextLevelType == PlaceType.Device)
         {
             <div class="col-lg-6">
-                <h3>لیست رابطهای Passive @Model.ToString()</h3>
+                <h3>رابطهای Passive @Model.ToString()</h3>
                 <ul class="mt-4">
                     @foreach (var item in Model.SubItems.Where(i => i.PlaceType == PlaceType.PatchPanel))
                     {
@@ -101,4 +110,59 @@ else if (Model.Type != PlaceType.Center)
     <div class="text-center m-5">
         <a asp-action="Delete" asp-route-id="@Model.Current.Id.ToString()" asp-route-type="@Model.Type" class="btn btn-danger">حذف</a>
     </div>
+}
+
+<div class="modal fade" id="newRackModal">
+    <div class="modal-dialog">
+        <form asp-action="AddRack">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-light">
+                    <h4 class="modal-title">راک جدید</h4>
+                    <button type="button" class="close text-light" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Parent" value="@Model.Current.Id" />
+                    <div class="form-group">
+                        <label class="control-label">ردیف</label>
+                        <input type="number" name="Line" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">شماره</label>
+                        <input type="number" name="Index" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">سمت</label>
+                        <select name="Side" class="form-control">
+                            <option>A</option>
+                            <option>B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">ظرفیت</label>
+                        <input type="number" name="Capacity" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">نوع راک</label>
+                        <select name="Type" class="form-control">
+                            @foreach (var t in Enum.GetNames(typeof(Rack.RackType)))
+                            {
+                                <option value="t">@Utils.GetDisplayNameOfMember(typeof(Rack.RackType), t)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="ذخیره"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $("#btnNewRack").click(function () {
+            $("#newRackModal").modal();
+        });
+    </script>
 }

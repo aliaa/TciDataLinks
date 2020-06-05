@@ -28,7 +28,7 @@ namespace TciDataLinks.Controllers
             return View();
         }
 
-        public IActionResult Center(ObjectId id)
+        public IActionResult Center(ObjectId id, Device.NetworkType? networkType = null)
         {
             var graph = new Graph();
             var center = db.FindById<CommCenter>(id);
@@ -70,7 +70,11 @@ namespace TciDataLinks.Controllers
                             isGroup = true
                         };
                         graph.AddNode(rackNode);
-                        foreach (var device in db.FindGetResults<Device>(d => d.Rack == rack.Id))
+
+                        var filter = Builders<Device>.Filter.Eq(d => d.Rack, rack.Id);
+                        if (networkType != null)
+                            filter = Builders<Device>.Filter.And(filter, Builders<Device>.Filter.Eq(d => d.Network, networkType));
+                        foreach (var device in db.Find(filter).ToEnumerable())
                         {
                             deviceIds.Add(device.Id);
                             var deviceNode = new GraphNode

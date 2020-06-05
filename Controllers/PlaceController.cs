@@ -183,5 +183,13 @@ namespace TciDataLinks.Controllers
             }
             return Json(Enumerable.Empty<object>());
         }
+
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
+        public IActionResult AddRack(Rack rack)
+        {
+            if (!db.Any<Rack>(r => r.Parent == rack.Parent && r.Line == rack.Line && r.Index == rack.Index && r.Side == rack.Side))
+                db.Save(rack);
+            return RedirectToAction(nameof(Item), new { type = nameof(PlaceType.Room), id = rack.Parent });
+        }
     }
 }

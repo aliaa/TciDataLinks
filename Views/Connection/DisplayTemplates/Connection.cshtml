@@ -119,4 +119,26 @@
             </div>
         </div>
     </div>
+    <div class="card-footer text-black-50">
+        @if (Model.CreateDate != null)
+        {
+            <div class="d-inline-block ml-5">
+                ایجاد شده در @Model.CreateDate
+                @if (Model.CreatedUser != null)
+                {
+                    <span>توسط <b>@Model.CreatedUser</b></span>
+                }
+            </div>
+        }
+        @if (Model.LastEditDate != null)
+        {
+            <div class="d-inline-block">
+                آخرین ویرایش در @Model.LastEditDate
+                @if (Model.EditedUser != null)
+                {
+                    <span>توسط <b>@Model.EditedUser</b></span>
+                }
+            </div>
+        }
+    </div>
 </div>
