@@ -7,7 +7,7 @@
 @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
 {
     <a asp-controller="Device" asp-action="Add" class="btn btn-info">دستگاه جدید</a>
-    <a asp-controller="PatchPanel" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>
+    <a asp-controller="Passive" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>
 }
 
 <h1 class="mt-4">مراکز</h1>

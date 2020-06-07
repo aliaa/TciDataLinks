@@ -1,4 +1,4 @@
-﻿@model PatchPanelViewModel
+﻿@model PassiveViewModel
 @inject IReadOnlyDbContext db
 
 <div class="card my-5" style="background-color:#eee;">
@@ -18,9 +18,18 @@
             <div class="col-lg-3 col-sm-6">
                 <label>@Html.DisplayNameFor(m => m.Type):</label>
                 <span class="text-value">
-                    @Utils.GetDisplayNameOfMember(typeof(Device.DeviceType), Model.Type.ToString())
+                    @Utils.GetDisplayNameOfMember(typeof(Passive.PassiveTypeEnum), Model.Type.ToString())
                 </span>
             </div>
+            @if (Model.Type == Passive.PassiveTypeEnum.PatchPanel)
+            {
+                <div class="col-lg-3 col-sm-6">
+                    <label>@Html.DisplayNameFor(m => m.PatchPanelType):</label>
+                    <span class="text-value">
+                        @Utils.GetDisplayNameOfMember(typeof(Passive.PatchPanelTypeEnum), Model.PatchPanelType.ToString())
+                    </span>
+                </div>
+            }
             <div class="col-lg-3 col-sm-6">
                 <label>@Html.DisplayNameFor(m => m.Name):</label>
                 <span class="text-value">

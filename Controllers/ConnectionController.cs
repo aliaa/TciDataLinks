@@ -212,13 +212,13 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditConnections))]
-        public IActionResult AddPassiveConnection(int endPointIndex, int index, ObjectId patchPanel)
+        public IActionResult AddPassiveConnection(int endPointIndex, int index, ObjectId passive)
         {
             return GetEditorTemplatePartialView<PassiveConnection>(new PassiveConnectionViewModel
             {
                 EndPointIndex = endPointIndex,
                 Index = index,
-                PatchPanel = patchPanel
+                PatchPanel = passive
             });
         }
 
@@ -229,23 +229,6 @@ namespace TciDataLinks.Controllers
             db.DeleteOne<Connection>(c => c.Id == id);
             return RedirectToAction(nameof(Index));
         }
-
-        //[AcceptVerbs("GET", "POST")]
-        //public IActionResult PortNumberIsValid(string portNumber, ObjectId device, ObjectId patchPanel)
-        //{
-        //    if (device != ObjectId.Empty)
-        //    {
-        //        var exists = db.Any<Connection>(c => c.EndPoints.Any(e => e.Device == device && e.PortNumber == portNumber));
-        //        return Json(!exists);
-        //    }
-        //    else if (patchPanel != ObjectId.Empty)
-        //    {
-        //        var exists = db.Any<Connection>(c => c.EndPoints.Any(e => e.PassiveConnections.Any(p => p.PatchPanel == patchPanel && p.PortNumber == portNumber)));
-        //        return Json(!exists);
-        //    }
-        //    //TODO
-        //    return Json(true);
-        //}
 
     }
 }

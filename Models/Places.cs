@@ -20,7 +20,7 @@ namespace TciDataLinks.Models
         [Display(Name = "دستگاه")]
         Device,
         [Display(Name = "رابط Passive")]
-        PatchPanel
+        Passive
     }
 
     [CollectionIndex(new string[] { nameof(Parent) })]

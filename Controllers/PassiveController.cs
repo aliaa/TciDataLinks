@@ -14,25 +14,25 @@ using TciDataLinks.ViewModels;
 namespace TciDataLinks.Controllers
 {
     [Authorize]
-    public class PatchPanelController : BaseController
+    public class PassiveController : BaseController
     {
         private IEnumerable<City> cities = null;
-        public PatchPanelController(IDbContext db, IEnumerable<City> cities) : base(db)
+        public PassiveController(IDbContext db, IEnumerable<City> cities) : base(db)
         {
             this.cities = cities;
         }
 
         public IActionResult Item(ObjectId id)
         {
-            var patchPanel = db.FindById<PatchPanel>(id);
-            var model = Mapper.Map<PatchPanelViewModel>(patchPanel);
+            var passive = db.FindById<Passive>(id);
+            var model = Mapper.Map<PassiveViewModel>(passive);
             return View(model);
         }
 
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
         public IActionResult Add(ObjectId city, ObjectId center, ObjectId building, ObjectId room, ObjectId rack)
         {
-            var model = new PatchPanelViewModel
+            var model = new PassiveViewModel
             {
                 City = city,
                 Center = center,
@@ -69,7 +69,7 @@ namespace TciDataLinks.Controllers
 
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
         [HttpPost]
-        public IActionResult Add(PatchPanelViewModel m)
+        public IActionResult Add(PassiveViewModel m)
         {
             ObjectId buildingId, roomId, rackId;
             if (m.Center == ObjectId.Empty)
@@ -109,24 +109,24 @@ namespace TciDataLinks.Controllers
                 }
             }
 
-            var patchPanel = Mapper.Map<PatchPanel>(m);
-            patchPanel.Rack = rackId;
+            var passive = Mapper.Map<Passive>(m);
+            passive.Rack = rackId;
 
-            db.Save(patchPanel);
+            db.Save(passive);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
 
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
         public IActionResult Edit(string id)
         {
-            var patchPanel = db.FindById<PatchPanel>(id);
-            var model = Mapper.Map<PatchPanelViewModel>(patchPanel);
-            var rack = db.FindById<Rack>(patchPanel.Rack);
+            var passive = db.FindById<Passive>(id);
+            var model = Mapper.Map<PassiveViewModel>(passive);
+            var rack = db.FindById<Rack>(passive.Rack);
             model.RackType = rack.Type;
             model.RackLine = rack.Line;
             model.RackIndex = rack.Index;
             model.RackSide = rack.Side;
-            model.RackRow = patchPanel.RackRow;
+            model.RackRow = passive.RackRow;
             model.Room = rack.Parent.ToString();
             var parent = db.FindById<Room>(rack.Parent).Parent;
             model.Building = parent.ToString();
@@ -148,7 +148,7 @@ namespace TciDataLinks.Controllers
 
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
         [HttpPost]
-        public IActionResult Edit(PatchPanelViewModel m)
+        public IActionResult Edit(PassiveViewModel m)
         {
             ObjectId buildingId, roomId, rackId;
             if (m.Center == ObjectId.Empty)
@@ -188,18 +188,18 @@ namespace TciDataLinks.Controllers
                 }
             }
 
-            var patchPanel = db.FindById<PatchPanel>(m.Id);
-            patchPanel.InjectFrom(m);
-            patchPanel.Rack = rackId;
-            db.Save(patchPanel);
+            var passive = db.FindById<Passive>(m.Id);
+            passive.InjectFrom(m);
+            passive.Rack = rackId;
+            db.Save(passive);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
 
         public IActionResult Delete(ObjectId id)
         {
-            var pp = db.FindById<PatchPanel>(id);
+            var pp = db.FindById<Passive>(id);
             if (!db.Any<EndPoint>(e => e.PassiveConnections.Any(p => p.PatchPanel == id)))
-                db.DeleteOne<PatchPanel>(id);
+                db.DeleteOne<Passive>(id);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = pp.Rack.ToString() });
         }
     }

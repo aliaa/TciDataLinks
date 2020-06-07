@@ -23,7 +23,7 @@
             <label>نوع داده</label>
             <select name="type" class="form-control">
                 <option value="Device" selected="@(ViewBag.Type == "Device")">دستگاه</option>
-                <option value="PatchPanel" selected="@(ViewBag.Type == "PatchPanel")">پچ پنل</option>
+                <option value="Passive" selected="@(ViewBag.Type == "Passive")">رابط Passive</option>
                 <option value="Link" selected="@(ViewBag.Type == "Link")">لینک</option>
                 <option value="AuthUser" selected="@(ViewBag.Type == "AuthUser")">کاربر</option>
             </select>
@@ -57,9 +57,9 @@
                                 viewLink = "/Device/Item/" + item.ObjId;
                                 break;
 
-                            case nameof(PatchPanel):
-                                col = "پچ پنل";
-                                viewLink = "/PatchPanel/Item/" + item.ObjId;
+                            case nameof(Passive):
+                                col = "Passive";
+                                viewLink = "/Passive/Item/" + item.ObjId;
                                 break;
 
                             case nameof(Connection):

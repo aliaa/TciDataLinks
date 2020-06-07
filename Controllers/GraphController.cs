@@ -85,11 +85,11 @@ namespace TciDataLinks.Controllers
                             };
                             graph.AddNode(deviceNode);
                         }
-                        foreach (var pp in db.FindGetResults<PatchPanel>(p => p.Rack == rack.Id))
+                        foreach (var pp in db.FindGetResults<Passive>(p => p.Rack == rack.Id))
                         {
                             var ppNode = new GraphNode
                             {
-                                key = "PatchPanel_" + pp.Id,
+                                key = "Passive_" + pp.Id,
                                 text = pp.ToString(),
                                 group = rackNode.key
                             };
@@ -113,7 +113,7 @@ namespace TciDataLinks.Controllers
                 {
                     foreach (var pc in endPoints[0].PassiveConnections)
                     {
-                        AddDeviceHierarchal(graph, db.FindById<PatchPanel>(pc.PatchPanel), out string ppKey);
+                        AddDeviceHierarchal(graph, db.FindById<Passive>(pc.PatchPanel), out string ppKey);
                         graph.AddLink(new GraphLink(lastKey, ppKey, c.Key, lastPort, pc.PortNumber));
                         lastKey = ppKey;
                         lastPort = pc.PortNumber;
@@ -144,7 +144,7 @@ namespace TciDataLinks.Controllers
                     for (int j = ep.PassiveConnections.Count - 1; j >= 0; j--)
                     {
                         var pc = ep.PassiveConnections[j];
-                        AddDeviceHierarchal(graph, db.FindById<PatchPanel>(pc.PatchPanel), out string ppKey);
+                        AddDeviceHierarchal(graph, db.FindById<Passive>(pc.PatchPanel), out string ppKey);
                         graph.AddLink(new GraphLink(lastKey, ppKey, c.Key, lastPort, pc.PortNumber));
                         lastKey = ppKey;
                         lastPort = pc.PortNumber;
@@ -170,8 +170,8 @@ namespace TciDataLinks.Controllers
             anotherCenter = null;
             if (device is Device)
                 deviceKey = "Device_" + device.Id;
-            else if (device is PatchPanel)
-                deviceKey = "PatchPanel_" + device.Id;
+            else if (device is Passive)
+                deviceKey = "Passive_" + device.Id;
             else
                 throw new NotImplementedException();
 
@@ -221,7 +221,7 @@ namespace TciDataLinks.Controllers
             AddDeviceHierarchal(graph, db.FindById<Device>(endPoints[0].Device), out lastKey);
             foreach (var pc in endPoints[0].PassiveConnections)
             {
-                AddDeviceHierarchal(graph, db.FindById<PatchPanel>(pc.PatchPanel), out string ppKey);
+                AddDeviceHierarchal(graph, db.FindById<Passive>(pc.PatchPanel), out string ppKey);
                 graph.AddLink(new GraphLink(lastKey, ppKey, id, lastPort, pc.PortNumber));
                 lastKey = ppKey;
                 lastPort = pc.PortNumber;
@@ -233,7 +233,7 @@ namespace TciDataLinks.Controllers
                 for (int j = endPoints[i].PassiveConnections.Count - 1; j >= 0; j--)
                 {
                     var pc = endPoints[i].PassiveConnections[j];
-                    AddDeviceHierarchal(graph, db.FindById<PatchPanel>(pc.PatchPanel), out string ppKey);
+                    AddDeviceHierarchal(graph, db.FindById<Passive>(pc.PatchPanel), out string ppKey);
                     graph.AddLink(new GraphLink(lastKey, ppKey, id, lastPort, pc.PortNumber));
                     lastKey = ppKey;
                     lastPort = pc.PortNumber;

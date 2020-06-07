@@ -123,8 +123,8 @@ else
                     <select id="NewPassiveRack" class="form-control"></select>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">پچ پنل</label>
-                    <select id="NewPassivePatchPanel" class="form-control"></select>
+                    <label class="control-label">رابط Passive</label>
+                    <select id="NewPassive" class="form-control"></select>
                 </div>
             </div>
             <div class="modal-footer">
@@ -207,7 +207,7 @@ else
 
     $("#NewPassiveRoom").change(function () {
         removeOptionsOfDropDown($("#NewPassiveRack"));
-        removeOptionsOfDropDown($("#NewPassivePatchPanel"));
+        removeOptionsOfDropDown($("#NewPassive"));
         var id = $(this).val();
         $.get("/Place/Racks?room=" + id, function (res) {
             $.each(res, function (index, item) {
@@ -228,17 +228,17 @@ else
     });
 
     $("#NewPassiveRack").change(function () {
-        removeOptionsOfDropDown($("#NewPassivePatchPanel"));
+        removeOptionsOfDropDown($("#NewPassive"));
         var id = $(this).val();
-        $.get("/Place/PatchPanels?rack=" + id, function (res) {
-            removeOptionsOfDropDown($("#NewPassivePatchPanel"));
+        $.get("/Place/Passives?rack=" + id, function (res) {
+            removeOptionsOfDropDown($("#NewPassive"));
             $.each(res, function (index, item) {
-                $("#NewPassivePatchPanel").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                $("#NewPassive").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
         });
     });
 
-    $("#NewPassivePatchPanel").change(function () {
+    $("#NewPassive").change(function () {
         $("#btnAddNewPassive").removeClass("d-none");
     });
 
@@ -284,7 +284,7 @@ else
     function ShowNewPassiveDialog(index) {
         $("#newPassiveEndPointIndex").val(index);
         removeOptionsOfDropDown($("#NewPassiveRack"));
-        removeOptionsOfDropDown($("#NewPassivePatchPanel"));
+        removeOptionsOfDropDown($("#NewPassive"));
         $("#btnAddNewPassive").addClass("d-none");
         var buildingId = $("#EndPoints_" + index + "__Building").val();
         $.get("/Place/Rooms?building=" + buildingId, function (res) {
@@ -299,15 +299,15 @@ else
     $("#btnAddNewPassive").on("click", function () {
         var endPointIndex = $("#newPassiveEndPointIndex").val();
         var index = $("#divPassives_" + endPointIndex).children().length;
-        var patchPanel = $("#NewPassivePatchPanel").val();
-        if (!patchPanel)
+        var passive = $("#NewPassive").val();
+        if (!passive)
             return;
-        if ($("#divPassives_" + endPointIndex).find("input[value='" + patchPanel + "']").length > 0) {
-            showToast("این پچ پنل قبلا به این اتصال اضافه شده است!", "danger");
+        if ($("#divPassives_" + endPointIndex).find("input[value='" + passive + "']").length > 0) {
+            showToast("این رابط Passive قبلا به این اتصال اضافه شده است!", "danger");
             return;
         }
         $.ajax({
-            url: "/Connection/AddPassiveConnection?endPointIndex=" + endPointIndex + "&index=" + index + "&patchPanel=" + patchPanel,
+            url: "/Connection/AddPassiveConnection?endPointIndex=" + endPointIndex + "&index=" + index + "&passive=" + passive,
             success: function (partialView) {
                 var item = $.parseHTML(partialView);
                 item = ConvertInputsToBeAsArrayItem(item, "@(nameof(Model.EndPoints))[" + endPointIndex + "].PassiveConnectionViewModels", index, false);

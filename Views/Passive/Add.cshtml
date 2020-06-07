@@ -1,4 +1,4 @@
-﻿@model PatchPanelViewModel
+﻿@model PassiveViewModel
 
 @{
     ViewData["Title"] = "رابط Passive جدید";
@@ -77,14 +77,14 @@
         </div>
 
         <div class="form-group col-lg-3 col-sm-6">
-            <label asp-for="Type" class="control-label"></label>
-            <select asp-for="Type" class="form-control">
-                @foreach (var t in Enum.GetNames(typeof(PatchPanel.PatchPanelType)))
+            <label asp-for="PatchPanelType" class="control-label"></label>
+            <select asp-for="PatchPanelType" class="form-control">
+                @foreach (var t in Enum.GetNames(typeof(Passive.PatchPanelTypeEnum)))
                 {
-                    <option>@t</option>
+                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Passive.PatchPanelTypeEnum), t)</option>
                 }
             </select>
-            <span asp-validation-for="Type" class="text-danger"></span>
+            <span asp-validation-for="PatchPanelType" class="text-danger"></span>
         </div>
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Name" class="control-label"></label>

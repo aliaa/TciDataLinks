@@ -128,8 +128,8 @@
                 if (split[0] == "Device") {
                     window.location = "/Device/Item/" + split[1];
                 }
-                else if (split[0] == "PatchPanel") {
-                    window.location = "/PatchPanel/Item/" + split[1];
+                else if (split[0] == "Passive") {
+                    window.location = "/Passive/Item/" + split[1];
                 }
                 else {
                     window.location = "/Place/Item/" + split[1] + "?type=" + split[0];

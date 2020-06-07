@@ -11,14 +11,14 @@ namespace TciDataLinks.ViewModels
 
         public string GetPlaceDisplayName(IReadOnlyDbContext db)
         {
-            var patchPanel = db.FindById<PatchPanel>(PatchPanel);
-            var rack = db.FindById<Rack>(patchPanel.Rack);
+            var passive = db.FindById<Passive>(PatchPanel);
+            var rack = db.FindById<Rack>(passive.Rack);
             var room = db.FindById<Room>(rack.Parent);
 
             StringBuilder sb = new StringBuilder();
             sb.Append("اتاق/سالن ").Append(room.Name).Append(" &lArr; ")
                 .Append("راک ").Append(rack.Name).Append(" &lArr; ")
-                .Append("پچ پنل ").Append(patchPanel.Name);
+                .Append("پچ پنل ").Append(passive.Name);
             return sb.ToString();
         }
     }

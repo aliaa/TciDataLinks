@@ -64,13 +64,13 @@ namespace TciDataLinks.Controllers
                     model.Rack = db.FindById<Rack>(objId);
                     model.SubItems = db.FindGetResults<Device>(d => d.Rack == objId)
                         .Select(d => new PlaceBase(PlaceType.Device) { Id = d.Id, Name = d.ToString(), Parent = objId })
-                        .Concat(db.FindGetResults<PatchPanel>(p => p.Rack == objId)
-                            .Select(p => new PlaceBase(PlaceType.PatchPanel) { Id = p.Id, Name = p.Name, Parent = objId }));
+                        .Concat(db.FindGetResults<Passive>(p => p.Rack == objId)
+                            .Select(p => new PlaceBase(PlaceType.Passive) { Id = p.Id, Name = p.Name, Parent = objId }));
                     break;
                 case PlaceType.Device:
                     return RedirectToAction("Edit", "Device", new { id });
-                case PlaceType.PatchPanel:
-                    return RedirectToAction("Edit", "PatchPanel", new { id });
+                case PlaceType.Passive:
+                    return RedirectToAction("Edit", "Passive", new { id });
                 default:
                     throw new NotImplementedException();
             }
@@ -105,7 +105,7 @@ namespace TciDataLinks.Controllers
                         deleted = db.DeleteOne<Room>(objId).DeletedCount > 0;
                     break;
                 case PlaceType.Rack:
-                    if (!db.Any<Device>(d => d.Rack == objId) && !db.Any<PatchPanel>(p => p.Rack == objId))
+                    if (!db.Any<Device>(d => d.Rack == objId) && !db.Any<Passive>(p => p.Rack == objId))
                         deleted = db.DeleteOne<Rack>(objId).DeletedCount > 0;
                     break;
                 default:
@@ -173,13 +173,13 @@ namespace TciDataLinks.Controllers
             return Json(Enumerable.Empty<object>());
         }
 
-        public IActionResult PatchPanels(string rack)
+        public IActionResult Passives(string rack)
         {
             if (ObjectId.TryParse(rack, out ObjectId rackId))
             {
-                var patchPanels = db.FindGetResults<PatchPanel>(p => p.Rack == rackId)
+                var passives = db.FindGetResults<Passive>(p => p.Rack == rackId)
                     .Select(p => new { id = p.Id.ToString(), text = p.ToString() });
-                return Json(patchPanels);
+                return Json(passives);
             }
             return Json(Enumerable.Empty<object>());
         }
