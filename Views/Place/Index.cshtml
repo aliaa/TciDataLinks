@@ -20,14 +20,14 @@
             <div class="card m-2">
                 <div class="card-header">@city</div>
                 <div class="card-body">
-                    <ul class="">
-                        @foreach (var center in Model.Centers[city])
+                    <ol class="">
+                        @foreach (var center in Model.Centers[city].OrderBy(c => c.Name))
                         {
                             <li>
                                 <a asp-action="Item" asp-route-type="Center" asp-route-id="@center.Id.ToString()">@center.Name</a>
                             </li>
                         }
-                    </ul>
+                    </ol>
                 </div>
             </div>
         </div>

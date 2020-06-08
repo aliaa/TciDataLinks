@@ -50,11 +50,11 @@ namespace TciDataLinks.Controllers
                     var city = cities.First(c => c.Id == center.City);
                     model.Center = new PlaceBase(PlaceType.Center) { Id = objId, Name = center.Name };
                     model.City = new PlaceBase(PlaceType.City) { Id = city.Id, Name = city.Name };
-                    model.SubItems = db.FindGetResults<Building>(b => b.Parent == objId);
+                    model.SubItems = db.Find<Building>(b => b.Parent == objId).SortBy(b => b.Name).ToEnumerable();
                     break;
                 case PlaceType.Building:
                     model.Building = db.FindById<Building>(objId);
-                    model.SubItems = db.FindGetResults<Room>(r => r.Parent == objId);
+                    model.SubItems = db.Find<Room>(r => r.Parent == objId).SortBy(r => r.Name).ToEnumerable();
                     break;
                 case PlaceType.Room:
                     model.Room = db.FindById<Room>(objId);
