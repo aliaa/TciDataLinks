@@ -39,7 +39,7 @@ namespace TciDataLinks.Controllers
             foreach (var e in db.Find<EndPoint>(e => e.Connection == c.Id).SortBy(e => e.Index).ToEnumerable())
             {
                 var evm = Mapper.Map<EndPointViewModel>(e);
-                if(addMoreDetails)
+                if (addMoreDetails)
                 {
                     var rackId = db.FindById<Device>(evm.Device).Rack;
                     var roomId = db.FindById<Rack>(rackId).Parent;

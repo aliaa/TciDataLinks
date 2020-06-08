@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TciCommon.Models;
 using TciDataLinks.Models;
-using TciDataLinks.ViewModels;
 
 namespace TciDataLinks.Controllers
 {
