@@ -81,6 +81,16 @@
             <span asp-validation-for="RackType" class="text-danger"></span>
         </div>
         <div class="form-group col-lg-3 col-sm-6">
+            <label asp-for="Type" class="control-label"></label>
+            <select asp-for="Type" class="form-control">
+                @foreach (var t in Enum.GetNames(typeof(Passive.PassiveTypeEnum)))
+                {
+                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Passive.PassiveTypeEnum), t)</option>
+                }
+            </select>
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6" id="divPatchPanelType">
             <label asp-for="PatchPanelType" class="control-label"></label>
             <select asp-for="PatchPanelType" class="form-control">
                 @foreach (var t in Enum.GetNames(typeof(Passive.PatchPanelTypeEnum)))
@@ -89,6 +99,16 @@
                 }
             </select>
             <span asp-validation-for="PatchPanelType" class="text-danger"></span>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6" id="divTransmissionType">
+            <label asp-for="TransmissionType" class="control-label"></label>
+            <select asp-for="TransmissionType" class="form-control">
+                @foreach (var t in Enum.GetNames(typeof(PassiveConnection.TransmissionSystemType)))
+                {
+                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(PassiveConnection.TransmissionSystemType), t)</option>
+                }
+            </select>
+            <span asp-validation-for="TransmissionType" class="text-danger"></span>
         </div>
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Name" class="control-label"></label>
@@ -114,9 +134,9 @@
 
 <script>
 
-    $("#Building").select2(select2Settings);
-    $("#Room").select2(select2Settings);
-    $("#Rack").select2(select2Settings);
+    $("#Building").select2(select2BaseSettings);
+    $("#Room").select2(select2BaseSettings);
+    $("#Rack").select2(select2BaseSettings);
 
     $("#City").change(function () {
         var cityId = $(this).val();
@@ -152,5 +172,22 @@
         });
     });
 
+    $("#Type").change(function () {
+        var type = $("#Type").val();
+        var divPP = $("#divPatchPanelType");
+        var divTT = $("#divTransmissionType");
+        if (type == "PatchPanel") {
+            divPP.show();
+            divTT.hide();
+            $("#TransmissionType").val("None");
+        }
+        else {
+            divPP.hide();
+            divTT.show();
+            $("#PatchPanelType").val("None");
+        }
+    });
+
+    $("#Type").trigger("change");
 </script>
 }

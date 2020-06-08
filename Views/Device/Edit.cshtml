@@ -116,9 +116,9 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
-        $("#Building").select2(select2Settings);
-        $("#Room").select2(select2Settings);
-        $("#Rack").select2(select2Settings);
+        $("#Building").select2(select2BaseSettings);
+        $("#Room").select2(select2BaseSettings);
+        $("#Rack").select2(select2BaseSettings);
 
         $("#City").change(function () {
             var cityId = $(this).val();

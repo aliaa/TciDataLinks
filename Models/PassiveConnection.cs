@@ -31,7 +31,7 @@ namespace TciDataLinks.Models
             WRI,
         }
 
-        [Display(Name = "پچ پنل")]
+        [Display(Name = "رابط Passive")]
         public ObjectId PatchPanel { get; set; }
 
         [Required(ErrorMessage = "شماره پورت اجباریست")]
