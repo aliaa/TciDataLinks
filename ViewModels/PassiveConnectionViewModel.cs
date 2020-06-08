@@ -1,4 +1,6 @@
-﻿using EasyMongoNet;
+﻿using AliaaCommon;
+using EasyMongoNet;
+using System;
 using System.Text;
 using TciDataLinks.Models;
 
@@ -17,8 +19,17 @@ namespace TciDataLinks.ViewModels
 
             StringBuilder sb = new StringBuilder();
             sb.Append("اتاق/سالن ").Append(room.Name).Append(" &lArr; ")
-                .Append("راک ").Append(rack.Name).Append(" &lArr; ")
-                .Append("پچ پنل ").Append(passive.Name);
+                .Append("راک ").Append(rack.Name).Append(" &lArr; ");
+            if (passive.Type == Passive.PassiveTypeEnum.PatchPanel)
+                sb.Append("پچ پنل ");
+            else if (passive.Type == Passive.PassiveTypeEnum.Transmissional)
+                sb.Append("تجهیز انتقال ")
+                    .Append(Utils.GetDisplayNameOfMember(typeof(PassiveConnection.TransmissionSystemType), passive.TransmissionType.ToString()))
+                    .Append(" ");
+            else
+                throw new NotImplementedException();
+            sb.Append(passive.Name);
+
             return sb.ToString();
         }
     }

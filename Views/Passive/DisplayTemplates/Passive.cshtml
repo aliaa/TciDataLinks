@@ -30,6 +30,15 @@
                     </span>
                 </div>
             }
+            else
+            {
+                <div class="col-lg-3 col-sm-6">
+                    <label>@Html.DisplayNameFor(m => m.TransmissionType):</label>
+                    <span class="text-value">
+                        @Utils.GetDisplayNameOfMember(typeof(PassiveConnection.TransmissionSystemType), Model.TransmissionType.ToString())
+                    </span>
+                </div>
+            }
             <div class="col-lg-3 col-sm-6">
                 <label>@Html.DisplayNameFor(m => m.Name):</label>
                 <span class="text-value">
