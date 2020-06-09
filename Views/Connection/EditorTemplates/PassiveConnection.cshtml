@@ -17,12 +17,12 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="row">
             <div class="form-group col-lg-3 col-sm-6">
-                <label asp-for="PortNumber" class="control-label"></label>
+                <label asp-for="PortNumber" class="control-label" />
                 <input asp-for="PortNumber" class="form-control" />
                 <span asp-validation-for="PortNumber" class="text-danger"></span>
             </div>
             <div class="form-group col-lg-3 col-sm-6">
-                <label asp-for="Connector" class="control-label"></label>
+                <label asp-for="Connector" class="control-label" />
                 <select asp-for="Connector" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.ConnectorType)))
                     {

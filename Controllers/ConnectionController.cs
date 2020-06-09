@@ -72,7 +72,10 @@ namespace TciDataLinks.Controllers
 
         public IActionResult Index()
         {
-            return View(new ConnectionSearchViewModel());
+            return View(new ConnectionSearchViewModel
+            {
+                TotalLinksCount = db.Count<Connection>()
+            });
         }
 
         private const int SEARCH_RESULT_LIMIT = 200;
@@ -135,6 +138,7 @@ namespace TciDataLinks.Controllers
                 .Limit(SEARCH_RESULT_LIMIT)
                 .ToList();
             model.SearchResult = connections.Select(c => ConnectionToViewModel(c)).ToList();
+            model.TotalLinksCount = db.Count<Connection>();
             model.City = null;
             return View(model);
         }

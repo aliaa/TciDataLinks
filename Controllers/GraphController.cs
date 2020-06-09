@@ -154,6 +154,20 @@ namespace TciDataLinks.Controllers
                 }
             }
 
+            // Add empty nodes to empty groups:
+            int n = 0;
+            foreach (var item in graph.Nodes.Where(n => n.isGroup && !graph.Nodes.Any(nn => nn.group == n.key)).ToList())
+            {
+                graph.AddNode(new GraphNode
+                {
+                    key = "Empty_" + n,
+                    text = "خالی",
+                    group = item.key
+                });
+                n++;
+            }
+
+
             var locations = db.FindGetResults<NodeLocationWithKey>(x => x.Center == id).ToDictionary(k => k.Key, v => v.Loc);
             graph.SetLocations(locations);
             return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });

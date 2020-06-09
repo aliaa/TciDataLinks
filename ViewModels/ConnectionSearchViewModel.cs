@@ -62,6 +62,8 @@ namespace TciDataLinks.ViewModels
         [Display(Name = "اطلاعات اتصال ناقص است؟")]
         public bool? Incomplete { get; set; }
 
+        public long TotalLinksCount { get; set; }
+
         public List<ConnectionViewModel> SearchResult { get; set; } = null;
     }
 }

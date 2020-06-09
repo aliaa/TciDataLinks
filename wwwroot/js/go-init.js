@@ -4,6 +4,8 @@
         if (data.Nodes[i].loc) {
             data.Nodes[i].loc = new go.Point(data.Nodes[i].loc.x, data.Nodes[i].loc.y);
         }
+        if (data.Nodes[i].text == "خالی")
+            data.Nodes[i].color = "#ccc";
     }
 
     var gojs = go.GraphObject.make;  // for conciseness in defining templates
@@ -27,7 +29,8 @@
                         name: "OBJSHAPE",
                         fill: "white",
                         desiredSize: new go.Size(160, 30)
-                    }),
+                    },
+                    new go.Binding("fill", "color")),
                 gojs(go.TextBlock,
                     { margin: 4 },
                     new go.Binding("text", "text")),
