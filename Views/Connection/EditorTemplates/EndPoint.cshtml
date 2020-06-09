@@ -19,7 +19,7 @@
         <div class="row">
             <div class="form-group col-lg-3 col-sm-6">
                 <label asp-for="PortType" class="control-label"></label>
-                <select asp-for="PortType" class="form-control">
+                <select asp-for="PortType" class="form-control" onchange="toggleEndPointPortType(@Model.Index)">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.PortTypeEnum)))
                     {
                         <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PortTypeEnum), item)</option>
@@ -48,26 +48,6 @@
                 <span asp-validation-for="SpeedUnit" class="text-danger"></span>
             </div>
             <div class="form-group col-lg-3 col-sm-6">
-                <label asp-for="Module" class="control-label"></label>
-                <select asp-for="Module" class="form-control">
-                    @foreach (var item in Enum.GetNames(typeof(EndPoint.ModuleType)))
-                    {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ModuleType), item)</option>
-                    }
-                </select>
-                <span asp-validation-for="Module" class="text-danger"></span>
-            </div>
-            <div class="form-group col-lg-3 col-sm-6">
-                <label asp-for="PatchCord" class="control-label"></label>
-                <select asp-for="PatchCord" class="form-control">
-                    @foreach (var item in Enum.GetNames(typeof(EndPoint.PatchCordType)))
-                    {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PatchCordType), item)</option>
-                    }
-                </select>
-                <span asp-validation-for="PatchCord" class="text-danger"></span>
-            </div>
-            <div class="form-group col-lg-3 col-sm-6">
                 <label asp-for="Connector" class="control-label"></label>
                 <select asp-for="Connector" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.ConnectorType)))
@@ -77,40 +57,60 @@
                 </select>
                 <span asp-validation-for="Connector" class="text-danger"></span>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="form-group">
-                    <label asp-for="DistanceToNextPoint" class="control-label"></label>
-                    <input asp-for="DistanceToNextPoint" class="form-control" />
-                    <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>
-                </div>
+            <div class="form-group col-lg-3 col-sm-6" id="divModule_@Model.Index">
+                <label asp-for="Module" class="control-label"></label>
+                <select asp-for="Module" class="form-control">
+                    @foreach (var item in Enum.GetNames(typeof(EndPoint.ModuleType)))
+                    {
+                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ModuleType), item)</option>
+                    }
+                </select>
+                <span asp-validation-for="Module" class="text-danger"></span>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="form-group">
-                    <label>
-                        <input asp-for="DataProtection" /> @Html.DisplayNameFor(model => model.DataProtection)
-                    </label>
-                </div>
+            <div class="form-group col-lg-3 col-sm-6" id="divPatchCord_@Model.Index">
+                <label asp-for="PatchCord" class="control-label"></label>
+                <select asp-for="PatchCord" class="form-control">
+                    @foreach (var item in Enum.GetNames(typeof(EndPoint.PatchCordType)))
+                    {
+                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PatchCordType), item)</option>
+                    }
+                </select>
+                <span asp-validation-for="PatchCord" class="text-danger"></span>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="form-group">
-                    <label>
-                        <input asp-for="TransmissionProtection" /> @Html.DisplayNameFor(model => model.TransmissionProtection)
-                    </label>
-                </div>
+            <div class="form-group col-lg-3 col-sm-6" id="divWaveLength_@Model.Index">
+                <label asp-for="WaveLength" class="control-label"></label>
+                <select asp-for="WaveLength" class="form-control">
+                    @foreach (var item in Enum.GetNames(typeof(EndPoint.WaveLengthEnum)))
+                    {
+                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.WaveLengthEnum), item)</option>
+                    }
+                </select>
+                <span asp-validation-for="WaveLength" class="text-danger"></span>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="form-group">
-                    <label>
-                        <input asp-for="Incomplete" /> @Html.DisplayNameFor(model => model.Incomplete)
-                    </label>
-                </div>
+            <div class="col-lg-3 col-sm-6 form-group">
+                <label asp-for="DistanceToNextPoint" class="control-label"></label>
+                <input asp-for="DistanceToNextPoint" class="form-control" />
+                <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>
             </div>
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <textarea asp-for="Description" class="form-control"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
+            <div class="col-lg-3 col-sm-6 form-group">
+                <label class="form-check-label" asp-for="DataProtection">
+                    <input asp-for="DataProtection" /> @Html.DisplayNameFor(model => model.DataProtection)
+                </label>
+            </div>
+            <div class="col-lg-3 col-sm-6 form-group">
+                <label class="form-check-label" asp-for="TransmissionProtection">
+                    <input asp-for="TransmissionProtection" /> @Html.DisplayNameFor(model => model.TransmissionProtection)
+                </label>
+            </div>
+            <div class="col-lg-3 col-sm-6 form-group">
+                <label class="form-check-label" asp-for="Incomplete">
+                    <input asp-for="Incomplete" /> @Html.DisplayNameFor(model => model.Incomplete)
+                </label>
+            </div>
+            <div class="col-lg-12 form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
         <div id="divPassives_@Model.Index" class="my-4">

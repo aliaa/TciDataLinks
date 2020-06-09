@@ -95,7 +95,7 @@ namespace TciDataLinks.Controllers
                 .FirstOrDefault();
             if (rack == null)
             {
-                rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex, Type = m.RackType };
+                rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex, Type = m.RackType, Side = m.RackSide };
                 db.Save(rack);
                 rackId = rack.Id;
             }

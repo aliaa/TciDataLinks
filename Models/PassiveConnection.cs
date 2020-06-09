@@ -43,6 +43,9 @@ namespace TciDataLinks.Models
         [Display(Name = "نوع کانکتور")]
         public EndPoint.ConnectorType Connector { get; set; }
 
+        [Display(Name = "اتصال تا رابط بعدی پرزوج است")]
+        public bool ConnectionIsBulk { get; set; }
+
         [Display(Name = "فاصله تا اتصال بعدی (متر)")]
         [Required(ErrorMessage = "فاصله اجباریست")]
         public int DistanceToNextPoint { get; set; }

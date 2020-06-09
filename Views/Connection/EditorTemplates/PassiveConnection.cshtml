@@ -1,7 +1,7 @@
 ﻿@model PassiveConnectionViewModel
 @inject IReadOnlyDbContext db
 
-@{ 
+@{
     int hue = (Model.EndPointIndex * 35 + 60) % 360;
 }
 
@@ -41,7 +41,14 @@
                 </select>
                 <span asp-validation-for="TransmissionSystem" class="text-danger"></span>
             </div>
-            <div class="form-group col-lg-3 col-sm-6">
+            <div class="form-group form-check col-lg-3 col-sm-6">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ConnectionIsBulk"
+                           onchange="$('#divDistanceToNextPoint_@(Model.EndPointIndex)_@(Model.Index)').toggle()" />
+                    @Html.DisplayNameFor(model => model.ConnectionIsBulk)
+                </label>
+            </div>
+            <div class="form-group col-lg-3 col-sm-6" id="divDistanceToNextPoint_@(Model.EndPointIndex)_@(Model.Index)">
                 <label asp-for="DistanceToNextPoint" class="control-label"></label>
                 <input asp-for="DistanceToNextPoint" class="form-control" />
                 <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>

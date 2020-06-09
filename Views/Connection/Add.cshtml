@@ -3,6 +3,7 @@
 
 @if (ViewData.ContainsKey("EditMode"))
 {
+    <h1>لینک @Model.IdInt</h1>
     <div class="row text-black-50">
         @if (Model.CreateDate != null)
         {
@@ -25,12 +26,12 @@
             </div>
         }
     </div>
-    <hr/>
-    <h1 class="mt-5">ویرایش لینک</h1>
+    <hr />
+    <h2 class="mt-5">ویرایش لینک</h2>
 }
 else
 {
-    <h1>تعریف لینک جدید</h1>
+    <h2>تعریف لینک جدید</h2>
 }
 <hr />
 
@@ -141,7 +142,7 @@ else
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-    <script>
+<script>
     $(document).ready(function () {
         var endPointsCount = $('#divEndPoints').children().length;
         if (endPointsCount >= 2) {
@@ -269,6 +270,7 @@ else
                         $("#btnSubmit").removeClass("d-none");
                     }
                     resetValidation();
+                    toggleEndPointPortType(i);
                 }
             });
     });
@@ -322,5 +324,13 @@ else
         if ($("#divPassives_" + index).children().length == 0)
             $("#EndPoints_" + index + "__btnRemoveLastPassive").addClass("d-none");
     }
-    </script>
+
+    function toggleEndPointPortType(index) {
+        var selected = $("#EndPoints_" + index + "__PortType").val();
+        var show = selected == "Optical";
+        $("#divModule_" + index).toggle(show);
+        $("#divPatchCord_" + index).toggle(show);
+        $("#divWaveLength_" + index).toggle(show);
+    }
+</script>
 }
