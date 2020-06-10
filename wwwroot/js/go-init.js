@@ -4,7 +4,7 @@
         if (data.Nodes[i].loc) {
             data.Nodes[i].loc = new go.Point(data.Nodes[i].loc.x, data.Nodes[i].loc.y);
         }
-        if (data.Nodes[i].text == "خالی")
+        if (data.Nodes[i].text == "")
             data.Nodes[i].color = "#ccc";
     }
 
