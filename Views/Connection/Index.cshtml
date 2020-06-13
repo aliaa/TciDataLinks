@@ -161,7 +161,7 @@
 
         function ClearDropdownsAfter(offset) {
             for (var i = offset; i < dropdownsToClear.length; i++)
-                removeOptionsOfDropDown(dropdownsToClear[i]);
+                removeOptionsOfDropDown(dropdownsToClear[i], { disabledInitMsg: false });
         }
 
         $("#City").change(function () {

@@ -29,8 +29,10 @@ var select2BaseSettings = {
     language: "fa"
 };
 
-function removeOptionsOfDropDown(ddl, initMsg = "انتخاب کنید") {
+function removeOptionsOfDropDown(ddl, { initMsg = "انتخاب کنید", disabledInitMsg = true }) {
     ddl.find("option").remove().end();
-    if (initMsg)
-        ddl.append("<option disabled selected>" + initMsg + "</option>");
+    if (initMsg) {
+        var option = "<option " + (disabledInitMsg ? "disabled" : "") + " selected>" + initMsg + "</option>";
+        ddl.append(option);
+    }
 }

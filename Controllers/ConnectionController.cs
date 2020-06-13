@@ -52,6 +52,7 @@ namespace TciDataLinks.Controllers
             var endPointsIds = vm.EndPoints.Select(e => e.Id).ToList();
             var createActivity = db.FindFirst<UserActivity>(a => endPointsIds.Contains(a.ObjId) && a.ActivityType == ActivityType.Insert);
             var lastEditActivity = db.Find<UserActivity>(a => endPointsIds.Contains(a.ObjId) && a.ActivityType == ActivityType.Update)
+                .Project(a => new { a.Time, a.Username })
                 .SortByDescending(a => a.Time).FirstOrDefault();
             if (createActivity != null)
             {
@@ -98,6 +99,8 @@ namespace TciDataLinks.Controllers
                     parentType = PlaceType.Building;
                 else if (ObjectId.TryParse(model.Center, out parentId))
                     parentType = PlaceType.Center;
+                else if (ObjectId.TryParse(model.City, out parentId))
+                    parentType = PlaceType.City;
                 else
                     throw new NotImplementedException();
                 devices = deviceController.FindDevices(parentId, parentType).Select(d => d.Id).ToList();

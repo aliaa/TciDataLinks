@@ -35,7 +35,7 @@ namespace TciDataLinks.ViewModels
         [Display(Name = "شهر")]
         public string City { get; set; }
 
-        [Required(ErrorMessage = "انتخاب مرکز اجباری است")]
+        //[Required(ErrorMessage = "انتخاب مرکز اجباری است")]
         [Display(Name = "مرکز")]
         public string Center { get; set; }
 

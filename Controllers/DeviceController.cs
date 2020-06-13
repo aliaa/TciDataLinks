@@ -207,6 +207,13 @@ namespace TciDataLinks.Controllers
                     var rooms = db.Find<Room>(r => buildings.Contains(r.Parent)).Project(r => r.Id).ToList();
                     racks = db.Find<Rack>(r => rooms.Contains(r.Parent)).Project(r => r.Id).ToList();
                 }
+                else if (parentType == PlaceType.City)
+                {
+                    var centers = db.Find<CommCenter>(c => c.City == parentId).Project(c => c.Id).ToList();
+                    var buildings = db.Find<Building>(b => centers.Contains(b.Parent)).Project(b => b.Id).ToList();
+                    var rooms = db.Find<Room>(r => buildings.Contains(r.Parent)).Project(r => r.Id).ToList();
+                    racks = db.Find<Rack>(r => rooms.Contains(r.Parent)).Project(r => r.Id).ToList();
+                }
                 else
                     throw new NotImplementedException();
                 return db.FindGetResults<Device>(d => racks.Contains(d.Rack));

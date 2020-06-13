@@ -130,7 +130,7 @@
 
     function ClearDropdownsAfter(offset) {
         for (var i = offset; i < dropdownsToClear.length; i++)
-            removeOptionsOfDropDown(dropdownsToClear[i], "انتخاب کنید یا وارد کنید");
+            removeOptionsOfDropDown(dropdownsToClear[i], { initMsg: "انتخاب کنید یا وارد کنید" });
     }
 
     $("#City").change(function () {
