@@ -131,21 +131,26 @@ namespace TciDataLinks.Controllers
 
             var agg = db.Aggregate<EndPoint>()
                 .Match(fb.And(filters));
-            if(model.NetworkType != null)
+            if (model.NetworkType != ConnectionSearchViewModel.DeviceNetworkType.All &&
+                model.NetworkType != ConnectionSearchViewModel.DeviceNetworkType.InterNetwork)
             {
                 agg = agg.Lookup(nameof(Device), nameof(EndPoint.Device), "_id", "device")
                     .Unwind("device")
-                    .Match("{\"device."+nameof(Device.Network)+"\": \"" + model.NetworkType.Value.ToString() + "\" }")
+                    .Match("{\"device." + nameof(Device.Network) + "\": \"" + model.NetworkType.ToString() + "\" }")
                     .Project("{\"device\": 0 }")
                     .As<EndPoint>();
             }
-            var agg2 = agg.Group(id => id.Connection, g => new { g.Key })
+            var connections = agg.Group(id => id.Connection, g => new { g.Key })
                 .Lookup(nameof(Connection), "Key", "_id", "as")
                 .Unwind("as").ReplaceRoot<Connection>("$as")
                 .SortByDescending(c => c.IdInt)
-                .Limit(SEARCH_RESULT_LIMIT);
-            var connections = agg2.ToList();
-            model.SearchResult = connections.Select(c => ConnectionToViewModel(c)).ToList();
+                .Limit(SEARCH_RESULT_LIMIT)
+                .ToList();
+            var cvmList = connections.Select(c => ConnectionToViewModel(c));
+            if (model.NetworkType == ConnectionSearchViewModel.DeviceNetworkType.InterNetwork)
+                cvmList = cvmList.Where(x => x.EndPoints.Select(e => db.FindById<Device>(e.Device)).GroupBy(d => d.Network).Count() > 1);
+
+            model.SearchResult = cvmList.ToList();
             model.TotalLinksCount = db.Count<Connection>();
             model.City = null;
             return View(model);
