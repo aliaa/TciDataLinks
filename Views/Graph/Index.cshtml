@@ -58,7 +58,7 @@
         });
 
         $("#City").change(function () {
-            removeOptionsOfDropDown($("#Center"), null);
+            removeOptionsOfDropDown($("#Center"), { initMsg: null });
             var id = $(this).val();
             $.get("/Place/Centers?city=" + id + "&onlyUsed=true", function (res) {
                 $.each(res, function (index, item) {

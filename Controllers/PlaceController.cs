@@ -135,9 +135,13 @@ namespace TciDataLinks.Controllers
 
         public IActionResult Buildings(string center)
         {
-            var buildings = db.FindGetResults<Building>(b => b.Parent == ObjectId.Parse(center))
-                .Select(r => new { id = r.Id.ToString(), text = r.ToString() });
-            return Json(buildings);
+            if (ObjectId.TryParse(center, out ObjectId id))
+            {
+                var buildings = db.FindGetResults<Building>(b => b.Parent == id)
+                    .Select(r => new { id = r.Id.ToString(), text = r.ToString() });
+                return Json(buildings);
+            }
+            return Json(Enumerable.Empty<object>());
         }
 
         public IActionResult Rooms(string building)
