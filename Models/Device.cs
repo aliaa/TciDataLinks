@@ -23,7 +23,11 @@ namespace TciDataLinks.Models
             OLT,
             Tellabs,
             Server,
-            Firewall
+            Firewall,
+            HUB,
+            [Display(Name = "E1 Ethernet Converter")]
+            E1EthernetConverter,
+            Inverter,
         }
 
         public enum NetworkType

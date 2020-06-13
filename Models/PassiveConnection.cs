@@ -29,6 +29,7 @@ namespace TciDataLinks.Models
             PDH,
             S320,
             WRI,
+            NG,
         }
 
         [Display(Name = "رابط Passive")]

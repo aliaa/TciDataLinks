@@ -70,7 +70,7 @@
             <select asp-for="Type" class="form-control">
                 @foreach (var t in Enum.GetNames(typeof(Device.DeviceType)))
                 {
-                    <option>@t</option>
+                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Device.DeviceType), t)</option>
                 }
             </select>
             <span asp-validation-for="Type" class="text-danger"></span>

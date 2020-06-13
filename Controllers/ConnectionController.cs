@@ -129,14 +129,22 @@ namespace TciDataLinks.Controllers
             else if (model.SearchType == ConnectionSearchViewModel.EndPointSearchType.NotFirst)
                 filters.Add(fb.Gt(e => e.Index, 0));
 
-            var connections = db.Aggregate<EndPoint>()
-                .Match(fb.And(filters))
-                .Group(id => id.Connection, g => new { g.Key })
+            var agg = db.Aggregate<EndPoint>()
+                .Match(fb.And(filters));
+            if(model.NetworkType != null)
+            {
+                agg = agg.Lookup(nameof(Device), nameof(EndPoint.Device), "_id", "device")
+                    .Unwind("device")
+                    .Match("{\"device."+nameof(Device.Network)+"\": \"" + model.NetworkType.Value.ToString() + "\" }")
+                    .Project("{\"device\": 0 }")
+                    .As<EndPoint>();
+            }
+            var agg2 = agg.Group(id => id.Connection, g => new { g.Key })
                 .Lookup(nameof(Connection), "Key", "_id", "as")
                 .Unwind("as").ReplaceRoot<Connection>("$as")
                 .SortByDescending(c => c.IdInt)
-                .Limit(SEARCH_RESULT_LIMIT)
-                .ToList();
+                .Limit(SEARCH_RESULT_LIMIT);
+            var connections = agg2.ToList();
             model.SearchResult = connections.Select(c => ConnectionToViewModel(c)).ToList();
             model.TotalLinksCount = db.Count<Connection>();
             model.City = null;

@@ -121,6 +121,16 @@
                 <option value="false">خیر</option>
             </select>
         </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label asp-for="NetworkType" class="control-label"></label>
+            <select asp-for="NetworkType" class="form-control">
+                <option>همه</option>
+                @foreach (var item in Enum.GetNames(typeof(Device.NetworkType)))
+                {
+                    <option value="@item">@Utils.GetDisplayNameOfMember(typeof(Device.NetworkType), item)</option>
+                }
+            </select>
+        </div>
     </div>
     <div class="mt-2">
         <input type="submit" class="btn btn-primary" value="جستجوی لینک" />
