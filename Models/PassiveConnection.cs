@@ -6,31 +6,6 @@ namespace TciDataLinks.Models
 {
     public class PassiveConnection
     {
-        public enum TransmissionSystemType
-        {
-            [Display(Name = "مشخص نشده")]
-            None,
-            RTN,
-            PTN,
-            DWDM,
-            [Display(Name = "رادیو WiFi")]
-            Radio_WiFi,
-            [Display(Name = "فیبر نوری")]
-            FiberOptics,
-            S200,
-            S385,
-            IBAS,
-            Line_MUX,
-            [Display(Name = "رادیو Combo")]
-            Radio_Combo,
-            [Display(Name = "رادیو Pasolink")]
-            Radio_Pasolink,
-            SDH,
-            PDH,
-            S320,
-            WRI,
-            NG,
-        }
 
         [Display(Name = "رابط Passive")]
         public ObjectId PatchPanel { get; set; }
@@ -50,9 +25,5 @@ namespace TciDataLinks.Models
         [Display(Name = "فاصله تا اتصال بعدی (متر)")]
         [Required(ErrorMessage = "فاصله اجباریست")]
         public int DistanceToNextPoint { get; set; }
-
-        [BsonRepresentation(BsonType.String)]
-        [Display(Name = "نوع سیستم انتقال")]
-        public TransmissionSystemType TransmissionSystem { get; set; }
     }
 }

@@ -103,9 +103,9 @@
         <div class="form-group col-lg-3 col-sm-6" id="divTransmissionType">
             <label asp-for="TransmissionType" class="control-label"></label>
             <select asp-for="TransmissionType" class="form-control">
-                @foreach (var t in Enum.GetNames(typeof(PassiveConnection.TransmissionSystemType)))
+                @foreach (var t in Enum.GetNames(typeof(TransmissionSystemType)))
                 {
-                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(PassiveConnection.TransmissionSystemType), t)</option>
+                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(TransmissionSystemType), t)</option>
                 }
             </select>
             <span asp-validation-for="TransmissionType" class="text-danger"></span>

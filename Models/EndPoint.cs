@@ -107,6 +107,11 @@ namespace TciDataLinks.Models
 
         public List<PassiveConnection> PassiveConnections { get; set; } = new List<PassiveConnection>();
 
+
+        [BsonRepresentation(BsonType.String)]
+        [Display(Name = "نوع سیستم انتقال")]
+        public TransmissionSystemType TransmissionSystem { get; set; }
+
         [BsonRepresentation(BsonType.String)]
         [Display(Name = "نوع پورت")]
         public PortTypeEnum PortType { get; set; }

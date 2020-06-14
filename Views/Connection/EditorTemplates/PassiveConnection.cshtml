@@ -7,7 +7,7 @@
 
 <div class="card my-3">
     <div class="card-header text-center" style="background-color: hsl(@hue , 25%, 77%); color: hsl(@hue , 80%, 22%);">
-        <div class="float-right">اتصال @(Model.EndPointIndex+1) - @(Model.Index + 1)</div>
+        <div class="float-right font-weight-bold">اتصال @(Model.EndPointIndex+1) - @(Model.Index + 1)</div>
         <div class="text-center">@Html.Raw(Model.GetPlaceDisplayName(db))</div>
     </div>
     <div class="card-body" style="background-color: hsl(@hue , 40%, 77%); color: hsl(@hue , 80%, 22%);">
@@ -30,16 +30,6 @@
                     }
                 </select>
                 <span asp-validation-for="Connector" class="text-danger"></span>
-            </div>
-            <div class="form-group col-lg-3 col-sm-6">
-                <label asp-for="TransmissionSystem" class="control-label"></label>
-                <select asp-for="TransmissionSystem" class="form-control">
-                    @foreach (var item in Enum.GetNames(typeof(PassiveConnection.TransmissionSystemType)))
-                    {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(PassiveConnection.TransmissionSystemType), item)</option>
-                    }
-                </select>
-                <span asp-validation-for="TransmissionSystem" class="text-danger"></span>
             </div>
             <div class="form-group form-check col-lg-3 col-sm-6">
                 <label class="form-check-label">

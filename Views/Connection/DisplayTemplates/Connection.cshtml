@@ -37,6 +37,10 @@
                             <span class="text-value">@Model.EndPoints[i].PortNumber</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
+                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(p => p.TransmissionSystem)):</label>
+                            <span class="text-value">@Utils.GetDisplayNameOfMember(typeof(TransmissionSystemType), Model.EndPoints[i].TransmissionSystem.ToString())</span>
+                        </div>
+                        <div class="col-lg-3 col-sm-6">
                             <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.Speed)):</label>
                             <span class="text-value" dir="ltr">@Model.EndPoints[i].Speed @Model.EndPoints[i].SpeedUnit</span>
                         </div>
@@ -94,10 +98,6 @@
                                         <div class="col-lg-3 col-sm-6">
                                             <label>@(Utils.GetDisplayNameOfMember<PassiveConnectionViewModel>(p => p.Connector)):</label>
                                             <span class="text-value">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ConnectorType), passive.Connector.ToString())</span>
-                                        </div>
-                                        <div class="col-lg-3 col-sm-6">
-                                            <label>@(Utils.GetDisplayNameOfMember<PassiveConnectionViewModel>(p => p.TransmissionSystem)):</label>
-                                            <span class="text-value">@Utils.GetDisplayNameOfMember(typeof(PassiveConnection.TransmissionSystemType), passive.TransmissionSystem.ToString())</span>
                                         </div>
                                         <div class="col-lg-3 col-sm-6">
                                             <label>@(Utils.GetDisplayNameOfMember<PassiveConnectionViewModel>(p => p.DistanceToNextPoint)):</label>

@@ -36,7 +36,7 @@ namespace TciDataLinks.Models
         public PatchPanelTypeEnum PatchPanelType { get; set; }
 
         [BsonRepresentation(BsonType.String)]
-        public PassiveConnection.TransmissionSystemType TransmissionType { get; set; }
+        public TransmissionSystemType TransmissionType { get; set; }
 
         public string Name { get; set; }
 

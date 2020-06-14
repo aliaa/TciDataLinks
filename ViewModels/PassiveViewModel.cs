@@ -17,7 +17,7 @@ namespace TciDataLinks.ViewModels
         public Passive.PatchPanelTypeEnum PatchPanelType { get; set; }
 
         [Display(Name = "نوع تجهیزات انتقال")]
-        public PassiveConnection.TransmissionSystemType TransmissionType { get; set; }
+        public TransmissionSystemType TransmissionType { get; set; }
 
         [Required(ErrorMessage = "نام اجباریست!")]
         [Display(Name = "نام")]
