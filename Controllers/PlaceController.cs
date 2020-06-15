@@ -195,5 +195,18 @@ namespace TciDataLinks.Controllers
                 db.Save(rack);
             return RedirectToAction(nameof(Item), new { type = nameof(PlaceType.Room), id = rack.Parent });
         }
+
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
+        [HttpPost]
+        public IActionResult Rename([FromForm] ObjectId id, [FromForm] PlaceType type, [FromForm] string name)
+        {
+            if (type == PlaceType.Building)
+                db.UpdateOne<Building>(b => b.Id == id, Builders<Building>.Update.Set(b => b.Name, name));
+            else if (type == PlaceType.Room)
+                db.UpdateOne<Room>(r => r.Id == id, Builders<Room>.Update.Set(r => r.Name, name));
+            else
+                throw new NotImplementedException();
+            return RedirectToAction(nameof(Item), new { type, id });
+        }
     }
 }

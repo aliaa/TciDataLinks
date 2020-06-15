@@ -7,23 +7,25 @@
 
 @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
 {
-    @if (Model.Current.PlaceType == PlaceType.Room)
-    {
-        <div class="mt-4">
-            <button id="btnNewRack" class="btn btn-info">راک جدید</button>
-        </div>
-    }
-    @if (Model.Rack != null)
-    {
-        <div class="mt-4">
-            <a asp-controller="Device" asp-action="Add" class="btn btn-info"
+    <div class="mt-4">
+        @if (Model.Current.PlaceType == PlaceType.Building || Model.Current.PlaceType == PlaceType.Room)
+        {
+            <button id="btnRename" class="btn btn-info mx-2">تغییر نام</button>
+        }
+        @if (Model.Current.PlaceType == PlaceType.Room)
+        {
+            <button id="btnNewRack" class="btn btn-info mx-2">راک جدید</button>
+        }
+        @if (Model.Rack != null)
+        {
+            <a asp-controller="Device" asp-action="Add" class="btn btn-info mx-2"
                asp-route-city="@Model.City.Id" asp-route-center="@Model.Center.Id" asp-route-building="@Model.Building.Id"
                asp-route-room="@Model.Room.Id" asp-route-rack="@Model.Rack.Id">دستگاه جدید</a>
-            <a asp-controller="Passive" asp-action="Add" class="btn btn-info mx-3"
+            <a asp-controller="Passive" asp-action="Add" class="btn btn-info mx-2"
                asp-route-city="@Model.City.Id" asp-route-center="@Model.Center.Id" asp-route-building="@Model.Building.Id"
                asp-route-room="@Model.Room.Id" asp-route-rack="@Model.Rack.Id">رابط Passive جدید</a>
-        </div>
-    }
+        }
+    </div>
 }
 
 <div class="mt-4">
@@ -152,17 +154,46 @@ else if (Model.Type != PlaceType.Center)
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" class="btn btn-primary" value="ذخیره"/>
+                    <input type="submit" class="btn btn-primary" value="ذخیره" />
                 </div>
             </div>
         </form>
     </div>
 </div>
 
+<div class="modal fade" id="renameModal">
+    <div class="modal-dialog">
+        <form asp-action="Rename">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-light">
+                    <h4 class="modal-title">ویرایش نام</h4>
+                    <button type="button" class="close text-light" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="Id" value="@Model.Current.Id" />
+                    <input type="hidden" name="Type" value="@Model.Current.PlaceType" />
+                    <div class="form-group">
+                        <label class="control-label">نام</label>
+                        <input name="Name" class="form-control" value="@Model.Current.Name" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="تغییر نام" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 @section Scripts {
     <script>
         $("#btnNewRack").click(function () {
             $("#newRackModal").modal();
+        });
+
+        $("#btnRename").click(function () {
+            $("#renameModal").modal();
         });
     </script>
 }
