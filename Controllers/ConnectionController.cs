@@ -36,6 +36,8 @@ namespace TciDataLinks.Controllers
         private ConnectionViewModel ConnectionToViewModel(Connection c, bool addMoreDetails = false)
         {
             var vm = Mapper.Map<ConnectionViewModel>(c);
+            if (c.CustomerId != ObjectId.Empty)
+                vm.Customer = db.FindById<Customer>(c.CustomerId);
             foreach (var e in db.Find<EndPoint>(e => e.Connection == c.Id).SortBy(e => e.Index).ToEnumerable())
             {
                 var evm = Mapper.Map<EndPointViewModel>(e);
@@ -202,6 +204,7 @@ namespace TciDataLinks.Controllers
         [HttpPost]
         public IActionResult Edit(ConnectionViewModel model)
         {
+            db.UpdateOne<Connection>(c => c.Id == model.Id, Builders<Connection>.Update.Set(c => c.CustomerId, model.CustomerId));
             var endPointsId = new List<ObjectId>();
             int i = 0;
             foreach (var evm in model.EndPoints)
@@ -250,5 +253,20 @@ namespace TciDataLinks.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult CustomerSearch(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+                return Ok();
+            var fb = Builders<Customer>.Filter;
+            FilterDefinition<Customer> filter;
+            if (long.TryParse(term, out long docNum))
+                filter = fb.Eq(c => c.DocumentNumber, docNum);
+            else
+                filter = fb.Regex(c => c.CustomerName, new BsonRegularExpression(term.Trim().Replace(" ", ".*")));
+            var results = db.Find<Customer>(fb.And(filter, fb.Ne(c => c.IsAborted, true))).ToEnumerable()
+                .Select(c => new { id = c.Id.ToString(), text = c.ToString() });
+
+            return Json(new { results });
+        }
     }
 }

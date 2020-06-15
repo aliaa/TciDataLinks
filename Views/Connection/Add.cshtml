@@ -1,5 +1,6 @@
 ﻿@model ConnectionViewModel
 @inject IEnumerable<City> Cities
+@inject Settings settings
 
 @if (ViewData.ContainsKey("EditMode"))
 {
@@ -96,7 +97,35 @@ else
         }
     </div>
 
-    <div class="form-group">
+    <div class="card mt-5">
+        <div class="card-header">
+            <div class="float-left">
+                <button class="btn p-0" id="btnCustomerLink">
+                    <img src="~/lib/bootstrap-icons/icons/box-arrow-up-right.svg" width="24" />
+                </button>
+            </div>
+            <label class="mb-0">
+                <input type="checkbox" id="chkHasCustomer" @(Model.Customer == null ? "" : "checked") />
+                متصل به مشتری
+            </label>
+        </div>
+        <div class="card-body" id="divCustomer" style="display:@(Model.Customer == null ? "none" : "initial");">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="form-label">جستجوی مشتری</label>
+                    <select asp-for="CustomerId" class="form-control">
+                        @if (Model.Customer != null)
+                        {
+                            <option value="@Model.CustomerId">@Model.Customer</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="form-group mt-5">
         <input type="button" id="btnDeleteLastConnection" value="حذف آخرین اتصال" class="btn btn-outline-danger d-none" />
         <input type="submit" id="btnSubmit" value="ذخیره" class="btn btn-primary mr-3 d-none" />
         @if (ViewData.ContainsKey("EditMode"))
@@ -142,7 +171,7 @@ else
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-<script>
+    <script>
     $(document).ready(function () {
         var endPointsCount = $('#divEndPoints').children().length;
         if (endPointsCount >= 2) {
@@ -151,6 +180,15 @@ else
         if (endPointsCount >= 1) {
             $("#btnDeleteLastConnection").removeClass("d-none");
         }
+
+        $("#CustomerId").select2({
+            ...select2BaseSettings,
+            minimumInputLength: 3,
+            ajax: {
+                url: "/Connection/CustomerSearch",
+                dataType: 'json'
+            }
+        });
     });
 
     var dropdownsToClear = [$("#Center"), $("#Building"), $("#Room"), $("#Rack"), $("#Device")];
@@ -332,5 +370,22 @@ else
         $("#divPatchCord_" + index).toggle(show);
         $("#divWaveLength_" + index).toggle(show);
     }
-</script>
+
+    $("#chkHasCustomer").click(function () {
+        var checked = $(this).is(":checked");
+        $('#divCustomer').toggle(checked);
+        if (!checked)
+            $("#CustomerId").empty();
+    });
+
+    $("#btnCustomerLink").click(function(e) {
+        var url = '@settings.CustomerDetailsUrl';
+        var id = $("#CustomerId").val();
+        if (id) {
+            url = url.replace('{Id}', id);
+            window.open(url, '_blank');
+        }
+        e.preventDefault();
+    });
+    </script>
 }

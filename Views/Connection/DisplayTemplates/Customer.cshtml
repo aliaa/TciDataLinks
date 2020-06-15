@@ -1,0 +1,24 @@
+﻿@model TciDataLinks.Models.Customer
+@inject IReadOnlyDbContext db
+
+<div>
+    <dl style="columns:3;">
+        <dt>@Html.DisplayNameFor(model => model.CustomerName)</dt>
+        <dd>@Html.DisplayFor(model => model.CustomerName)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.City)</dt>
+        <dd>@(db.FindById<City>(Model.City).Name)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Center)</dt>
+        <dd>@(db.FindById<CommCenter>(Model.Center).Name)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.DocumentNumber)</dt>
+        <dd>@Html.DisplayFor(model => model.DocumentNumber)</dd>
+        
+        <dt>@Html.DisplayNameFor(model => model.DataNumber)</dt>
+        <dd>@Html.DisplayFor(model => model.DataNumber)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.ServiceType)</dt>
+        <dd>@Html.DisplayFor(model => model.ServiceType)</dd>
+    </dl>
+</div>

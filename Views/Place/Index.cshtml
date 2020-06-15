@@ -1,4 +1,5 @@
 ﻿@model CentersViewModel
+@inject Settings settings
 
 @{
     ViewData["Title"] = "تجهیزات";
@@ -11,7 +12,7 @@
 }
 
 <h1 class="mt-4">مراکز</h1>
-<p class="mb-4 text-danger">توجه: برای تغییر دادن لیست مراکز لطفا از طریق سامانه تیکتینگ اقدام فرمائید.</p>
+<p class="mb-4 text-danger">توجه: برای تغییر دادن لیست مراکز لطفا از طریق <a href="@settings.TicketingSiteUrl">سامانه تیکتینگ</a> اقدام فرمائید.</p>
 
 <div class="row">
     @foreach (var city in Model.Centers.Keys)
