@@ -22,7 +22,7 @@
                 <select asp-for="PortType" class="form-control" onchange="toggleEndPointPortType(@Model.Index)">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.PortTypeEnum)))
                     {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PortTypeEnum), item)</option>
+                        <option value="@item">@Utils.DisplayName(typeof(EndPoint.PortTypeEnum), item)</option>
                     }
                 </select>
                 <span asp-validation-for="PortType" class="text-danger"></span>
@@ -37,7 +37,7 @@
                 <select asp-for="TransmissionSystem" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(TransmissionSystemType)))
                     {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(TransmissionSystemType), item)</option>
+                        <option value="@item">@Utils.DisplayName(typeof(TransmissionSystemType), item)</option>
                     }
                 </select>
                 <span asp-validation-for="TransmissionSystem" class="text-danger"></span>
@@ -62,7 +62,7 @@
                 <select asp-for="Connector" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.ConnectorType)))
                     {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ConnectorType), item)</option>
+                        <option value="@item">@Utils.DisplayName(typeof(EndPoint.ConnectorType), item)</option>
                     }
                 </select>
                 <span asp-validation-for="Connector" class="text-danger"></span>
@@ -72,7 +72,7 @@
                 <select asp-for="Module" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.ModuleType)))
                     {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ModuleType), item)</option>
+                        <option value="@item">@Utils.DisplayName(typeof(EndPoint.ModuleType), item)</option>
                     }
                 </select>
                 <span asp-validation-for="Module" class="text-danger"></span>
@@ -82,7 +82,7 @@
                 <select asp-for="PatchCord" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.PatchCordType)))
                     {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PatchCordType), item)</option>
+                        <option value="@item">@Utils.DisplayName(typeof(EndPoint.PatchCordType), item)</option>
                     }
                 </select>
                 <span asp-validation-for="PatchCord" class="text-danger"></span>
@@ -92,7 +92,7 @@
                 <select asp-for="WaveLength" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.WaveLengthEnum)))
                     {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.WaveLengthEnum), item)</option>
+                        <option value="@item">@Utils.DisplayName(typeof(EndPoint.WaveLengthEnum), item)</option>
                     }
                 </select>
                 <span asp-validation-for="WaveLength" class="text-danger"></span>

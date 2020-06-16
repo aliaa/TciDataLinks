@@ -55,7 +55,7 @@
             <select asp-for="RackType" class="form-control">
                 @foreach (var t in Enum.GetNames(typeof(Rack.RackType)))
                 {
-                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Rack.RackType), t)</option>
+                    <option value="@t">@Utils.DisplayName(typeof(Rack.RackType), t)</option>
                 }
             </select>
             <span asp-validation-for="RackType" class="text-danger"></span>
@@ -81,7 +81,7 @@
             <select asp-for="Type" class="form-control">
                 @foreach (var t in Enum.GetNames(typeof(Passive.PassiveTypeEnum)))
                 {
-                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Passive.PassiveTypeEnum), t)</option>
+                    <option value="@t">@Utils.DisplayName(typeof(Passive.PassiveTypeEnum), t)</option>
                 }
             </select>
             <span asp-validation-for="PatchPanelType" class="text-danger"></span>
@@ -92,7 +92,7 @@
             <select asp-for="PatchPanelType" class="form-control">
                 @foreach (var t in Enum.GetNames(typeof(Passive.PatchPanelTypeEnum)))
                 {
-                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Passive.PatchPanelTypeEnum), t)</option>
+                    <option value="@t">@Utils.DisplayName(typeof(Passive.PatchPanelTypeEnum), t)</option>
                 }
             </select>
             <span asp-validation-for="PatchPanelType" class="text-danger"></span>
@@ -102,7 +102,7 @@
             <select asp-for="TransmissionType" class="form-control">
                 @foreach (var t in Enum.GetNames(typeof(TransmissionSystemType)))
                 {
-                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(TransmissionSystemType), t)</option>
+                    <option value="@t">@Utils.DisplayName(typeof(TransmissionSystemType), t)</option>
                 }
             </select>
             <span asp-validation-for="TransmissionType" class="text-danger"></span>

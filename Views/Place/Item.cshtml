@@ -53,7 +53,7 @@
 {
     <div class="row mt-5">
         <div class="col-lg-6">
-            <h3>@(Utils.GetDisplayNameOfMember(typeof(PlaceType), Model.NextLevelType.ToString()))های @Model.ToString() </h3>
+            <h3>@(Utils.DisplayName(typeof(PlaceType), Model.NextLevelType.ToString()))های @Model.ToString() </h3>
             <ol class="mt-4">
                 @foreach (var item in Model.SubItems.OrderBy(x => x.Name))
                 {
@@ -77,7 +77,7 @@
                     {
                         <li>
                             <a asp-action="Item" asp-route-type="@Model.NextLevelType" asp-route-id="@item.Id.ToString()">
-                                @Utils.GetDisplayNameOfMember(typeof(PlaceType), Model.NextLevelType.ToString()) @item
+                                @Utils.DisplayName(typeof(PlaceType), Model.NextLevelType.ToString()) @item
                             </a>
                         </li>
                     }
@@ -148,7 +148,7 @@ else if (Model.Type != PlaceType.Center)
                         <select name="Type" class="form-control">
                             @foreach (var t in Enum.GetNames(typeof(Rack.RackType)))
                             {
-                                <option value="t">@Utils.GetDisplayNameOfMember(typeof(Rack.RackType), t)</option>
+                                <option value="t">@Utils.DisplayName(typeof(Rack.RackType), t)</option>
                             }
                         </select>
                     </div>

@@ -53,7 +53,7 @@
             <select asp-for="SearchType" class="form-control">
                 @foreach (var item in Enum.GetNames(typeof(ConnectionSearchViewModel.EndPointSearchType)))
                 {
-                    <option value="@item">@Utils.GetDisplayNameOfMember(typeof(ConnectionSearchViewModel.EndPointSearchType), item)</option>
+                    <option value="@item">@Utils.DisplayName(typeof(ConnectionSearchViewModel.EndPointSearchType), item)</option>
                 }
             </select>
         </div>
@@ -63,7 +63,7 @@
                 <option>همه</option>
                 @foreach (var item in Enum.GetNames(typeof(EndPoint.PortTypeEnum)))
                 {
-                    <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PortTypeEnum), item)</option>
+                    <option value="@item">@Utils.DisplayName(typeof(EndPoint.PortTypeEnum), item)</option>
                 }
             </select>
         </div>
@@ -73,7 +73,7 @@
                 <option>همه</option>
                 @foreach (var item in Enum.GetNames(typeof(EndPoint.ModuleType)))
                 {
-                    <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ModuleType), item)</option>
+                    <option value="@item">@Utils.DisplayName(typeof(EndPoint.ModuleType), item)</option>
                 }
             </select>
         </div>
@@ -83,7 +83,7 @@
                 <option>همه</option>
                 @foreach (var item in Enum.GetNames(typeof(EndPoint.PatchCordType)))
                 {
-                    <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PatchCordType), item)</option>
+                    <option value="@item">@Utils.DisplayName(typeof(EndPoint.PatchCordType), item)</option>
                 }
             </select>
         </div>
@@ -93,7 +93,7 @@
                 <option>همه</option>
                 @foreach (var item in Enum.GetNames(typeof(EndPoint.ConnectorType)))
                 {
-                    <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ConnectorType), item)</option>
+                    <option value="@item">@Utils.DisplayName(typeof(EndPoint.ConnectorType), item)</option>
                 }
             </select>
         </div>
@@ -126,7 +126,7 @@
             <select asp-for="NetworkType" class="form-control">
                 @foreach (var item in Enum.GetNames(typeof(ConnectionSearchViewModel.DeviceNetworkType)))
                 {
-                    <option value="@item">@Utils.GetDisplayNameOfMember(typeof(ConnectionSearchViewModel.DeviceNetworkType), item)</option>
+                    <option value="@item">@Utils.DisplayName(typeof(ConnectionSearchViewModel.DeviceNetworkType), item)</option>
                 }
             </select>
         </div>

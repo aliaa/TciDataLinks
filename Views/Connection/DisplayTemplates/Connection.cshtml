@@ -30,53 +30,53 @@
                 <div class="card-body collapse" id="endpoint_@(Model.Id)_@i">
                     <div class="row">
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.PortType)):</label>
-                            <span class="text-value">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PortTypeEnum), Model.EndPoints[i].PortType.ToString())</span>
+                            <label>@(Utils.DisplayName<EndPoint>(e => e.PortType)):</label>
+                            <span class="text-value">@Utils.DisplayName(typeof(EndPoint.PortTypeEnum), Model.EndPoints[i].PortType.ToString())</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.PortNumber)):</label>
+                            <label>@(Utils.DisplayName<EndPoint>(e => e.PortNumber)):</label>
                             <span class="text-value">@Model.EndPoints[i].PortNumber</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(p => p.TransmissionSystem)):</label>
-                            <span class="text-value">@Utils.GetDisplayNameOfMember(typeof(TransmissionSystemType), Model.EndPoints[i].TransmissionSystem.ToString())</span>
+                            <label>@(Utils.DisplayName<EndPoint>(p => p.TransmissionSystem)):</label>
+                            <span class="text-value">@Utils.DisplayName(typeof(TransmissionSystemType), Model.EndPoints[i].TransmissionSystem.ToString())</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.Speed)):</label>
+                            <label>@(Utils.DisplayName<EndPoint>(e => e.Speed)):</label>
                             <span class="text-value" dir="ltr">@Model.EndPoints[i].Speed @Model.EndPoints[i].SpeedUnit</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.Module)):</label>
-                            <span class="text-value">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ModuleType), Model.EndPoints[i].Module.ToString())</span>
+                            <label>@(Utils.DisplayName<EndPoint>(e => e.Module)):</label>
+                            <span class="text-value">@Utils.DisplayName(typeof(EndPoint.ModuleType), Model.EndPoints[i].Module.ToString())</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.PatchCord)):</label>
-                            <span class="text-value">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PatchCordType), Model.EndPoints[i].PatchCord.ToString())</span>
+                            <label>@(Utils.DisplayName<EndPoint>(e => e.PatchCord)):</label>
+                            <span class="text-value">@Utils.DisplayName(typeof(EndPoint.PatchCordType), Model.EndPoints[i].PatchCord.ToString())</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.Connector)):</label>
-                            <span class="text-value">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ConnectorType), Model.EndPoints[i].Connector.ToString())</span>
+                            <label>@(Utils.DisplayName<EndPoint>(e => e.Connector)):</label>
+                            <span class="text-value">@Utils.DisplayName(typeof(EndPoint.ConnectorType), Model.EndPoints[i].Connector.ToString())</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.DistanceToNextPoint)):</label>
+                            <label>@(Utils.DisplayName<EndPoint>(e => e.DistanceToNextPoint)):</label>
                             <span class="text-value">@Model.EndPoints[i].DistanceToNextPoint</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.DataProtection)):</label>
+                            <label>@(Utils.DisplayName<EndPoint>(e => e.DataProtection)):</label>
                             <span class="text-value">@(Model.EndPoints[i].DataProtection ? "بلی": "خیر")</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.TransmissionProtection)):</label>
+                            <label>@(Utils.DisplayName<EndPoint>(e => e.TransmissionProtection)):</label>
                             <span class="text-value">@(Model.EndPoints[i].TransmissionProtection ? "بلی": "خیر")</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.Incomplete)):</label>
+                            <label>@(Utils.DisplayName<EndPoint>(e => e.Incomplete)):</label>
                             <span class="text-value">@(Model.EndPoints[i].Incomplete ? "بلی": "خیر")</span>
                         </div>
                         @if (!string.IsNullOrWhiteSpace(Model.EndPoints[i].Description))
                         {
                             <div class="col-lg-9 col-sm-12">
-                                <label>@(Utils.GetDisplayNameOfMember<EndPoint>(e => e.Description)):</label>
+                                <label>@(Utils.DisplayName<EndPoint>(e => e.Description)):</label>
                                 <span class="text-value">@Model.EndPoints[i].Description</span>
                             </div>
                         }
@@ -93,15 +93,15 @@
                                 <div class="card-body" style="background-color: hsl(@hue , 40%, 77%); color: hsl(@hue , 80%, 22%);">
                                     <div class="row">
                                         <div class="col-lg-3 col-sm-6">
-                                            <label>@(Utils.GetDisplayNameOfMember<PassiveConnectionViewModel>(p => p.PortNumber)):</label>
+                                            <label>@(Utils.DisplayName<PassiveConnectionViewModel>(p => p.PortNumber)):</label>
                                             <span class="text-value">@passive.PortNumber</span>
                                         </div>
                                         <div class="col-lg-3 col-sm-6">
-                                            <label>@(Utils.GetDisplayNameOfMember<PassiveConnectionViewModel>(p => p.Connector)):</label>
-                                            <span class="text-value">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ConnectorType), passive.Connector.ToString())</span>
+                                            <label>@(Utils.DisplayName<PassiveConnectionViewModel>(p => p.Connector)):</label>
+                                            <span class="text-value">@Utils.DisplayName(typeof(EndPoint.ConnectorType), passive.Connector.ToString())</span>
                                         </div>
                                         <div class="col-lg-3 col-sm-6">
-                                            <label>@(Utils.GetDisplayNameOfMember<PassiveConnectionViewModel>(p => p.DistanceToNextPoint)):</label>
+                                            <label>@(Utils.DisplayName<PassiveConnectionViewModel>(p => p.DistanceToNextPoint)):</label>
                                             <span class="text-value">@passive.DistanceToNextPoint</span>
                                         </div>
                                     </div>
