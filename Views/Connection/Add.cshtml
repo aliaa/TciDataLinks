@@ -100,7 +100,7 @@ else
     <div class="card mt-5">
         <div class="card-header">
             <div class="float-left">
-                <button class="btn p-0" id="btnCustomerLink">
+                <button class="btn p-0" id="btnCustomerLink" title="جزئیات مشتری">
                     <img src="~/lib/bootstrap-icons/icons/box-arrow-up-right.svg" width="24" />
                 </button>
             </div>
@@ -174,7 +174,7 @@ else
     <script>
     $(document).ready(function () {
         var endPointsCount = $('#divEndPoints').children().length;
-        if (endPointsCount >= 2) {
+        if (endPointsCount >= 1) {
             $("#btnSubmit").removeClass("d-none");
         }
         if (endPointsCount >= 1) {
@@ -304,7 +304,7 @@ else
                     item = ConvertInputsToBeAsArrayItem(item, "@nameof(Model.EndPoints)", i);
                     $('#divEndPoints').append(item);
                     $("#btnDeleteLastConnection").removeClass("d-none");
-                    if ($('#divEndPoints').children().length >= 2) {
+                    if ($('#divEndPoints').children().length >= 1) {
                         $("#btnSubmit").removeClass("d-none");
                     }
                     resetValidation();
@@ -317,7 +317,7 @@ else
         $("#divEndPoints").children().last().remove();
         if ($("#divEndPoints").children().length == 0)
             $("#btnDeleteLastConnection").addClass("d-none");
-        if ($("#divEndPoints").children().length < 2)
+        if ($("#divEndPoints").children().length == 0)
             $("#btnSubmit").addClass("d-none");
     });
 
