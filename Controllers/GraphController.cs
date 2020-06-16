@@ -160,7 +160,7 @@ namespace TciDataLinks.Controllers
             {
                 graph.AddNode(new GraphNode
                 {
-                    key = "Empty_" + n,
+                    key = "Empty_" + item.key,
                     text = "",
                     group = item.key
                 });

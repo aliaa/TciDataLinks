@@ -4,8 +4,10 @@
         if (data.Nodes[i].loc) {
             data.Nodes[i].loc = new go.Point(data.Nodes[i].loc.x, data.Nodes[i].loc.y);
         }
-        if (data.Nodes[i].text == "")
-            data.Nodes[i].color = "#ccc";
+        if (data.Nodes[i].key.startsWith("Empty_")) {
+            data.Nodes[i].color = "#0000";
+            data.Nodes[i].stroke = "#0000";
+        }
     }
 
     var gojs = go.GraphObject.make;  // for conciseness in defining templates
@@ -30,7 +32,7 @@
                         fill: "white",
                         desiredSize: new go.Size(160, 30)
                     },
-                    new go.Binding("fill", "color")),
+                    new go.Binding("fill", "color"), new go.Binding("stroke", "stroke")),
                 gojs(go.TextBlock,
                     { margin: 4 },
                     new go.Binding("text", "text")),
@@ -133,6 +135,10 @@
                 }
                 else if (split[0] == "Passive") {
                     window.location = "/Passive/Item/" + split[1];
+                }
+                else if (split[0] == "Empty") {
+                    if (split.length == 3)
+                        window.location = "/Place/Item/" + split[2] + "?type=" + split[1];
                 }
                 else {
                     window.location = "/Place/Item/" + split[1] + "?type=" + split[0];
