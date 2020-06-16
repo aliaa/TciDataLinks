@@ -26,7 +26,7 @@
                 <select asp-for="Connector" class="form-control">
                     @foreach (var item in Enum.GetNames(typeof(EndPoint.ConnectorType)))
                     {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ConnectorType), item)</option>
+                        <option value="@item">@Utils.DisplayName(typeof(EndPoint.ConnectorType), item)</option>
                     }
                 </select>
                 <span asp-validation-for="Connector" class="text-danger"></span>

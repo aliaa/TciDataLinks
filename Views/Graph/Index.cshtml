@@ -26,7 +26,7 @@
             <option value="all">همه</option>
             @foreach(var t in Enum.GetNames(typeof(Device.NetworkType)))
             {
-                <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Device.NetworkType), t)</option>
+                <option value="@t">@Utils.DisplayName(typeof(Device.NetworkType), t)</option>
             }
         </select>
     </div>

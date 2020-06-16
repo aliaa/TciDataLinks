@@ -25,7 +25,7 @@ namespace TciDataLinks.ViewModels
 
         public override string ToString()
         {
-            return Utils.GetDisplayNameOfMember(typeof(Device.DeviceType), Type.ToString()) + " " + Model;
+            return Utils.DisplayName(typeof(Device.DeviceType), Type.ToString()) + " " + Model;
         }
 
         public string GetPlaceDisplay(IReadOnlyDbContext db)

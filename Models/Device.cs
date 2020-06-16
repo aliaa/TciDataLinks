@@ -48,7 +48,7 @@ namespace TciDataLinks.Models
 
         public override string ToString()
         {
-            var disp = Utils.GetDisplayNameOfMember(typeof(DeviceType), Type.ToString()) + " " + Model;
+            var disp = Utils.DisplayName(typeof(DeviceType), Type.ToString()) + " " + Model;
             if (!string.IsNullOrWhiteSpace(Address))
                 disp += " (" + Address + ")";
             return disp;
