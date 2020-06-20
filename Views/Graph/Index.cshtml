@@ -1,4 +1,5 @@
 ﻿@inject IEnumerable<City> Cities
+@inject Settings settings
 
 @{
     ViewData["Title"] = "گراف شبکه";
@@ -77,7 +78,7 @@
             if (networkType != "all")
                 url = url + "?NetworkType=" + networkType;
             $.get(url, function (res) {
-                diagram = initGojs("divGraph", res);
+                diagram = initGojs("divGraph", res, "@settings.CustomerDetailsUrl");
             });
         });
 

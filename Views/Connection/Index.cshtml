@@ -1,5 +1,6 @@
 ﻿@model ConnectionSearchViewModel
 @inject IEnumerable<City> Cities
+@inject Settings settings
 
 @{
     ViewData["Title"] = "جستجوی لینک ها";
@@ -224,7 +225,7 @@
             var divGraph = $("#divGraph_" + id);
             if (divGraph.children().length == 0) {
                 $.get("/Graph/Connection/" + id, function (res) {
-                    initGojs("divGraph_" + id, res);
+                    initGojs("divGraph_" + id, res, "@settings.CustomerDetailsUrl");
                 });
             }
         }

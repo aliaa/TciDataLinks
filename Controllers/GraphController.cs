@@ -98,22 +98,27 @@ namespace TciDataLinks.Controllers
                 }
             }
 
-            var connections = db.FindGetResults<EndPoint>(e => deviceIds.Contains(e.Device)).GroupBy(key => key.Connection);
+            var connections = db.FindGetResults<EndPoint>(e => deviceIds.Contains(e.Device))
+                .GroupBy(key => key.Connection)
+                .Select(c => new
+                {
+                    Connection = db.FindById<Connection>(c.Key),
+                    EndPoints = db.Find<EndPoint>(e => e.Connection == c.Key).SortBy(e => e.Index).ToList()
+                });
             foreach (var c in connections)
             {
-                var endPoints = db.Find<EndPoint>(e => e.Connection == c.Key).SortBy(e => e.Index).ToList();
                 string lastKey = null;
-                string lastPort = endPoints[0].PortNumber;
+                string lastPort = c.EndPoints[0].PortNumber;
 
-                var device = db.FindById<Device>(endPoints[0].Device);
+                var device = db.FindById<Device>(c.EndPoints[0].Device);
                 AddDeviceHierarchal(graph, device, out string deviceKey, out string anotherCenter, centerNode.key);
                 lastKey = deviceKey;
                 if (anotherCenter == null)
                 {
-                    foreach (var pc in endPoints[0].PassiveConnections)
+                    foreach (var pc in c.EndPoints[0].PassiveConnections)
                     {
                         AddDeviceHierarchal(graph, db.FindById<Passive>(pc.PatchPanel), out string ppKey);
-                        graph.AddLink(new GraphLink(lastKey, ppKey, c.Key, lastPort, pc.PortNumber));
+                        graph.AddLink(new GraphLink(lastKey, ppKey, c.Connection.Id, lastPort, pc.PortNumber));
                         lastKey = ppKey;
                         lastPort = pc.PortNumber;
                     }
@@ -123,9 +128,9 @@ namespace TciDataLinks.Controllers
                 var lastFirstEndPointKey = lastKey;
                 var lastFirstEndPointPort = lastPort;
 
-                for (int i = 1; i < endPoints.Count; i++)
+                for (int i = 1; i < c.EndPoints.Count; i++)
                 {
-                    var ep = endPoints[i];
+                    var ep = c.EndPoints[i];
 
                     device = db.FindById<Device>(ep.Device);
                     AddDeviceHierarchal(graph, device, out deviceKey, out anotherCenter, centerNode.key);
@@ -133,7 +138,7 @@ namespace TciDataLinks.Controllers
                     {
                         if (lastKey != anotherCenter)
                         {
-                            graph.AddLink(new GraphLink(lastFirstEndPointKey, anotherCenter, c.Key, lastPort, ep.PortNumber));
+                            graph.AddLink(new GraphLink(lastFirstEndPointKey, anotherCenter, c.Connection.Id, lastPort, ep.PortNumber));
                             lastKey = lastFirstEndPointKey;
                             lastPort = lastFirstEndPointPort;
                         }
@@ -144,13 +149,25 @@ namespace TciDataLinks.Controllers
                     {
                         var pc = ep.PassiveConnections[j];
                         AddDeviceHierarchal(graph, db.FindById<Passive>(pc.PatchPanel), out string ppKey);
-                        graph.AddLink(new GraphLink(lastKey, ppKey, c.Key, lastPort, pc.PortNumber));
+                        graph.AddLink(new GraphLink(lastKey, ppKey, c.Connection.Id, lastPort, pc.PortNumber));
                         lastKey = ppKey;
                         lastPort = pc.PortNumber;
                     }
-                    graph.AddLink(new GraphLink(lastKey, deviceKey, c.Key, lastPort, endPoints[i].PortNumber));
+                    graph.AddLink(new GraphLink(lastKey, deviceKey, c.Connection.Id, lastPort, c.EndPoints[i].PortNumber));
                     lastKey = lastFirstEndPointKey;
                     lastPort = lastFirstEndPointPort;
+                }
+
+                if (c.Connection.CustomerId != ObjectId.Empty)
+                {
+                    var key = "Customer_" + c.Connection.CustomerId;
+                    graph.AddNode(new GraphNode
+                    {
+                        key = key,
+                        image = "/lib/bootstrap-icons/icons/person-fill.svg",
+                        text = db.FindById<Customer>(c.Connection.CustomerId)?.ToString()
+                    });
+                    graph.AddLink(new GraphLink(lastKey, key, c.Connection.Id, "ارتباط مشتری"));
                 }
             }
 

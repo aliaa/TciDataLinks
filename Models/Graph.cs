@@ -46,6 +46,7 @@ namespace TciDataLinks.Models
         public string text { get; set; }
         public bool isGroup { get; set; } = false;
         public NodeLocation loc { get; set; }
+        public string image { get; set; }
     }
 
     public class NodeLocation

@@ -1,4 +1,4 @@
-﻿function initGojs(divId, data) {
+﻿function initGojs(divId, data, customerUrlTemplate) {
 
     for (var i = 0; i < data.Nodes.length; i++) {
         if (data.Nodes[i].loc) {
@@ -7,6 +7,11 @@
         if (data.Nodes[i].key.startsWith("Empty_")) {
             data.Nodes[i].color = "#0000";
             data.Nodes[i].stroke = "#0000";
+        }
+        else if (data.Nodes[i].key.startsWith("Customer_")) {
+            data.Nodes[i].color = "#0000";
+            data.Nodes[i].stroke = "#0000";
+            data.Nodes[i].fontcolor = "#0000";
         }
     }
 
@@ -35,7 +40,9 @@
                     new go.Binding("fill", "color"), new go.Binding("stroke", "stroke")),
                 gojs(go.TextBlock,
                     { margin: 4 },
-                    new go.Binding("text", "text")),
+                    new go.Binding("text", "text"), new go.Binding("stroke", "fontcolor")),
+                gojs(go.Picture, { margin: 8, width: 55, height: 55 },
+                    new go.Binding("source", "image")),
                 {
                     toolTip:  //  define a tooltip for each node that displays its information
                         gojs("ToolTip",
@@ -139,6 +146,9 @@
                 else if (split[0] == "Empty") {
                     if (split.length == 3)
                         window.location = "/Place/Item/" + split[2] + "?type=" + split[1];
+                }
+                else if (split[0] == "Customer") {
+                    window.open(customerUrlTemplate.replace("{Id}", split[1]), '_blank');
                 }
                 else {
                     window.location = "/Place/Item/" + split[1] + "?type=" + split[0];
