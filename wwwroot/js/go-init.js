@@ -4,7 +4,10 @@
         if (data.Nodes[i].loc) {
             data.Nodes[i].loc = new go.Point(data.Nodes[i].loc.x, data.Nodes[i].loc.y);
         }
-        if (data.Nodes[i].key.startsWith("Empty_")) {
+        if (data.Nodes[i].key.startsWith("Passive_")) {
+            data.Nodes[i].color = "#cee";
+        }
+        else if (data.Nodes[i].key.startsWith("Empty_")) {
             data.Nodes[i].color = "#0000";
             data.Nodes[i].stroke = "#0000";
         }
@@ -35,7 +38,7 @@
                     {
                         name: "OBJSHAPE",
                         fill: "white",
-                        desiredSize: new go.Size(160, 30)
+                        maxSize: new go.Size(200, 30)
                     },
                     new go.Binding("fill", "color"), new go.Binding("stroke", "stroke")),
                 gojs(go.TextBlock,
