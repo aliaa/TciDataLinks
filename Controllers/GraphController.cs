@@ -27,7 +27,7 @@ namespace TciDataLinks.Controllers
             return View();
         }
 
-        public IActionResult Center(ObjectId id, Device.NetworkType? networkType = null)
+        public IActionResult Center(ObjectId id, Device.NetworkType? networkType = null, bool? hasCustomer = null)
         {
             var graph = new Graph();
             var center = db.FindById<CommCenter>(id);
@@ -97,7 +97,7 @@ namespace TciDataLinks.Controllers
                     }
                 }
             }
-
+ 
             var connections = db.FindGetResults<EndPoint>(e => deviceIds.Contains(e.Device))
                 .GroupBy(key => key.Connection)
                 .Select(c => new
@@ -105,6 +105,11 @@ namespace TciDataLinks.Controllers
                     Connection = db.FindById<Connection>(c.Key),
                     EndPoints = db.Find<EndPoint>(e => e.Connection == c.Key).SortBy(e => e.Index).ToList()
                 });
+            if (hasCustomer == true)
+                connections = connections.Where(c => c.Connection.CustomerId != ObjectId.Empty);
+            else if(hasCustomer == false)
+                connections = connections.Where(c => c.Connection.CustomerId == ObjectId.Empty);
+
             foreach (var c in connections)
             {
                 string lastKey = null;

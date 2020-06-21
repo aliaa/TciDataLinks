@@ -25,10 +25,18 @@
         <label class="control-label">نوع شبکه</label>
         <select id="NetworkType" class="form-control">
             <option value="all">همه</option>
-            @foreach(var t in Enum.GetNames(typeof(Device.NetworkType)))
+            @foreach (var t in Enum.GetNames(typeof(Device.NetworkType)))
             {
                 <option value="@t">@Utils.DisplayName(typeof(Device.NetworkType), t)</option>
             }
+        </select>
+    </div>
+    <div class="col-lg-3 col-sm-6 form-group">
+        <label class="control-label">فیلتر لینکها</label>
+        <select id="HasCustomer" class="form-control">
+            <option value="all">همه</option>
+            <option value="true">فقط دارای مشتری</option>
+            <option value="false">فقط بدون مشتری</option>
         </select>
     </div>
 </div>
@@ -77,6 +85,9 @@
             var networkType = $("#NetworkType").val();
             if (networkType != "all")
                 url = url + "?NetworkType=" + networkType;
+            var hasCustomer = $("#HasCustomer").val();
+            if (hasCustomer != "all")
+                url = url + "?hasCustomer=" + hasCustomer;
             $.get(url, function (res) {
                 diagram = initGojs("divGraph", res, "@settings.CustomerDetailsUrl");
             });
