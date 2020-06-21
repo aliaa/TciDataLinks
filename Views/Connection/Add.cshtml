@@ -145,6 +145,10 @@ else
             <div class="modal-body">
                 <input type="hidden" id="newPassiveEndPointIndex" />
                 <div class="form-group">
+                    <label class="control-label">ساختمان</label>
+                    <select id="NewPassiveBuilding" class="form-control"></select>
+                </div>
+                <div class="form-group">
                     <label class="control-label">سالن/اتاق</label>
                     <select id="NewPassiveRoom" class="form-control"></select>
                 </div>
@@ -244,6 +248,18 @@ else
         });
     });
 
+        $("#NewPassiveBuilding").change(function () {
+            removeOptionsOfDropDown($("#NewPassiveRoom"));
+            removeOptionsOfDropDown($("#NewPassiveRack"));
+            removeOptionsOfDropDown($("#NewPassive"));
+            var id = $(this).val();
+            $.get("/Place/Rooms?building=" + id, function (res) {
+                $.each(res, function (index, item) {
+                    $("#NewPassiveRoom").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
+            });
+        });
+
     $("#NewPassiveRoom").change(function () {
         removeOptionsOfDropDown($("#NewPassiveRack"));
         removeOptionsOfDropDown($("#NewPassive"));
@@ -290,7 +306,7 @@ else
     }
 
     $("#btnAddNewEndPoint").on("click", function () {
-        var buildingId = $("#Building").val();
+        var centerId = $("#Center").val();
         var deviceId = $("#Device").val();
         if (IsDeviceAlreadyAdded(deviceId)) {
             showToast("دستگاه انتخاب شده قبلا اضافه شده است!", "danger");
@@ -298,7 +314,7 @@ else
         }
         var i = $("#divEndPoints").children().length;
         $.ajax({
-            url: "/Connection/AddEndPoint?index=" + i + "&building=" + buildingId + "&device=" + deviceId,
+            url: "/Connection/AddEndPoint?index=" + i + "&center=" + centerId + "&device=" + deviceId,
                 success: function (partialView) {
                     var item = $.parseHTML(partialView);
                     item = ConvertInputsToBeAsArrayItem(item, "@nameof(Model.EndPoints)", i);
@@ -326,11 +342,11 @@ else
         removeOptionsOfDropDown($("#NewPassiveRack"));
         removeOptionsOfDropDown($("#NewPassive"));
         $("#btnAddNewPassive").addClass("d-none");
-        var buildingId = $("#EndPoints_" + index + "__Building").val();
-        $.get("/Place/Rooms?building=" + buildingId, function (res) {
-            removeOptionsOfDropDown($("#NewPassiveRoom"));
+        var centerId = $("#EndPoints_" + index + "__Center").val();
+        $.get("/Place/Buildings?center=" + centerId, function (res) {
+            removeOptionsOfDropDown($("#NewPassiveBuilding"));
             $.each(res, function (index, item) {
-                $("#NewPassiveRoom").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                $("#NewPassiveBuilding").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
             $("#newPassiveModal").modal();
         });

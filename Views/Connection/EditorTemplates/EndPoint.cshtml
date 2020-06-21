@@ -12,7 +12,7 @@
     </div>
     <div class="card-body" style="background-color: hsl(@hue , 40%, 88%);">
         <input type="hidden" asp-for="Id" />
-        <input type="hidden" asp-for="Building" />
+        <input type="hidden" asp-for="Center" />
         <input type="hidden" asp-for="Device" />
         <input type="hidden" asp-for="Index" />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -130,8 +130,9 @@
             }
         </div>
         <div class="text-center my-4">
-            <input id="btnNewPassive" type="button" class="btn btn-secondary" value="اتصال Passive جدید" onclick="ShowNewPassiveDialog(@Model.Index)" />
-            <input id="btnRemoveLastPassive" type="button" class="btn btn-outline-danger mx-4 d-none" value="حذف آخرین اتصال Passive" onclick="RemoveLastPassive(@Model.Index)" />
+            <input id="EndPoints_@(Model.Index)__btnNewPassive" type="button" class="btn btn-secondary" value="اتصال Passive جدید" onclick="ShowNewPassiveDialog(@Model.Index)" />
+            <input id="EndPoints_@(Model.Index)__btnRemoveLastPassive" type="button" 
+                   class="btn btn-outline-danger mx-4 @(Model.PassiveConnectionViewModels.Count > 0 ? "" : "d-none")" value="حذف آخرین اتصال Passive" onclick="RemoveLastPassive(@Model.Index)" />
         </div>
     </div>
 </div>

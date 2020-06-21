@@ -46,7 +46,8 @@ namespace TciDataLinks.Controllers
                     var rackId = db.FindById<Device>(evm.Device).Rack;
                     var roomId = db.FindById<Rack>(rackId).Parent;
                     var buildingId = db.FindById<Room>(roomId).Parent;
-                    evm.Building = buildingId;
+                    var centerId = db.FindById<Building>(buildingId).Parent;
+                    evm.Center = centerId;
                 }
                 vm.EndPoints.Add(evm);
             }
@@ -170,7 +171,8 @@ namespace TciDataLinks.Controllers
                 var deviceObj = db.FindById<Device>(device);
                 var rack = db.FindById<Rack>(deviceObj.Rack);
                 var room = db.FindById<Room>(rack.Parent);
-                vm.EndPoints.Add(new EndPointViewModel { Building = room.Parent, Device = device });
+                var building = db.FindById<Building>(room.Parent);
+                vm.EndPoints.Add(new EndPointViewModel { Center = building.Parent, Device = device });
             }
             return View(vm);
         }
@@ -210,6 +212,7 @@ namespace TciDataLinks.Controllers
             foreach (var evm in model.EndPoints)
             {
                 var e = Mapper.Map<EndPoint>(evm);
+                e.PassiveConnections = e.PassiveConnections.Where(pc => pc.PatchPanel != ObjectId.Empty).ToList();
                 e.Index = i++;
                 e.Connection = model.Id;
                 db.Save(e);
@@ -224,12 +227,12 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditConnections))]
-        public IActionResult AddEndPoint(int index, ObjectId building, ObjectId device)
+        public IActionResult AddEndPoint(int index, ObjectId center, ObjectId device)
         {
             return GetEditorTemplatePartialView<EndPoint>(new EndPointViewModel
             {
                 Index = index,
-                Building = building,
+                Center = center,
                 Device = device
             });
         }
