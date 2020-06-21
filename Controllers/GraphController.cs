@@ -244,6 +244,7 @@ namespace TciDataLinks.Controllers
         public IActionResult Connection(ObjectId id)
         {
             var graph = new Graph();
+            var connection = db.FindById<Connection>(id);
             var endPoints = db.Find<EndPoint>(e => e.Connection == id).SortBy(e => e.Index).ToList();
             string lastKey = null;
             string lastPort = endPoints[0].PortNumber;
@@ -271,6 +272,18 @@ namespace TciDataLinks.Controllers
                 AddDeviceHierarchal(graph, db.FindById<Device>(endPoints[i].Device), out string deviceKey);
                 graph.AddLink(new GraphLink(lastKey, deviceKey, id, lastPort, endPoints[i].PortNumber));
                 lastKey = lastFirstEndPointKey;
+            }
+
+            if(connection.CustomerId != ObjectId.Empty)
+            {
+                var key = "Customer_" + connection.CustomerId;
+                graph.AddNode(new GraphNode
+                {
+                    key = key,
+                    image = "/lib/bootstrap-icons/icons/person-fill.svg",
+                    text = db.FindById<Customer>(connection.CustomerId)?.ToString()
+                });
+                graph.AddLink(new GraphLink(lastKey, key, connection.Id, "ارتباط مشتری"));
             }
 
             return Json(graph, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });

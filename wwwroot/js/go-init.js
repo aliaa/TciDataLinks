@@ -15,6 +15,8 @@
             data.Nodes[i].color = "#0000";
             data.Nodes[i].stroke = "#0000";
             data.Nodes[i].fontcolor = "#0000";
+            data.Nodes[i].width = 60;
+            data.Nodes[i].height = 60;
         }
     }
 
@@ -38,7 +40,7 @@
                     {
                         name: "OBJSHAPE",
                         fill: "white",
-                        maxSize: new go.Size(200, 30)
+                        maxSize: new go.Size(180, 34)
                     },
                     new go.Binding("fill", "color"), new go.Binding("stroke", "stroke")),
                 gojs(go.TextBlock,
