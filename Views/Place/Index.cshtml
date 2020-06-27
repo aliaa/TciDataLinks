@@ -7,30 +7,28 @@
 
 @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
 {
-    <a asp-controller="Device" asp-action="Add" class="btn btn-info">دستگاه جدید</a>
-    <a asp-controller="Passive" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>
+<a asp-controller="Device" asp-action="Add" class="btn btn-info">دستگاه جدید</a>
+<a asp-controller="Passive" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>
 }
 
 <h1 class="mt-4">مراکز</h1>
-<p class="mb-4 text-danger">توجه: برای تغییر دادن لیست مراکز لطفا از طریق <a href="@settings.TicketingSiteUrl">سامانه تیکتینگ</a> اقدام فرمائید.</p>
+<p class="text-danger">توجه: برای تغییر دادن لیست مراکز لطفا از طریق <a href="@settings.TicketingSiteUrl">سامانه تیکتینگ</a> اقدام فرمائید.</p>
 
-<div class="row">
-    @foreach (var city in Model.Centers.Keys)
+<div class="card-columns mt-5">
+    @foreach (var city in Model.Centers.Keys.OrderBy(c => c))
     {
-        <div class="col-md-3">
-            <div class="card m-2">
-                <div class="card-header">@city</div>
-                <div class="card-body">
-                    <ol class="">
-                        @foreach (var center in Model.Centers[city].OrderBy(c => c.Name))
-                        {
-                            <li>
-                                <a asp-action="Item" asp-route-type="Center" asp-route-id="@center.Id.ToString()">@center.Name</a>
-                            </li>
-                        }
-                    </ol>
-                </div>
-            </div>
+    <div class="card mb-4" style="background-color:#eee;">
+        <div class="card-header">@city</div>
+        <div class="card-body p-2">
+            <ol class="">
+                @foreach (var center in Model.Centers[city].OrderBy(c => c.Name))
+                            {
+                <li>
+                    <a asp-action="Item" asp-route-type="Center" asp-route-id="@center.Id.ToString()">@center.Name</a>
+                </li>
+                            }
+            </ol>
         </div>
+    </div>
     }
 </div>
