@@ -62,14 +62,7 @@
                         if (item.PlaceType == PlaceType.Device)
                         {
                             <li>
-                                @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
-                                {
-                                    <a asp-controller="Device" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item</a>
-                                }
-                                else
-                                {
-                                    <a asp-controller="Device" asp-action="Item" asp-route-id="@item.Id.ToString()">@item</a>
-                                }
+                                <a asp-controller="Device" asp-action="Item" asp-route-id="@item.Id.ToString()">@item</a>
                             </li>
                         }
                     }

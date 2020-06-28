@@ -56,7 +56,7 @@ namespace TciDataLinks.Models
         public bool s { get; set; }
     }
 
-    [CollectionIndex(new string[] { nameof(Center), nameof(Key) })]
+    [CollectionIndex(new string[] { nameof(Center), nameof(Key) }, Unique = true)]
     public class NodeLocationWithKey : MongoEntity
     {
         public ObjectId Center { get; set; }

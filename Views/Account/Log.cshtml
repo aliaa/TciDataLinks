@@ -89,22 +89,20 @@
                 <td>@(PersianDateUtils.GetPersianDateString(item.Time))</td>
                 <td>
                     @{
-                        string type;
                         switch (item.ActivityType)
                         {
                             case EasyMongoNet.Model.ActivityType.Delete:
-                                type = "حذف";
+                                <span class="text-danger">حذف</span>
                                 break;
                             case EasyMongoNet.Model.ActivityType.Insert:
-                                type = "ایجاد";
+                                <span class="text-info">ایجاد</span>
                                 break;
                             case EasyMongoNet.Model.ActivityType.Update:
-                                type = "بروز رسانی";
+                                <span class="text-success">بروز رسانی</span>
                                 break;
                             default:
                                 throw new NotImplementedException();
                         }
-                        @type
                     }
                 </td>
             </tr>

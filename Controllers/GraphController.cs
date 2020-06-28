@@ -304,20 +304,23 @@ namespace TciDataLinks.Controllers
         [HttpPost]
         public IActionResult SaveOrders([FromBody] Req req)
         {
-            var existing = db.Find<NodeLocationWithKey>(x => x.Center == req.center).ToEnumerable().ToDictionary(k => k.Key);
-            foreach (var item in req.nodeLocations)
+            lock (db)
             {
-                item.Center = req.center;
-                if (existing.ContainsKey(item.Key))
-                    existing[item.Key].Loc = item.Loc;
-                else
-                    existing.Add(item.Key, item);
+                var existing = db.Find<NodeLocationWithKey>(x => x.Center == req.center).ToEnumerable().ToDictionary(k => k.Key);
+                foreach (var item in req.nodeLocations)
+                {
+                    item.Center = req.center;
+                    if (existing.ContainsKey(item.Key))
+                        existing[item.Key].Loc = item.Loc;
+                    else
+                        existing.Add(item.Key, item);
+                }
+                foreach (var item in existing.Values)
+                {
+                    db.Save(item);
+                }
+                return Ok();
             }
-            foreach (var item in existing.Values)
-            {
-                db.Save(item);
-            }
-            return Ok();
         }
     }
 }

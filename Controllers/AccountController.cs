@@ -185,7 +185,8 @@ namespace TciDataLinks.Controllers
                     Type = a.CollectionName,
                     ObjId = a.ObjId
                 })
-                .SortByDescending(a => a.Time).Limit(1000).ToList();
+                .SortByDescending(a => a.Time)
+                .Limit(1000).ToList();
             foreach (var item in result)
             {
                 if (item.Type == nameof(EndPoint))
