@@ -22,6 +22,18 @@
         <select id="Center" class="form-control"></select>
     </div>
     <div class="col-lg-3 col-sm-6 form-group">
+        <label class="control-label">ساختمان</label>
+        <select id="Building" class="form-control"></select>
+    </div>
+    <div class="col-lg-3 col-sm-6 form-group">
+        <label class="control-label">اتاق/سالن</label>
+        <select id="Room" class="form-control"></select>
+    </div>
+    <div class="col-lg-3 col-sm-6 form-group">
+        <label class="control-label">راک</label>
+        <select id="Rack" class="form-control"></select>
+    </div>
+    <div class="col-lg-3 col-sm-6 form-group">
         <label class="control-label">نوع شبکه</label>
         <select id="NetworkType" class="form-control">
             <option value="all">همه</option>
@@ -81,16 +93,21 @@
         var diagram = null;
         $("#btnShowGraph").click(function () {
             $("#divResult").removeClass("d-none");
-            var url = "/Graph/Center/" + $("#Center").val();
+            var url = "/Graph/Place/" + $("#Center").val() + "?type=Center";
             var networkType = $("#NetworkType").val();
             if (networkType != "all")
-                url = url + "?NetworkType=" + networkType;
+                url = url + "&networkType=" + networkType;
             var hasCustomer = $("#HasCustomer").val();
             if (hasCustomer != "all")
-                url = url + "?hasCustomer=" + hasCustomer;
+                url = url + "&hasCustomer=" + hasCustomer;
             $.get(url, function (res) {
                 diagram = initGojs("divGraph", res, "@settings.CustomerDetailsUrl");
             });
+
+            if (networkType == "all" && hasCustomer == "all")
+                $("#btnSaveOrders").show();
+            else
+                $("#btnSaveOrders").hide();
         });
 
         $("#btnSaveOrders").click(function () {

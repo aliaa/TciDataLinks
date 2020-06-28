@@ -27,8 +27,13 @@ namespace TciDataLinks.Controllers
             return View();
         }
 
-        public IActionResult Center(ObjectId id, Device.NetworkType? networkType = null, bool? hasCustomer = null)
+
+        private static PlaceType[] ForbiddenPlaces = new PlaceType[] { PlaceType.City, PlaceType.Device, PlaceType.Passive };
+        public IActionResult Place(PlaceType type, ObjectId id, Device.NetworkType? networkType = null, bool? hasCustomer = null)
         {
+            if (ForbiddenPlaces.Contains(type))
+                throw new Exception("type: " + type + " is not supported for creating graph!");
+
             var graph = new Graph();
             var center = db.FindById<CommCenter>(id);
             var centerNode = new GraphNode
@@ -39,7 +44,28 @@ namespace TciDataLinks.Controllers
             };
             graph.AddNode(centerNode);
             var deviceIds = new List<ObjectId>();
-            foreach (var building in db.FindGetResults<Building>(b => b.Parent == id))
+
+            IEnumerable<PlaceBase> buildings = null, rooms = null, racks = null;
+            if (type == PlaceType.Center)
+                buildings = db.FindGetResults<Building>(b => b.Parent == id);
+            else if (type == PlaceType.Building)
+                buildings = new Building[] { db.FindById<Building>(id) };
+            else if (type == PlaceType.Room)
+            {
+                var room = db.FindById<Room>(id);
+                buildings = new Building[] { db.FindById<Building>(room.Parent) };
+                rooms = new Room[] { room };
+            }
+            else if (type == PlaceType.Rack)
+            {
+                var rack = db.FindById<Rack>(id);
+                var room = db.FindById<Room>(rack.Parent);
+                buildings = new Building[] { db.FindById<Building>(room.Parent) };
+                rooms = new Room[] { room };
+                racks = new Rack[] { rack };
+            }
+
+            foreach (var building in buildings)
             {
                 var buildingNode = new GraphNode
                 {
@@ -49,7 +75,10 @@ namespace TciDataLinks.Controllers
                     isGroup = true
                 };
                 graph.AddNode(buildingNode);
-                foreach (var room in db.FindGetResults<Room>(r => r.Parent == building.Id))
+
+                if (rooms == null)
+                    rooms = db.FindGetResults<Room>(r => r.Parent == building.Id);
+                foreach (var room in rooms)
                 {
                     var roomNode = new GraphNode
                     {
@@ -59,7 +88,10 @@ namespace TciDataLinks.Controllers
                         isGroup = true
                     };
                     graph.AddNode(roomNode);
-                    foreach (var rack in db.FindGetResults<Rack>(r => r.Parent == room.Id))
+
+                    if (racks == null)
+                        racks = db.FindGetResults<Rack>(r => r.Parent == room.Id);
+                    foreach (var rack in racks)
                     {
                         var rackNode = new GraphNode
                         {
