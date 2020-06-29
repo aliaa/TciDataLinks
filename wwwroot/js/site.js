@@ -32,7 +32,7 @@ var select2BaseSettings = {
 function removeOptionsOfDropDown(ddl, { initMsg = "انتخاب کنید", disabledInitMsg = true } = {}) {
     ddl.find("option").remove().end();
     if (initMsg) {
-        var option = "<option " + (disabledInitMsg ? "disabled" : "") + " selected>" + initMsg + "</option>";
+        var option = "<option " + (disabledInitMsg ? "disabled" : "") + " value='' selected>" + initMsg + "</option>";
         ddl.append(option);
     }
 }

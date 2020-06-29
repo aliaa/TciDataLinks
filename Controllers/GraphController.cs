@@ -35,7 +35,42 @@ namespace TciDataLinks.Controllers
                 throw new Exception("type: " + type + " is not supported for creating graph!");
 
             var graph = new Graph();
-            var center = db.FindById<CommCenter>(id);
+            CommCenter center;
+            var deviceIds = new List<ObjectId>();
+
+            IEnumerable<PlaceBase> buildings = null, rooms = null, racks = null;
+            if (type == PlaceType.Center)
+            {
+                center = db.FindById<CommCenter>(id);
+                buildings = db.FindGetResults<Building>(b => b.Parent == id);
+            }
+            else if (type == PlaceType.Building)
+            {
+                var building = db.FindById<Building>(id);
+                center = db.FindById<CommCenter>(building.Parent);
+                buildings = new Building[] { building };
+            }
+            else if (type == PlaceType.Room)
+            {
+                var room = db.FindById<Room>(id);
+                var building = db.FindById<Building>(room.Parent);
+                center = db.FindById<CommCenter>(building.Parent);
+                buildings = new Building[] { building };
+                rooms = new Room[] { room };
+            }
+            else if (type == PlaceType.Rack)
+            {
+                var rack = db.FindById<Rack>(id);
+                var room = db.FindById<Room>(rack.Parent);
+                var building = db.FindById<Building>(room.Parent);
+                center = db.FindById<CommCenter>(building.Parent);
+                buildings = new Building[] { building };
+                rooms = new Room[] { room };
+                racks = new Rack[] { rack };
+            }
+            else
+                throw new NotImplementedException();
+
             var centerNode = new GraphNode
             {
                 key = "Center_" + center.Id,
@@ -43,27 +78,6 @@ namespace TciDataLinks.Controllers
                 isGroup = true
             };
             graph.AddNode(centerNode);
-            var deviceIds = new List<ObjectId>();
-
-            IEnumerable<PlaceBase> buildings = null, rooms = null, racks = null;
-            if (type == PlaceType.Center)
-                buildings = db.FindGetResults<Building>(b => b.Parent == id);
-            else if (type == PlaceType.Building)
-                buildings = new Building[] { db.FindById<Building>(id) };
-            else if (type == PlaceType.Room)
-            {
-                var room = db.FindById<Room>(id);
-                buildings = new Building[] { db.FindById<Building>(room.Parent) };
-                rooms = new Room[] { room };
-            }
-            else if (type == PlaceType.Rack)
-            {
-                var rack = db.FindById<Rack>(id);
-                var room = db.FindById<Room>(rack.Parent);
-                buildings = new Building[] { db.FindById<Building>(room.Parent) };
-                rooms = new Room[] { room };
-                racks = new Rack[] { rack };
-            }
 
             foreach (var building in buildings)
             {

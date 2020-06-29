@@ -137,3 +137,7 @@ body {
         column-count: 5;
     }
 }
+
+label.error {
+    color: red;
+}
