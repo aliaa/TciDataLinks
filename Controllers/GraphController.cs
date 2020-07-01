@@ -141,7 +141,9 @@ namespace TciDataLinks.Controllers
                             graph.AddNode(ppNode);
                         }
                     }
+                    racks = null;
                 }
+                rooms = null;
             }
  
             var connections = db.FindGetResults<EndPoint>(e => deviceIds.Contains(e.Device))
