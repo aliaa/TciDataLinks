@@ -212,6 +212,8 @@ namespace TciDataLinks.Controllers
             foreach (var evm in model.EndPoints)
             {
                 var e = Mapper.Map<EndPoint>(evm);
+                if (e.Device == ObjectId.Empty)
+                    continue;
                 e.PassiveConnections = e.PassiveConnections.Where(pc => pc.PatchPanel != ObjectId.Empty).ToList();
                 e.Index = i++;
                 e.Connection = model.Id;

@@ -6,6 +6,8 @@ namespace TciDataLinks.Models
     {
         [Display(Name = "مشخص نشده")]
         None,
+        [Display(Name = "لینک مستقیم")]
+        DirectLink,
         RTN,
         PTN,
         DWDM,
