@@ -82,6 +82,14 @@ namespace TciDataLinks.Controllers
             });
         }
 
+        public IActionResult Go(int linkNumber)
+        {
+            var id = db.Find<Connection>(c => c.IdInt == linkNumber).Project(c => c.Id).FirstOrDefault();
+            if (id != ObjectId.Empty)
+                return RedirectToAction(nameof(Item), new { id });
+            return RedirectToAction(nameof(Index));
+        }
+
         private const int SEARCH_RESULT_LIMIT = 200;
 
         [HttpPost]

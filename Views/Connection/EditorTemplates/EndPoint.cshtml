@@ -102,18 +102,18 @@
                 <input asp-for="DistanceToNextPoint" class="form-control" />
                 <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>
             </div>
-            <div class="col-lg-3 col-sm-6 form-group">
-                <label class="form-check-label" asp-for="DataProtection">
+            <div class="col-lg-3 col-sm-6 form-group d-flex align-items-end">
+                <label asp-for="DataProtection">
                     <input asp-for="DataProtection" /> @Html.DisplayNameFor(model => model.DataProtection)
                 </label>
             </div>
-            <div class="col-lg-3 col-sm-6 form-group">
-                <label class="form-check-label" asp-for="TransmissionProtection">
+            <div class="col-lg-3 col-sm-6 form-group d-flex align-items-end">
+                <label asp-for="TransmissionProtection">
                     <input asp-for="TransmissionProtection" /> @Html.DisplayNameFor(model => model.TransmissionProtection)
                 </label>
             </div>
-            <div class="col-lg-3 col-sm-6 form-group">
-                <label class="form-check-label" asp-for="Incomplete">
+            <div class="col-lg-3 col-sm-6 form-group d-flex align-items-end">
+                <label asp-for="Incomplete">
                     <input asp-for="Incomplete" /> @Html.DisplayNameFor(model => model.Incomplete)
                 </label>
             </div>

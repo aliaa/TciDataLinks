@@ -12,11 +12,27 @@
 }
 <div class="mt-5">تعداد کل لینکهای تعریف شده: @Model.TotalLinksCount</div>
 <hr/>
-<h1 class="mt-5">جستجوی لینک ها</h1>
+
+<h2 class="mt-5">جستجوی مستقیم</h2>
+<hr />
+
+<form asp-action="Go" method="get">
+    <div class="row mt-4">
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label class="control-label">شماره لینک</label>
+            <input type="number" name="linkNumber" class="form-control" required />
+        </div>
+        <div class="col-lg-3 col-sm-6 d-flex align-items-end form-group">
+            <input type="submit" class="btn btn-primary" value="برو"  />
+        </div>
+    </div>
+</form>
+
+<h2 class="mt-5">جستجوی پیشرفته</h2>
 <hr/>
 
 <form asp-action="Index">
-    <div class="row mt-5">
+    <div class="row mt-4">
         <div class="col-lg-3 col-sm-6 form-group">
             <label class="control-label">شهر</label>
             <select asp-for="City" class="form-control">
@@ -133,7 +149,7 @@
         </div>
     </div>
     <div class="mt-2">
-        <input type="submit" class="btn btn-primary" value="جستجوی لینک" />
+        <input type="submit" class="btn btn-primary" value="جستجو" />
     </div>
 </form>
 

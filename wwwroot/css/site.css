@@ -97,11 +97,6 @@ body {
     margin-right: -1.25rem;
 }
 
-.form-check-label {
-    position: absolute;
-    bottom: 0.5em;
-}
-
 .form-group {
     min-height: 3em;
 }
