@@ -11,8 +11,8 @@
 <a asp-controller="Passive" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>
 }
 
-<h1 class="mt-4">مراکز</h1>
-<p class="text-danger">توجه: برای تغییر دادن لیست مراکز لطفا از طریق <a href="@settings.TicketingSiteUrl">سامانه تیکتینگ</a> اقدام فرمائید.</p>
+<h1 class="mt-5">مراکز</h1>
+<small>توجه: برای تغییر دادن لیست مراکز لطفا از طریق <a href="@settings.TicketingSiteUrl">سامانه تیکتینگ</a> اقدام فرمائید.</small>
 
 <div class="card-columns mt-5">
     @foreach (var city in Model.Centers.Keys.OrderBy(c => c))
