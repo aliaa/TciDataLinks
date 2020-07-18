@@ -60,7 +60,7 @@ namespace TciDataLinks.Controllers
             return View(nameof(Index), new PlaceIndexViewModel { DeviceSearchResult = result });
         }
 
-        public IActionResult PassiveSearch(Passive.PassiveTypeEnum)
+        
 
         public IActionResult Item(string type, string id)
         {
