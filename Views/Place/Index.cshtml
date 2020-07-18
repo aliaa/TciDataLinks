@@ -1,4 +1,4 @@
-﻿@model CentersViewModel
+﻿@model PlaceIndexViewModel
 @inject Settings settings
 
 @{
@@ -7,28 +7,108 @@
 
 @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
 {
-<a asp-controller="Device" asp-action="Add" class="btn btn-info">دستگاه جدید</a>
-<a asp-controller="Passive" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>
+    <a asp-controller="Device" asp-action="Add" class="btn btn-info">دستگاه جدید</a>
+    <a asp-controller="Passive" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>
 }
 
-<h1 class="mt-5">مراکز</h1>
-<small>توجه: برای تغییر دادن لیست مراکز لطفا از طریق <a href="@settings.TicketingSiteUrl">سامانه تیکتینگ</a> اقدام فرمائید.</small>
-
-<div class="card-columns mt-5">
-    @foreach (var city in Model.Centers.Keys.OrderBy(c => c))
-    {
-    <div class="card mb-4" style="background-color:#eee;">
-        <div class="card-header">@city</div>
-        <div class="card-body p-2">
-            <ol class="">
-                @foreach (var center in Model.Centers[city].OrderBy(c => c.Name))
-                            {
-                <li>
-                    <a asp-action="Item" asp-route-type="Center" asp-route-id="@center.Id.ToString()">@center.Name</a>
-                </li>
-                            }
-            </ol>
+<h1 class="mt-5">جستجوی دستگاه</h1>
+<form asp-action="DeviceSearch">
+    <div class="mt-5 row">
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>نوع دستگاه</label>
+            <select name="type" class="form-control">
+                <option value="">همه</option>
+                @foreach (var t in Enum.GetNames(typeof(Device.DeviceType)))
+                {
+                    <option value="@t">@Utils.DisplayName(typeof(Device.DeviceType), t)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>نوع شبکه</label>
+            <select name="network" class="form-control">
+                <option value="">همه</option>
+                @foreach (var n in Enum.GetNames(typeof(Device.NetworkType)))
+                {
+                    <option value="@n">@Utils.DisplayName(typeof(Device.NetworkType), n)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>مدل دستگاه</label>
+            <input type="text" class="form-control" name="model" />
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>آدرس IP یا NodeID</label>
+            <input type="text" class="form-control" name="address" />
         </div>
     </div>
-    }
-</div>
+    <div class="mt-3">
+        <input type="submit" value="جستجو" class="btn btn-primary" />
+    </div>
+</form>
+<hr />
+
+@*<h1 class="mt-5">جستجوی رابط Passive</h1>
+<form asp-action="PassiveSearch">
+    <div class="mt-5 row">
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>نوع رابط</label>
+            <select name="type" class="form-control">
+                <option value="">همه</option>
+                @foreach (var t in Enum.GetNames(typeof(Passive.PassiveTypeEnum)))
+                {
+                    <option value="@t">@Utils.DisplayName(typeof(Passive.PassiveTypeEnum), t)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>نام</label>
+            <input type="text" class="form-control" name="name" />
+        </div>
+    </div>
+    <div class="mt-3">
+        <input type="submit" value="جستجو" class="btn btn-primary" />
+    </div>
+</form>
+<hr />*@
+
+
+@if (Model.DeviceSearchResult != null)
+{
+    <div class="mt-5">
+        @if (Model.DeviceSearchResult.Count == 20)
+        {
+            <small>توجه: فقط 20 مورد نمایش داده میشود!</small>
+        }
+        @foreach (var d in Model.DeviceSearchResult)
+        {
+            @Html.DisplayFor(m => d, "Device")
+        }
+    </div>
+}
+
+@if (Model.Centers != null)
+{
+    <h1 class="mt-5">مراکز</h1>
+    <small>توجه: برای تغییر دادن لیست مراکز لطفا از طریق <a href="@settings.TicketingSiteUrl">سامانه تیکتینگ</a> اقدام فرمائید.</small>
+
+    <div class="card-columns mt-5">
+        @foreach (var city in Model.Centers.Keys.OrderBy(c => c))
+        {
+            <div class="card mb-4" style="background-color:#eee;">
+                <div class="card-header">@city</div>
+                <div class="card-body p-2">
+                    <ol class="">
+                        @foreach (var center in Model.Centers[city].OrderBy(c => c.Name))
+                        {
+                            <li>
+                                <a asp-action="Item" asp-route-type="Center" asp-route-id="@center.Id.ToString()">@center.Name</a>
+                            </li>
+                        }
+                    </ol>
+                </div>
+            </div>
+        }
+    </div>
+}

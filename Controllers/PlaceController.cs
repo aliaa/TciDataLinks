@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Omu.ValueInjecter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +34,33 @@ namespace TciDataLinks.Controllers
                 .GroupBy(c => c.City)
                 .Select(g => new { city = citiesDic[g.Key], List = g.ToList() })
                 .ToDictionary(k => k.city, v => v.List);
-            return View(new CentersViewModel { Centers = centers });
+            return View(new PlaceIndexViewModel { Centers = centers });
         }
+
+        public IActionResult DeviceSearch(Device.DeviceType? type, Device.NetworkType? network, string model, string address)
+        {
+            var fb = Builders<Device>.Filter;
+            var filters = new List<FilterDefinition<Device>>();
+            if (type != null)
+                filters.Add(fb.Eq(d => d.Type, type.Value));
+            if (network != null)
+                filters.Add(fb.Eq(d => d.Network, network.Value));
+            if (!string.IsNullOrWhiteSpace(model))
+                filters.Add(fb.Regex(d => d.Model, new BsonRegularExpression(model)));
+            if (!string.IsNullOrWhiteSpace(address))
+                filters.Add(fb.Regex(d => d.Address, new BsonRegularExpression(address)));
+
+            var filter = fb.Empty;
+            if (filters.Count == 1)
+                filter = filters[0];
+            else if (filters.Count > 1)
+                filter = fb.And(filters);
+
+            var result = db.Find(filter).Limit(20).ToEnumerable().Select(d => Mapper.Map<DeviceViewModel>(d)).ToList();
+            return View(nameof(Index), new PlaceIndexViewModel { DeviceSearchResult = result });
+        }
+
+        public IActionResult PassiveSearch(Passive.PassiveTypeEnum)
 
         public IActionResult Item(string type, string id)
         {

@@ -85,14 +85,7 @@
                     @foreach (var item in Model.SubItems.Where(i => i.PlaceType == PlaceType.Passive))
                     {
                         <li>
-                            @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
-                            {
-                                <a asp-controller="Passive" asp-action="Edit" asp-route-id="@item.Id.ToString()">@item</a>
-                            }
-                            else
-                            {
-                                <a asp-controller="Passive" asp-action="Item" asp-route-id="@item.Id.ToString()">@item</a>
-                            }
+                            <a asp-controller="Passive" asp-action="Item" asp-route-id="@item.Id.ToString()">@item</a>
                         </li>
                     }
                 </ol>
