@@ -9,5 +9,7 @@ namespace TciDataLinks.ViewModels
         public Dictionary<string, List<CommCenter>> Centers { get; set; }
 
         public List<DeviceViewModel> DeviceSearchResult { get; set; }
+
+        public List<PassiveViewModel> PassiveSearchResult { get; set; }
     }
 }

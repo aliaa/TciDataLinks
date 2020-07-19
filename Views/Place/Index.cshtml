@@ -49,16 +49,36 @@
 </form>
 <hr />
 
-@*<h1 class="mt-5">جستجوی رابط Passive</h1>
+<h1 class="mt-5">جستجوی رابط Passive</h1>
 <form asp-action="PassiveSearch">
     <div class="mt-5 row">
         <div class="col-lg-3 col-sm-6 form-group">
             <label>نوع رابط</label>
-            <select name="type" class="form-control">
+            <select id="type" name="type" class="form-control" onchange="">
                 <option value="">همه</option>
                 @foreach (var t in Enum.GetNames(typeof(Passive.PassiveTypeEnum)))
                 {
                     <option value="@t">@Utils.DisplayName(typeof(Passive.PassiveTypeEnum), t)</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6" id="divPatchPanelType">
+            <label>نوع پچ پنل</label>
+            <select name="patchPanelType" class="form-control">
+                <option value="">همه</option>
+                @foreach (var t in Enum.GetNames(typeof(Passive.PatchPanelTypeEnum)))
+                {
+                    <option value="@t">@Utils.DisplayName(typeof(Passive.PatchPanelTypeEnum), t)</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6" id="divTransmissionType">
+            <label>نوع تجهیزات انتقال</label>
+            <select name="transmissionType" class="form-control">
+                <option value="">همه</option>
+                @foreach (var t in Enum.GetNames(typeof(TransmissionSystemType)))
+                {
+                    <option value="@t">@Utils.DisplayName(typeof(TransmissionSystemType), t)</option>
                 }
             </select>
         </div>
@@ -71,7 +91,7 @@
         <input type="submit" value="جستجو" class="btn btn-primary" />
     </div>
 </form>
-<hr />*@
+<hr />
 
 
 @if (Model.DeviceSearchResult != null)
@@ -84,6 +104,20 @@
         @foreach (var d in Model.DeviceSearchResult)
         {
             @Html.DisplayFor(m => d, "Device")
+        }
+    </div>
+}
+
+@if (Model.PassiveSearchResult != null)
+{
+    <div class="mt-5">
+        @if (Model.PassiveSearchResult.Count == 20)
+        {
+            <small>توجه: فقط 20 مورد نمایش داده میشود!</small>
+        }
+        @foreach (var d in Model.PassiveSearchResult)
+        {
+            @Html.DisplayFor(m => d, "Passive")
         }
     </div>
 }
@@ -111,4 +145,31 @@
             </div>
         }
     </div>
+}
+
+
+@section Scripts {
+    <script>
+        $("#type").change(function () {
+            var type = $("#type").val();
+            var divPP = $("#divPatchPanelType");
+            var divTT = $("#divTransmissionType");
+            if (type == "PatchPanel") {
+                divPP.show();
+                divTT.hide();
+                $("#TransmissionType").val("");
+            }
+            else if (type == "Transmissional") {
+                divPP.hide();
+                divTT.show();
+                $("#PatchPanelType").val("");
+            }
+            else {
+                divPP.hide();
+                divTT.hide();
+            }
+        });
+
+        $("#type").trigger("change");
+    </script>
 }

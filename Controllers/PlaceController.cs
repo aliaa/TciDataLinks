@@ -46,9 +46,9 @@ namespace TciDataLinks.Controllers
             if (network != null)
                 filters.Add(fb.Eq(d => d.Network, network.Value));
             if (!string.IsNullOrWhiteSpace(model))
-                filters.Add(fb.Regex(d => d.Model, new BsonRegularExpression(model)));
+                filters.Add(fb.Regex(d => d.Model, new BsonRegularExpression(model.Replace(" ", ".*"))));
             if (!string.IsNullOrWhiteSpace(address))
-                filters.Add(fb.Regex(d => d.Address, new BsonRegularExpression(address)));
+                filters.Add(fb.Regex(d => d.Address, new BsonRegularExpression(address.Replace(" ", ".*"))));
 
             var filter = fb.Empty;
             if (filters.Count == 1)
@@ -60,7 +60,29 @@ namespace TciDataLinks.Controllers
             return View(nameof(Index), new PlaceIndexViewModel { DeviceSearchResult = result });
         }
 
-        
+        public IActionResult PassiveSearch(Passive.PassiveTypeEnum? type, Passive.PatchPanelTypeEnum? patchPanelType, 
+            TransmissionSystemType? transmissionType, string name)
+        {
+            var fb = Builders<Passive>.Filter;
+            var filters = new List<FilterDefinition<Passive>>();
+            if (type != null)
+                filters.Add(fb.Eq(p => p.Type, type.Value));
+            if (patchPanelType != null)
+                filters.Add(fb.Eq(p => p.PatchPanelType, patchPanelType.Value));
+            if (transmissionType != null)
+                filters.Add(fb.Eq(p => p.TransmissionType, transmissionType.Value));
+            if (!string.IsNullOrWhiteSpace(name))
+                filters.Add(fb.Regex(p => p.Name, new BsonRegularExpression(name.Replace(" ", ".*"))));
+
+            var filter = fb.Empty;
+            if (filters.Count == 1)
+                filter = filters[0];
+            else if (filters.Count > 1)
+                filter = fb.And(filters);
+
+            var result = db.Find(filter).Limit(20).ToEnumerable().Select(p => Mapper.Map<PassiveViewModel>(p)).ToList();
+            return View(nameof(Index), new PlaceIndexViewModel { PassiveSearchResult = result });
+        }
 
         public IActionResult Item(string type, string id)
         {
