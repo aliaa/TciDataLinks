@@ -11,9 +11,9 @@
     <a asp-controller="Passive" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>
 }
 
-<h1 class="mt-5">جستجوی دستگاه</h1>
+<h2 class="mt-5">جستجوی دستگاه</h2>
 <form asp-action="DeviceSearch">
-    <div class="mt-5 row">
+    <div class="mt-4 row">
         <div class="col-lg-3 col-sm-6 form-group">
             <label>نوع دستگاه</label>
             <select name="type" class="form-control">
@@ -49,9 +49,9 @@
 </form>
 <hr />
 
-<h1 class="mt-5">جستجوی رابط Passive</h1>
+<h2 class="mt-5">جستجوی رابط Passive</h2>
 <form asp-action="PassiveSearch">
-    <div class="mt-5 row">
+    <div class="mt-4 row">
         <div class="col-lg-3 col-sm-6 form-group">
             <label>نوع رابط</label>
             <select id="type" name="type" class="form-control" onchange="">
@@ -124,10 +124,10 @@
 
 @if (Model.Centers != null)
 {
-    <h1 class="mt-5">مراکز</h1>
+    <h2 class="mt-5">مراکز</h2>
     <small>توجه: برای تغییر دادن لیست مراکز لطفا از طریق <a href="@settings.TicketingSiteUrl">سامانه تیکتینگ</a> اقدام فرمائید.</small>
 
-    <div class="card-columns mt-5">
+    <div class="card-columns mt-4">
         @foreach (var city in Model.Centers.Keys.OrderBy(c => c))
         {
             <div class="card mb-4" style="background-color:#eee;">

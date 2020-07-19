@@ -24,9 +24,10 @@
 
     if ($("#" + divId).children().length == 0) {
         myDiagram =
-            gojs(go.Diagram, divId,  // Diagram refers to its DIV HTML element by id
+            gojs(go.Diagram, divId,
                 {
-                    maxSelectionCount: 1 // no more than 1 element can be selected at a time
+                    maxSelectionCount: 1,
+                    initialAutoScale: go.Diagram.Uniform
                 });
         // define the node template
         myDiagram.nodeTemplate =

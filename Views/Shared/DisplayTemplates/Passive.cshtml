@@ -2,7 +2,7 @@
 @inject IReadOnlyDbContext db
 @using EasyMongoNet.Model
 
-<div class="card my-5" style="background-color:#eee;">
+<div class="card my-4" style="background-color:#eee;">
     <div class="card-header">
         @Html.Raw(Model.GetPlaceDisplay(db))
         @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
