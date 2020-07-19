@@ -90,7 +90,7 @@ namespace TciDataLinks.Models
                 var hue = 0;
                 if (connectionId != null)
                     hue = Math.Abs(connectionId.GetHashCode()) % 240;
-                return new AliaaCommon.HSLColor(hue, 220.0, 90.0).ToHexString();
+                return new AliaaCommon.HSLColor(hue, 220.0, 90.0, 150.0).ToHexString();
             }
         }
     }
