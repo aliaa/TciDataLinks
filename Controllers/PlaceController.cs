@@ -1,4 +1,5 @@
 ﻿using EasyMongoNet;
+using EasyMongoNet.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -57,10 +58,26 @@ namespace TciDataLinks.Controllers
                 filter = fb.And(filters);
 
             var result = db.Find(filter).Limit(20).ToEnumerable().Select(d => Mapper.Map<DeviceViewModel>(d)).ToList();
+            if (UserPermissions.Contains(Permission.ViewUserLogs))
+            {
+                var users = db.All<AuthUserX>().ToDictionary(u => u.Username, u => u.DisplayName);
+                foreach (var d in result)
+                {
+                    d.Logs = db.Find<UserActivity>(a => a.ObjId == d.Id).SortBy(a => a.Time)
+                        .Project(a => new UserActivityViewModel
+                        {
+                            User = users.ContainsKey(a.Username) ? users[a.Username] : a.Username,
+                            Time = a.Time,
+                            ActivityType = a.ActivityType,
+                            ObjId = a.ObjId
+                        })
+                        .ToList();
+                }
+            }
             return View(nameof(Index), new PlaceIndexViewModel { DeviceSearchResult = result });
         }
 
-        public IActionResult PassiveSearch(Passive.PassiveTypeEnum? type, Passive.PatchPanelTypeEnum? patchPanelType, 
+        public IActionResult PassiveSearch(Passive.PassiveTypeEnum? type, Passive.PatchPanelTypeEnum? patchPanelType,
             TransmissionSystemType? transmissionType, string name)
         {
             var fb = Builders<Passive>.Filter;
@@ -81,6 +98,22 @@ namespace TciDataLinks.Controllers
                 filter = fb.And(filters);
 
             var result = db.Find(filter).Limit(20).ToEnumerable().Select(p => Mapper.Map<PassiveViewModel>(p)).ToList();
+            if (UserPermissions.Contains(Permission.ViewUserLogs))
+            {
+                var users = db.All<AuthUserX>().ToDictionary(u => u.Username, u => u.DisplayName);
+                foreach (var d in result)
+                {
+                    d.Logs = db.Find<UserActivity>(a => a.ObjId == d.Id).SortBy(a => a.Time)
+                        .Project(a => new UserActivityViewModel
+                        {
+                            User = users.ContainsKey(a.Username) ? users[a.Username] : a.Username,
+                            Time = a.Time,
+                            ActivityType = a.ActivityType,
+                            ObjId = a.ObjId
+                        })
+                        .ToList();
+                }
+            }
             return View(nameof(Index), new PlaceIndexViewModel { PassiveSearchResult = result });
         }
 

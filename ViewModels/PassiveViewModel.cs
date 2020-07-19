@@ -1,5 +1,6 @@
 ﻿using EasyMongoNet;
 using Omu.ValueInjecter;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TciDataLinks.Models;
 
@@ -22,6 +23,8 @@ namespace TciDataLinks.ViewModels
         [Required(ErrorMessage = "نام اجباریست!")]
         [Display(Name = "نام")]
         public string Name { get; set; }
+
+        public List<UserActivityViewModel> Logs { get; set; }
 
         public override string ToString() => Name;
 

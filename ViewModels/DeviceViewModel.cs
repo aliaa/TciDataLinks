@@ -2,6 +2,7 @@
 using EasyMongoNet;
 using Microsoft.AspNetCore.Mvc;
 using Omu.ValueInjecter;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TciDataLinks.Models;
 
@@ -22,6 +23,8 @@ namespace TciDataLinks.ViewModels
         [Remote("DeviceAddressIsValid", "Device", AdditionalFields = "Id", ErrorMessage = "آدرس وارد شده قبلا موجود میباشد!")]
         [Display(Name = "آدرس IP یا NodeID")]
         public string Address { get; set; }
+
+        public List<UserActivityViewModel> Logs { get; set; }
 
         public override string ToString()
         {

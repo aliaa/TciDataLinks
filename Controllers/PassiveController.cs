@@ -1,4 +1,5 @@
 ﻿using EasyMongoNet;
+using EasyMongoNet.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -26,6 +27,19 @@ namespace TciDataLinks.Controllers
         {
             var passive = db.FindById<Passive>(id);
             var model = Mapper.Map<PassiveViewModel>(passive);
+            if (UserPermissions.Contains(Permission.ViewUserLogs))
+            {
+                var users = db.All<AuthUserX>().ToDictionary(u => u.Username, u => u.DisplayName);
+                model.Logs = db.Find<UserActivity>(a => a.ObjId == id).SortBy(a => a.Time)
+                    .Project(a => new UserActivityViewModel
+                    {
+                        User = users.ContainsKey(a.Username) ? users[a.Username] : a.Username,
+                        Time = a.Time,
+                        ActivityType = a.ActivityType,
+                        ObjId = a.ObjId
+                    })
+                    .ToList();
+            }
             return View(model);
         }
 
