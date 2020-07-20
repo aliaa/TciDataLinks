@@ -1,5 +1,6 @@
 ﻿using AliaaCommon;
 using EasyMongoNet;
+using MongoDB.Bson;
 using System;
 using System.Text;
 using TciDataLinks.Models;
@@ -8,6 +9,7 @@ namespace TciDataLinks.ViewModels
 {
     public class PassiveConnectionViewModel : PassiveConnection
     {
+        public ObjectId EndPointId { get; set; }
         public int EndPointIndex { get; set; }
         public int Index { get; set; }
 

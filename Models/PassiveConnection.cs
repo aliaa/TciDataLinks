@@ -1,17 +1,18 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
+using TciDataLinks.Controllers;
 
 namespace TciDataLinks.Models
 {
     public class PassiveConnection
     {
-
         [Display(Name = "رابط Passive")]
         public ObjectId PatchPanel { get; set; }
 
         [Required(ErrorMessage = "شماره پورت اجباریست")]
-        //[Remote(nameof(ConnectionController.PassivePortIsValid), "Connection", AdditionalFields = nameof(PatchPanel), ErrorMessage = "شماره پورت در این پچ پنل قبلا استفاده شده است!")]
+        [Remote(nameof(ConnectionController.PassivePortIsValid), "Connection", AdditionalFields = nameof(PatchPanel) + ",EndPointId", ErrorMessage = "شماره پورت در این پچ پنل قبلا استفاده شده است!")]
         [Display(Name = "شماره پورت")]
         public string PortNumber { get; set; }
 

@@ -130,7 +130,7 @@
             }
         </div>
         <div class="text-center my-4">
-            <input id="EndPoints_@(Model.Index)__btnNewPassive" type="button" class="btn btn-secondary" value="اتصال Passive جدید" onclick="ShowNewPassiveDialog(@Model.Index)" />
+            <input id="EndPoints_@(Model.Index)__btnNewPassive" type="button" class="btn btn-secondary" value="اتصال Passive جدید" onclick="ShowNewPassiveDialog('@Model.Id.ToString()', @Model.Index)" />
             <input id="EndPoints_@(Model.Index)__btnRemoveLastPassive" type="button" 
                    class="btn btn-outline-danger mx-4 @(Model.PassiveConnectionViewModels.Count > 0 ? "" : "d-none")" value="حذف آخرین اتصال Passive" onclick="RemoveLastPassive(@Model.Index)" />
         </div>

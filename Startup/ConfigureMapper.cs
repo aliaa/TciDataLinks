@@ -50,6 +50,7 @@ namespace TciDataLinks
                     var pvm = Mapper.Map<PassiveConnectionViewModel>(p);
                     pvm.Index = i++;
                     pvm.EndPointIndex = e.Index;
+                    pvm.EndPointId = e.Id;
                     evm.PassiveConnectionViewModels.Add(pvm);
                 }
                 return evm;

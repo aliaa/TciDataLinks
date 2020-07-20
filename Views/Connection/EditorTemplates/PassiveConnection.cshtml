@@ -11,6 +11,7 @@
         <div class="text-center">@Html.Raw(Model.GetPlaceDisplayName(db))</div>
     </div>
     <div class="card-body" style="background-color: hsl(@hue , 40%, 77%); color: hsl(@hue , 80%, 22%);">
+        <input type="hidden" asp-for="EndPointId" />
         <input type="hidden" asp-for="EndPointIndex" />
         <input type="hidden" asp-for="Index" />
         <input type="hidden" asp-for="PatchPanel" />

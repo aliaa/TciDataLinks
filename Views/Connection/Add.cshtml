@@ -146,6 +146,7 @@ else
             </div>
             <div class="modal-body">
                 <input type="hidden" id="newPassiveEndPointIndex" />
+                <input type="hidden" id="newPassiveEndPointId" />
                 <div class="form-group">
                     <label class="control-label">ساختمان</label>
                     <select id="NewPassiveBuilding" class="form-control"></select>
@@ -339,7 +340,8 @@ else
             $("#btnSubmit").addClass("d-none");
     });
 
-    function ShowNewPassiveDialog(index) {
+    function ShowNewPassiveDialog(id, index) {
+        $("#newPassiveEndPointId").val(id);
         $("#newPassiveEndPointIndex").val(index);
         removeOptionsOfDropDown($("#NewPassiveRack"));
         removeOptionsOfDropDown($("#NewPassive"));
@@ -355,6 +357,7 @@ else
     }
 
     $("#btnAddNewPassive").on("click", function () {
+        var endPointId = $("#newPassiveEndPointId").val();
         var endPointIndex = $("#newPassiveEndPointIndex").val();
         var index = $("#divPassives_" + endPointIndex).children().length;
         var passive = $("#NewPassive").val();
@@ -365,12 +368,13 @@ else
             return;
         }
         $.ajax({
-            url: "/Connection/AddPassiveConnection?endPointIndex=" + endPointIndex + "&index=" + index + "&passive=" + passive,
+            url: "/Connection/AddPassiveConnection?endPointId=" + endPointId + "&endPointIndex=" + endPointIndex + "&index=" + index + "&passive=" + passive,
             success: function (partialView) {
                 var item = $.parseHTML(partialView);
                 item = ConvertInputsToBeAsArrayItem(item, "@(nameof(Model.EndPoints))[" + endPointIndex + "].PassiveConnectionViewModels", index, false);
                 $("#divPassives_" + endPointIndex).append(item);
                 $("#EndPoints_" + index + "__btnRemoveLastPassive").removeClass("d-none");
+                resetValidation();
             }
         });
     });

@@ -248,10 +248,11 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditConnections))]
-        public IActionResult AddPassiveConnection(int endPointIndex, int index, ObjectId passive)
+        public IActionResult AddPassiveConnection(ObjectId endpointId, int endPointIndex, int index, ObjectId passive)
         {
             return GetEditorTemplatePartialView<PassiveConnection>(new PassiveConnectionViewModel
             {
+                EndPointId = endpointId,
                 EndPointIndex = endPointIndex,
                 Index = index,
                 PatchPanel = passive
@@ -289,13 +290,10 @@ namespace TciDataLinks.Controllers
         }
 
         [AcceptVerbs("GET", "POST")]
-        public IActionResult PassivePortIsValid(string portNumber, ObjectId patchPanel, ObjectId id)
+        public IActionResult PassivePortIsValid(ObjectId endPointId, string portNumber, ObjectId patchPanel)
         {
-            var exists = db.Aggregate<EndPoint>()
-                .Unwind(e => e.PassiveConnections)
-                .ReplaceRoot<PassiveConnection>(nameof(EndPoint.PassiveConnections))
-                .Match(p => p.PatchPanel == patchPanel && p.PortNumber == portNumber)
-                .Any();
+            var exists = db.Any<EndPoint>(e => e.Id != endPointId && 
+                    e.PassiveConnections.Any(p => p.PatchPanel == patchPanel && p.PortNumber == portNumber));
             return Json(!exists);
         }
     }
