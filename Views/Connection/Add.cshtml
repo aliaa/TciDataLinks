@@ -124,7 +124,9 @@ else
 
         </div>
     </div>
-
+    <div class="mt-5 text-danger">
+        <div asp-validation-summary="All"></div>
+    </div>
     <div class="form-group mt-5">
         <input type="button" id="btnDeleteLastConnection" value="حذف آخرین اتصال" class="btn btn-outline-danger d-none" />
         <input type="submit" id="btnSubmit" value="ذخیره" class="btn btn-primary mr-3 d-none" />
@@ -248,17 +250,17 @@ else
         });
     });
 
-        $("#NewPassiveBuilding").change(function () {
-            removeOptionsOfDropDown($("#NewPassiveRoom"));
-            removeOptionsOfDropDown($("#NewPassiveRack"));
-            removeOptionsOfDropDown($("#NewPassive"));
-            var id = $(this).val();
-            $.get("/Place/Rooms?building=" + id, function (res) {
-                $.each(res, function (index, item) {
-                    $("#NewPassiveRoom").append("<option value='" + item.id + "'>" + item.text + "</option>");
-                });
+    $("#NewPassiveBuilding").change(function () {
+        removeOptionsOfDropDown($("#NewPassiveRoom"));
+        removeOptionsOfDropDown($("#NewPassiveRack"));
+        removeOptionsOfDropDown($("#NewPassive"));
+        var id = $(this).val();
+        $.get("/Place/Rooms?building=" + id, function (res) {
+            $.each(res, function (index, item) {
+                $("#NewPassiveRoom").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
         });
+    });
 
     $("#NewPassiveRoom").change(function () {
         removeOptionsOfDropDown($("#NewPassiveRack"));

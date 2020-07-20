@@ -281,5 +281,22 @@ namespace TciDataLinks.Controllers
 
             return Json(new { results });
         }
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult PortNumberIsValid(string portNumber, ObjectId device, ObjectId id)
+        {
+            return Json(!db.Any<EndPoint>(e => e.Device == device && e.PortNumber == portNumber && e.Id != id));
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult PassivePortIsValid(string portNumber, ObjectId patchPanel, ObjectId id)
+        {
+            var exists = db.Aggregate<EndPoint>()
+                .Unwind(e => e.PassiveConnections)
+                .ReplaceRoot<PassiveConnection>(nameof(EndPoint.PassiveConnections))
+                .Match(p => p.PatchPanel == patchPanel && p.PortNumber == portNumber)
+                .Any();
+            return Json(!exists);
+        }
     }
 }

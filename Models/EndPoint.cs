@@ -1,8 +1,10 @@
 ﻿using EasyMongoNet;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using TciDataLinks.Controllers;
 
 namespace TciDataLinks.Models
 {
@@ -117,7 +119,7 @@ namespace TciDataLinks.Models
         public PortTypeEnum PortType { get; set; }
 
         [Required(ErrorMessage = "شماره پورت اجباریست")]
-        //[Remote("PortNumberIsValid", "Connection", AdditionalFields = "Device", ErrorMessage = "شماره پورت در این دستگاه قبلا استفاده شده است!")]
+        [Remote(nameof(ConnectionController.PortNumberIsValid), "Connection", AdditionalFields = nameof(Device) + "," + nameof(Id), ErrorMessage = "شماره پورت در این دستگاه قبلا استفاده شده است!")]
         [Display(Name = "شماره پورت")]
         public string PortNumber { get; set; }
 

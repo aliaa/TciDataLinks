@@ -4,7 +4,9 @@ function ConvertInputsToBeAsArrayItem(elem, arrayName, index, changeId = true) {
     $(elem).find("input, select, textarea").each(function (i, e) {
         if (changeId)
             $(e).attr("id", arrayName + "_" + index + "__" + $(e).attr("id"));
-        $(e).attr("name", arrayName + "[" + index + "]." + $(e).attr("name"));
+        var name = $(e).attr("name");
+        $(e).attr("name", arrayName + "[" + index + "]." + name);
+        $(e).siblings("span[data-valmsg-for='" + name+"']").attr("data-valmsg-for", arrayName + "[" + index + "]." + name);
     });
     return elem;
 }
