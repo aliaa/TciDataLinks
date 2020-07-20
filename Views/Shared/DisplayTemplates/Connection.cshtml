@@ -23,6 +23,11 @@
             <div class="my-3 card" style="background-color: hsl(@hue , 25%, 88%); color: hsl(@hue , 80%, 32%);">
                 <div class="card-header" data-toggle="collapse" data-target="#endpoint_@(Model.Id)_@i" style="cursor:pointer;">
                     <div class="float-right">اتصال @(i+1)</div>
+                    <div class="float-left">
+                        <a asp-controller="Device" asp-action="Item" asp-route-id="@Model.EndPoints[i].Device.ToString()" title="جزئیات دستگاه">
+                            <img src="~/lib/bootstrap-icons/icons/box-arrow-up-right.svg" width="24" />
+                        </a>
+                    </div>
                     <div class="text-center">
                         @Html.Raw(Model.EndPoints[i].GetPlaceDisplay(db))
                     </div>
@@ -88,6 +93,11 @@
                             <div class="card m-2 rounded-lg">
                                 <div class="card-header text-center" style="background-color: hsl(@hue , 25%, 77%); color: hsl(@hue , 80%, 22%);">
                                     <div class="float-right">اتصال @(i+1) - @(j + 1)</div>
+                                    <div class="float-left">
+                                        <a asp-controller="Passive" asp-action="Item" asp-route-id="@passive.PatchPanel.ToString()" title="جزئیات دستگاه">
+                                            <img src="~/lib/bootstrap-icons/icons/box-arrow-up-right.svg" width="24" />
+                                        </a>
+                                    </div>
                                     <div class="text-center">@Html.Raw(passive.GetPlaceDisplayName(db))</div>
                                 </div>
                                 <div class="card-body" style="background-color: hsl(@hue , 40%, 77%); color: hsl(@hue , 80%, 22%);">
@@ -142,21 +152,25 @@
         @if (Model.CreateDate != null)
         {
             <div class="d-inline-block ml-5">
-                ایجاد شده در @Model.CreateDate
-                @if (Model.CreatedUser != null)
-                {
-                    <span>توسط <b>@Model.CreatedUser</b></span>
-                }
+                <small>
+                    ایجاد شده در @Model.CreateDate
+                    @if (Model.CreatedUser != null)
+                    {
+                        <span>توسط <b>@Model.CreatedUser</b></span>
+                    }
+                </small>
             </div>
         }
         @if (Model.LastEditDate != null)
         {
             <div class="d-inline-block">
-                آخرین ویرایش در @Model.LastEditDate
-                @if (Model.EditedUser != null)
-                {
-                    <span>توسط <b>@Model.EditedUser</b></span>
-                }
+                <small>
+                    آخرین ویرایش در @Model.LastEditDate
+                    @if (Model.EditedUser != null)
+                    {
+                        <span>توسط <b>@Model.EditedUser</b></span>
+                    }
+                </small>
             </div>
         }
     </div>

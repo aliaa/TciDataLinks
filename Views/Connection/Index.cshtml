@@ -11,10 +11,9 @@
     <a asp-action="Add" class="btn btn-info">تعریف لینک جدید</a>
 }
 <div class="mt-5">تعداد کل لینکهای تعریف شده: @Model.TotalLinksCount</div>
-<hr/>
+<hr />
 
 <h2 class="mt-5">جستجوی مستقیم</h2>
-<hr />
 
 <form asp-action="Go" method="get">
     <div class="row mt-4">
@@ -23,13 +22,13 @@
             <input type="number" name="linkNumber" class="form-control" required />
         </div>
         <div class="col-lg-3 col-sm-6 d-flex align-items-end form-group">
-            <input type="submit" class="btn btn-primary" value="برو"  />
+            <input type="submit" class="btn btn-primary" value="برو" />
         </div>
     </div>
 </form>
+<hr />
 
 <h2 class="mt-5">جستجوی پیشرفته</h2>
-<hr/>
 
 <form asp-action="Index">
     <div class="row mt-4">
@@ -152,6 +151,7 @@
         <input type="submit" class="btn btn-primary" value="جستجو" />
     </div>
 </form>
+<hr />
 
 @if (@Model.SearchResult != null)
 {

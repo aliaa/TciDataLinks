@@ -24,6 +24,7 @@ namespace TciDataLinks.ViewModels
         [Display(Name = "آدرس IP یا NodeID")]
         public string Address { get; set; }
 
+        //public List<> Ports { get; set; }
         public List<UserActivityViewModel> Logs { get; set; }
 
         public override string ToString()

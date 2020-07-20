@@ -41,11 +41,9 @@
                 </span>
             </div>
         </div>
-    </div>
-    @if (Model.Logs != null && Model.Logs.Count > 0 && User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.ViewUserLogs)))
-    {
-        <div class="card-footer">
-            <h4>عملیات انجام شده توسط کاربران</h4>
+        @if (Model.Logs != null && Model.Logs.Count > 0 && User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.ViewUserLogs)))
+        {
+            <h4 class="mt-5">عملیات انجام شده توسط کاربران</h4>
             <div class="d-flex flex-wrap">
                 @foreach (var l in Model.Logs)
                 {
@@ -71,6 +69,7 @@
                     </div>
                 }
             </div>
-        </div>
-    }
+        }
+    </div>
+
 </div>
