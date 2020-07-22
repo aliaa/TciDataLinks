@@ -89,7 +89,6 @@ else
 </div>
 
 <form asp-action="@(ViewData.ContainsKey("EditMode") ? "Edit" : "Add")">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div id="divEndPoints" class="mt-5">
         @for (var i = 0; i < Model.EndPoints.Count; i++)
         {
@@ -125,7 +124,7 @@ else
         </div>
     </div>
     <div class="mt-5 text-danger">
-        <div asp-validation-summary="All"></div>
+        <div asp-validation-summary="ModelOnly"></div>
     </div>
     <div class="form-group mt-5">
         <input type="button" id="btnDeleteLastConnection" value="حذف آخرین اتصال" class="btn btn-outline-danger d-none" />
@@ -326,7 +325,7 @@ else
                     if ($('#divEndPoints').children().length >= 1) {
                         $("#btnSubmit").removeClass("d-none");
                     }
-                    resetValidation();
+                    //resetValidation();
                     toggleEndPointPortType(i);
                 }
             });

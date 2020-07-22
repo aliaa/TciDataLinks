@@ -189,6 +189,8 @@ namespace TciDataLinks.Controllers
         [HttpPost]
         public IActionResult Add(ConnectionViewModel model)
         {
+            if (!ModelState.IsValid || !PortsAreValid(model))
+                return View("Add", model);
             var connection = Mapper.Map<Connection>(model);
             connection.IdInt = db.Find<Connection>(_ => true).SortByDescending(c => c.IdInt).Project(c => c.IdInt).FirstOrDefault() + 1;
             db.Save(connection);
@@ -199,6 +201,29 @@ namespace TciDataLinks.Controllers
                 db.Save(e);
             }
             return RedirectToAction(nameof(Edit), new { id = connection.Id });
+        }
+
+        private bool PortsAreValid(ConnectionViewModel model)
+        {
+            bool isValid = true;
+            for (int i = 0; i < model.EndPoints.Count; i++)
+            {
+                if (PortAlreadyUsed(model.EndPoints[i].Device, model.EndPoints[i].Id, model.EndPoints[i].PortNumber))
+                {
+                    ModelState.AddModelError("EndPoints[" + i + "].PortNumber", "پورت قبلا استفاده شده است!");
+                    isValid = false;
+                }
+                for (int j = 0; j < model.EndPoints[i].PassiveConnections.Count; j++)
+                {
+                    var pc = model.EndPoints[i].PassiveConnections[j];
+                    if(PassivePortAlreadyUsed(model.EndPoints[i].Id, pc.PortNumber, pc.PatchPanel))
+                    {
+                        ModelState.AddModelError("EndPoints[" + i + "].PassiveConnectionViewModels[" + j + "].PortNumber", "پورت قبلا استفاده شده است!");
+                        isValid = false;
+                    }
+                }
+            }
+            return isValid;
         }
 
         [Authorize(nameof(Permission.EditConnections))]
@@ -214,6 +239,8 @@ namespace TciDataLinks.Controllers
         [HttpPost]
         public IActionResult Edit(ConnectionViewModel model)
         {
+            if (!ModelState.IsValid || !PortsAreValid(model))
+                return View("Add", model);
             db.UpdateOne<Connection>(c => c.Id == model.Id, Builders<Connection>.Update.Set(c => c.CustomerId, model.CustomerId));
             var endPointsId = new List<ObjectId>();
             int i = 0;
@@ -283,18 +310,27 @@ namespace TciDataLinks.Controllers
             return Json(new { results });
         }
 
-        [AcceptVerbs("GET", "POST")]
-        public IActionResult PortNumberIsValid(string portNumber, ObjectId device, ObjectId id)
+        private bool PortAlreadyUsed(ObjectId device, ObjectId currentEndPoint, string portNumber)
         {
-            return Json(!db.Any<EndPoint>(e => e.Device == device && e.PortNumber == portNumber && e.Id != id));
+            return db.Any<EndPoint>(e => e.Device == device && e.PortNumber == portNumber && e.Id != currentEndPoint);
+        }
+
+        private bool PassivePortAlreadyUsed(ObjectId endPointId, string portNumber, ObjectId patchPanel)
+        {
+            return db.Any<EndPoint>(e => e.Id != endPointId &&
+                e.PassiveConnections.Any(p => p.PatchPanel == patchPanel && p.PortNumber == portNumber));
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult PortNumberIsValid(ObjectId device, ObjectId id, string portNumber)
+        {
+            return Json(!PortAlreadyUsed(device, id, portNumber));
         }
 
         [AcceptVerbs("GET", "POST")]
         public IActionResult PassivePortIsValid(ObjectId endPointId, string portNumber, ObjectId patchPanel)
         {
-            var exists = db.Any<EndPoint>(e => e.Id != endPointId && 
-                    e.PassiveConnections.Any(p => p.PatchPanel == patchPanel && p.PortNumber == portNumber));
-            return Json(!exists);
+            return Json(!PassivePortAlreadyUsed(endPointId, portNumber, patchPanel));
         }
     }
 }
