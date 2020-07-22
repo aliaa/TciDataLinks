@@ -73,9 +73,9 @@
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="RackType" class="control-label"></label>
             <select asp-for="RackType" class="form-control">
-                @foreach (var t in Enum.GetNames(typeof(Rack.RackType)))
+                @foreach (var t in Utils.GetEnumValues<Rack.RackType>())
                 {
-                    <option value="@t">@Utils.DisplayName(typeof(Rack.RackType), t)</option>
+                    <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
             <span asp-validation-for="RackType" class="text-danger"></span>
@@ -83,9 +83,9 @@
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Type" class="control-label"></label>
             <select asp-for="Type" class="form-control">
-                @foreach (var t in Enum.GetNames(typeof(Passive.PassiveTypeEnum)))
+                @foreach (var t in Utils.GetEnumValues<Passive.PassiveTypeEnum>())
                 {
-                    <option value="@t">@Utils.DisplayName(typeof(Passive.PassiveTypeEnum), t)</option>
+                    <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
             <span asp-validation-for="Type" class="text-danger"></span>
@@ -93,9 +93,9 @@
         <div class="form-group col-lg-3 col-sm-6" id="divPatchPanelType">
             <label asp-for="PatchPanelType" class="control-label"></label>
             <select asp-for="PatchPanelType" class="form-control">
-                @foreach (var t in Enum.GetNames(typeof(Passive.PatchPanelTypeEnum)))
+                @foreach (var t in Utils.GetEnumValues<Passive.PatchPanelTypeEnum>())
                 {
-                    <option value="@t">@Utils.DisplayName(typeof(Passive.PatchPanelTypeEnum), t)</option>
+                    <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
             <span asp-validation-for="PatchPanelType" class="text-danger"></span>
@@ -103,9 +103,9 @@
         <div class="form-group col-lg-3 col-sm-6" id="divTransmissionType">
             <label asp-for="TransmissionType" class="control-label"></label>
             <select asp-for="TransmissionType" class="form-control">
-                @foreach (var t in Enum.GetNames(typeof(TransmissionSystemType)))
+                @foreach (var t in Utils.GetEnumValues<TransmissionSystemType>())
                 {
-                    <option value="@t">@Utils.DisplayName(typeof(TransmissionSystemType), t)</option>
+                    <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
             <span asp-validation-for="TransmissionType" class="text-danger"></span>

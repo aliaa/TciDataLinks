@@ -36,7 +36,7 @@
                     <div class="row">
                         <div class="col-lg-3 col-sm-6">
                             <label>@(Utils.DisplayName<EndPoint>(e => e.PortType)):</label>
-                            <span class="text-value">@Utils.DisplayName(typeof(EndPoint.PortTypeEnum), Model.EndPoints[i].PortType.ToString())</span>
+                            <span class="text-value">@Utils.DisplayName(Model.EndPoints[i].PortType)</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
                             <label>@(Utils.DisplayName<EndPoint>(e => e.PortNumber)):</label>
@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-lg-3 col-sm-6">
                             <label>@(Utils.DisplayName<EndPoint>(p => p.TransmissionSystem)):</label>
-                            <span class="text-value">@Utils.DisplayName(typeof(TransmissionSystemType), Model.EndPoints[i].TransmissionSystem.ToString())</span>
+                            <span class="text-value">@Utils.DisplayName(Model.EndPoints[i].TransmissionSystem)</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
                             <label>@(Utils.DisplayName<EndPoint>(e => e.Speed)):</label>
@@ -52,15 +52,15 @@
                         </div>
                         <div class="col-lg-3 col-sm-6">
                             <label>@(Utils.DisplayName<EndPoint>(e => e.Module)):</label>
-                            <span class="text-value">@Utils.DisplayName(typeof(EndPoint.ModuleType), Model.EndPoints[i].Module.ToString())</span>
+                            <span class="text-value">@Utils.DisplayName(Model.EndPoints[i].Module)</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
                             <label>@(Utils.DisplayName<EndPoint>(e => e.PatchCord)):</label>
-                            <span class="text-value">@Utils.DisplayName(typeof(EndPoint.PatchCordType), Model.EndPoints[i].PatchCord.ToString())</span>
+                            <span class="text-value">@Utils.DisplayName(Model.EndPoints[i].PatchCord)</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
                             <label>@(Utils.DisplayName<EndPoint>(e => e.Connector)):</label>
-                            <span class="text-value">@Utils.DisplayName(typeof(EndPoint.ConnectorType), Model.EndPoints[i].Connector.ToString())</span>
+                            <span class="text-value">@Utils.DisplayName(Model.EndPoints[i].Connector)</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
                             <label>@(Utils.DisplayName<EndPoint>(e => e.DistanceToNextPoint)):</label>
@@ -108,7 +108,7 @@
                                         </div>
                                         <div class="col-lg-3 col-sm-6">
                                             <label>@(Utils.DisplayName<PassiveConnectionViewModel>(p => p.Connector)):</label>
-                                            <span class="text-value">@Utils.DisplayName(typeof(EndPoint.ConnectorType), passive.Connector.ToString())</span>
+                                            <span class="text-value">@Utils.DisplayName(passive.Connector)</span>
                                         </div>
                                         <div class="col-lg-3 col-sm-6">
                                             <label>@(Utils.DisplayName<PassiveConnectionViewModel>(p => p.DistanceToNextPoint)):</label>

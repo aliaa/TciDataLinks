@@ -38,9 +38,9 @@
             <label class="control-label">نوع شبکه</label>
             <select id="NetworkType" class="form-control">
                 <option value="all">همه</option>
-                @foreach (var t in Enum.GetNames(typeof(Device.NetworkType)))
+                @foreach (var t in Utils.GetEnumValues<Device.NetworkType>())
                 {
-                    <option value="@t">@Utils.DisplayName(typeof(Device.NetworkType), t)</option>
+                    <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
         </div>

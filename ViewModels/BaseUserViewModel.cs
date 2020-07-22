@@ -43,8 +43,8 @@ namespace TciDataLinks.ViewModels
 
         [Display(Name = "مجوزها")]
         public List<SelectListItem> PermissionsSelect { get; set; } =
-            Enum.GetNames(typeof(Permission))
-            .Select(p => new SelectListItem(Utils.DisplayName(typeof(Permission), p), p))
+            Utils.GetEnumValues<Permission>()
+            .Select(p => new SelectListItem(Utils.DisplayName(p), p.ToString()))
             .ToList();
     }
 }

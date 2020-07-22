@@ -62,7 +62,7 @@ namespace TciDataLinks.ViewModels
 
         public override string ToString()
         {
-            return Utils.DisplayName(typeof(PlaceType), Type.ToString()) + " " + Current.ToString();
+            return Utils.DisplayName(Type) + " " + Current.ToString();
         }
     }
 }

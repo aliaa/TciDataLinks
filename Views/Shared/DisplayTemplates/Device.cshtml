@@ -19,13 +19,13 @@
             <div class="col-lg-3 col-sm-6">
                 <label>@Html.DisplayNameFor(m => m.Type):</label>
                 <span class="text-value">
-                    @Utils.DisplayName(typeof(Device.DeviceType), Model.Type.ToString())
+                    @Utils.DisplayName(Model.Type)
                 </span>
             </div>
             <div class="col-lg-3 col-sm-6">
                 <label>@Html.DisplayNameFor(m => m.Network):</label>
                 <span class="text-value">
-                    @Utils.DisplayName(typeof(Device.NetworkType), Model.Network.ToString())
+                    @Utils.DisplayName(Model.Network)
                 </span>
             </div>
             <div class="col-lg-3 col-sm-6">

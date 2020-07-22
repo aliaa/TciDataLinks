@@ -30,7 +30,7 @@ namespace TciDataLinks.ViewModels
 
         public override string ToString()
         {
-            return Utils.DisplayName(typeof(Device.DeviceType), Type.ToString()) + " " + Model;
+            return Utils.DisplayName(Type) + " " + Model;
         }
 
         public string GetPlaceDisplay(IReadOnlyDbContext db)

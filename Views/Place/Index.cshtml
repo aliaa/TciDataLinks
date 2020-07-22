@@ -18,9 +18,9 @@
             <label>نوع دستگاه</label>
             <select name="type" class="form-control">
                 <option value="">همه</option>
-                @foreach (var t in Enum.GetNames(typeof(Device.DeviceType)))
+                @foreach (var t in Utils.GetEnumValues<Device.DeviceType>())
                 {
-                    <option value="@t">@Utils.DisplayName(typeof(Device.DeviceType), t)</option>
+                    <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
         </div>
@@ -28,9 +28,9 @@
             <label>نوع شبکه</label>
             <select name="network" class="form-control">
                 <option value="">همه</option>
-                @foreach (var n in Enum.GetNames(typeof(Device.NetworkType)))
+                @foreach (var n in Utils.GetEnumValues<Device.NetworkType>())
                 {
-                    <option value="@n">@Utils.DisplayName(typeof(Device.NetworkType), n)</option>
+                    <option value="@n">@Utils.DisplayName(n)</option>
                 }
             </select>
         </div>
@@ -56,9 +56,9 @@
             <label>نوع رابط</label>
             <select id="type" name="type" class="form-control" onchange="">
                 <option value="">همه</option>
-                @foreach (var t in Enum.GetNames(typeof(Passive.PassiveTypeEnum)))
+                @foreach (var t in Utils.GetEnumValues<Passive.PassiveTypeEnum>())
                 {
-                    <option value="@t">@Utils.DisplayName(typeof(Passive.PassiveTypeEnum), t)</option>
+                    <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
         </div>
@@ -66,9 +66,9 @@
             <label>نوع پچ پنل</label>
             <select name="patchPanelType" class="form-control">
                 <option value="">همه</option>
-                @foreach (var t in Enum.GetNames(typeof(Passive.PatchPanelTypeEnum)))
+                @foreach (var t in Utils.GetEnumValues<Passive.PatchPanelTypeEnum>())
                 {
-                    <option value="@t">@Utils.DisplayName(typeof(Passive.PatchPanelTypeEnum), t)</option>
+                    <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
         </div>
@@ -76,9 +76,9 @@
             <label>نوع تجهیزات انتقال</label>
             <select name="transmissionType" class="form-control">
                 <option value="">همه</option>
-                @foreach (var t in Enum.GetNames(typeof(TransmissionSystemType)))
+                @foreach (var t in Utils.GetEnumValues<TransmissionSystemType>())
                 {
-                    <option value="@t">@Utils.DisplayName(typeof(TransmissionSystemType), t)</option>
+                    <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
         </div>
