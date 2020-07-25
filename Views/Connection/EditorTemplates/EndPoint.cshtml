@@ -67,7 +67,7 @@
                 </select>
                 <span asp-validation-for="Connector" class="text-danger"></span>
             </div>
-            <div class="form-group col-lg-3 col-sm-6" id="divModule_@Model.Index">
+            <div class="form-group col-lg-3 col-sm-6" id="divModule_@Model.Index" style="display: @(Model.PortType == EndPoint.PortTypeEnum.Optical ? "unset" : "none")">
                 <label asp-for="Module" class="control-label"></label>
                 <select asp-for="Module" class="form-control">
                     @foreach (var item in Utils.GetEnumValues<EndPoint.ModuleType>())
@@ -77,7 +77,7 @@
                 </select>
                 <span asp-validation-for="Module" class="text-danger"></span>
             </div>
-            <div class="form-group col-lg-3 col-sm-6" id="divPatchCord_@Model.Index">
+            <div class="form-group col-lg-3 col-sm-6" id="divPatchCord_@Model.Index" style="display: @(Model.PortType == EndPoint.PortTypeEnum.Optical ? "unset" : "none")">
                 <label asp-for="PatchCord" class="control-label"></label>
                 <select asp-for="PatchCord" class="form-control">
                     @foreach (var item in Utils.GetEnumValues<EndPoint.PatchCordType>())
@@ -87,7 +87,7 @@
                 </select>
                 <span asp-validation-for="PatchCord" class="text-danger"></span>
             </div>
-            <div class="form-group col-lg-3 col-sm-6" id="divWaveLength_@Model.Index">
+            <div class="form-group col-lg-3 col-sm-6" id="divWaveLength_@Model.Index" style="display: @(Model.PortType == EndPoint.PortTypeEnum.Optical ? "unset" : "none")">
                 <label asp-for="WaveLength" class="control-label"></label>
                 <select asp-for="WaveLength" class="form-control">
                     @foreach (var item in Utils.GetEnumValues<EndPoint.WaveLengthEnum>())

@@ -373,7 +373,7 @@ else
                 item = ConvertInputsToBeAsArrayItem(item, "@(nameof(Model.EndPoints))[" + endPointIndex + "].PassiveConnectionViewModels", index, false);
                 $("#divPassives_" + endPointIndex).append(item);
                 $("#EndPoints_" + index + "__btnRemoveLastPassive").removeClass("d-none");
-                resetValidation();
+                //resetValidation();
             }
         });
     });
