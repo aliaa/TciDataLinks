@@ -18,11 +18,24 @@ namespace TciDataLinks.ViewModels
             //Last,
         }
 
+        public enum DeviceNetworkType
+        {
+            [Display(Name = "همه")]
+            All,
+            [Display(Name = "بین شبکه ای")]
+            InterNetwork,
+            Cisco = Models.Device.NetworkType.Cisco+2,
+            Huawei = Models.Device.NetworkType.Huawei+2,
+            ZTE = Models.Device.NetworkType.ZTE+2,
+            Tellabs = Models.Device.NetworkType.Tellabs+2,
+            WiFi = Models.Device.NetworkType.WiFi+2,
+        }
+
         [Required(ErrorMessage = "انتخاب شهر اجباری است")]
         [Display(Name = "شهر")]
         public string City { get; set; }
 
-        [Required(ErrorMessage = "انتخاب مرکز اجباری است")]
+        //[Required(ErrorMessage = "انتخاب مرکز اجباری است")]
         [Display(Name = "مرکز")]
         public string Center { get; set; }
 
@@ -61,6 +74,11 @@ namespace TciDataLinks.ViewModels
 
         [Display(Name = "اطلاعات اتصال ناقص است؟")]
         public bool? Incomplete { get; set; }
+
+        [Display(Name = "نوع شبکه")]
+        public DeviceNetworkType NetworkType { get; set; }
+
+        public long TotalLinksCount { get; set; }
 
         public List<ConnectionViewModel> SearchResult { get; set; } = null;
     }

@@ -1,0 +1,82 @@
+﻿@model PassiveViewModel
+@inject IReadOnlyDbContext db
+@using EasyMongoNet.Model
+
+<div class="card my-4" style="background-color:#eee;">
+    <div class="card-header">
+        @Html.Raw(Model.GetPlaceDisplay(db))
+        @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
+        {
+            <div class="float-left">
+                <a class="edit" asp-controller="Passive" asp-action="Edit" asp-route-id="@Model.Id.ToString()" title="ویرایش">
+                    <img src="~/lib/bootstrap-icons/icons/pencil.svg" width="24" />
+                </a>
+            </div>
+        }
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <label>@Html.DisplayNameFor(m => m.Type):</label>
+                <span class="text-value">
+                    @Utils.DisplayName(Model.Type)
+                </span>
+            </div>
+            @if (Model.Type == Passive.PassiveTypeEnum.PatchPanel)
+            {
+                <div class="col-lg-3 col-sm-6">
+                    <label>@Html.DisplayNameFor(m => m.PatchPanelType):</label>
+                    <span class="text-value">
+                        @Utils.DisplayName(Model.PatchPanelType)
+                    </span>
+                </div>
+            }
+            else
+            {
+                <div class="col-lg-3 col-sm-6">
+                    <label>@Html.DisplayNameFor(m => m.TransmissionType):</label>
+                    <span class="text-value">
+                        @Utils.DisplayName(Model.TransmissionType)
+                    </span>
+                </div>
+            }
+            <div class="col-lg-3 col-sm-6">
+                <label>@Html.DisplayNameFor(m => m.Name):</label>
+                <span class="text-value">
+                    @Model.Name
+                </span>
+            </div>
+        </div>
+    </div>
+    @if (Model.Logs != null && Model.Logs.Count > 0 && User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.ViewUserLogs)))
+    {
+        <div class="card-footer">
+            <h4>عملیات انجام شده توسط کاربران</h4>
+            <div class="d-flex flex-wrap">
+                @foreach (var l in Model.Logs)
+                {
+                    <div class="m-1 p-2 alert-dark">
+                        <small>@PersianDateUtils.GetPersianDateString(l.Time)</small><br />
+                        @l.User <br />
+                        @{
+                            switch (l.ActivityType)
+                            {
+                                case ActivityType.Delete:
+                                    <span class="text-danger">حذف</span>
+                                    break;
+                                case ActivityType.Insert:
+                                    <span class="text-info">ایجاد</span>
+                                    break;
+                                case ActivityType.Update:
+                                    <span class="text-success">بروز رسانی</span>
+                                    break;
+                                default:
+                                    throw new NotImplementedException();
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

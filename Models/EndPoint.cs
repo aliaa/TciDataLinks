@@ -1,8 +1,10 @@
 ﻿using EasyMongoNet;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using TciDataLinks.Controllers;
 
 namespace TciDataLinks.Models
 {
@@ -77,18 +79,47 @@ namespace TciDataLinks.Models
             G62,
         }
 
+        public enum WaveLengthEnum
+        {
+            [Display(Name = "مشخص نشده")]
+            None,
+            [Display(Name = "850nm-100m")]
+            _850nm100m,
+            [Display(Name = "850nm-300m")]
+            _850nm300m,
+            [Display(Name = "850nm-600m")]
+            _850nm600m,
+            [Display(Name = "1310nm-10k")]
+            _1310nm10k,
+            [Display(Name = "1310nm-20k")]
+            _1310nm20k,
+            [Display(Name = "1310nm-40k")]
+            _1310nm40k,
+            [Display(Name = "1550nm-60k")]
+            _1550nm60k,
+            [Display(Name = "1550nm-80k")]
+            _1550nm80k,
+            [Display(Name = "1550nm-120k")]
+            _1550nm120k,
+        }
+
         public ObjectId Connection { get; set; }
         public int Index { get; set; }
         public ObjectId Device { get; set; }
 
         public List<PassiveConnection> PassiveConnections { get; set; } = new List<PassiveConnection>();
 
+
+        [BsonRepresentation(BsonType.String)]
+        [Display(Name = "نوع سیستم انتقال")]
+        public TransmissionSystemType TransmissionSystem { get; set; }
+
         [BsonRepresentation(BsonType.String)]
         [Display(Name = "نوع پورت")]
         public PortTypeEnum PortType { get; set; }
 
         [Required(ErrorMessage = "شماره پورت اجباریست")]
-        //[Remote("PortNumberIsValid", "Connection", AdditionalFields = "Device", ErrorMessage = "شماره پورت در این دستگاه قبلا استفاده شده است!")]
+        [Remote(nameof(ConnectionController.PortNumberIsValid), "Connection", AdditionalFields = nameof(Device) + "," + nameof(Id), ErrorMessage = "شماره پورت در این دستگاه قبلا استفاده شده است!")]
         [Display(Name = "شماره پورت")]
         public string PortNumber { get; set; }
 
@@ -111,6 +142,9 @@ namespace TciDataLinks.Models
         [BsonRepresentation(BsonType.String)]
         [Display(Name = "نوع کانکتور")]
         public ConnectorType Connector { get; set; }
+
+        [Display(Name = "طول موج ماژول نوری")]
+        public WaveLengthEnum WaveLength { get; set; }
 
         [Display(Name = "فاصله تا اتصال بعدی (متر)")]
         [Required(ErrorMessage = "فاصله اجباریست")]

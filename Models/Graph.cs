@@ -46,6 +46,7 @@ namespace TciDataLinks.Models
         public string text { get; set; }
         public bool isGroup { get; set; } = false;
         public NodeLocation loc { get; set; }
+        public string image { get; set; }
     }
 
     public class NodeLocation
@@ -55,7 +56,7 @@ namespace TciDataLinks.Models
         public bool s { get; set; }
     }
 
-    [CollectionIndex(new string[] { nameof(Center), nameof(Key) })]
+    [CollectionIndex(new string[] { nameof(Center), nameof(Key) }, Unique = true)]
     public class NodeLocationWithKey : MongoEntity
     {
         public ObjectId Center { get; set; }
@@ -89,7 +90,7 @@ namespace TciDataLinks.Models
                 var hue = 0;
                 if (connectionId != null)
                     hue = Math.Abs(connectionId.GetHashCode()) % 240;
-                return new AliaaCommon.HSLColor(hue, 240.0, 120.0).ToHexString();
+                return new AliaaCommon.HSLColor(hue, 220.0, 90.0, 150.0).ToHexString();
             }
         }
     }

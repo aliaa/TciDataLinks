@@ -1,12 +1,17 @@
-﻿@model PatchPanelViewModel
+﻿@model PassiveViewModel
+@inject IReadOnlyDbContext db
 
 @{
-    ViewData["Title"] = "رابط Passive جدید";
+    ViewData["Title"] = "ویرایش رابط Passive";
 }
 
-<h4>رابط Passive جدید</h4>
+<h1>ویرایش رابط Passive</h1>
+
+<h4 class="mt-4">@Model.Name</h4>
 <hr />
-<form asp-action="Add">
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="form-group col-lg-3 col-sm-6">
@@ -22,19 +27,19 @@
         </div>
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Center" class="control-label"></label>
-            <select asp-for="Center" class="form-control" asp-items="ViewBag.Centers"></select>
+            <select asp-for="Center" asp-items="ViewBag.Centers" class="form-control"></select>
             <span asp-validation-for="Center" class="text-danger"></span>
         </div>
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Building" class="control-label"></label>
-            <select asp-for="Building" class="form-control" asp-items="ViewBag.Buildings">
+            <select asp-for="Building" asp-items="ViewBag.Buildings" class="form-control">
                 <option disabled selected>انتخاب کنید یا وارد کنید</option>
             </select>
             <span asp-validation-for="Building" class="text-danger"></span>
         </div>
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Room" class="control-label"></label>
-            <select asp-for="Room" class="form-control" asp-items="ViewBag.Rooms">
+            <select asp-for="Room" asp-items="ViewBag.Rooms" class="form-control">
                 <option disabled selected>انتخاب کنید یا وارد کنید</option>
             </select>
             <span asp-validation-for="Room" class="text-danger"></span>
@@ -48,17 +53,6 @@
             <label asp-for="RackIndex" class="control-label"></label>
             <input asp-for="RackIndex" class="form-control" />
             <span asp-validation-for="RackIndex" class="text-danger"></span>
-        </div>
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group col-lg-3 col-sm-6">
-            <label asp-for="RackType" class="control-label"></label>
-            <select asp-for="RackType" class="form-control">
-                @foreach (var t in Enum.GetNames(typeof(Rack.RackType)))
-                {
-                    <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Rack.RackType), t)</option>
-                }
-            </select>
-            <span asp-validation-for="RackType" class="text-danger"></span>
         </div>
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="RackSide" class="control-label"></label>
@@ -77,14 +71,44 @@
         </div>
 
         <div class="form-group col-lg-3 col-sm-6">
+            <label asp-for="RackType" class="control-label"></label>
+            <select asp-for="RackType" class="form-control">
+                @foreach (var t in Utils.GetEnumValues<Rack.RackType>())
+                {
+                    <option value="@t">@Utils.DisplayName(t)</option>
+                }
+            </select>
+            <span asp-validation-for="RackType" class="text-danger"></span>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Type" class="control-label"></label>
             <select asp-for="Type" class="form-control">
-                @foreach (var t in Enum.GetNames(typeof(PatchPanel.PatchPanelType)))
+                @foreach (var t in Utils.GetEnumValues<Passive.PassiveTypeEnum>())
                 {
-                    <option>@t</option>
+                    <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
             <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6" id="divPatchPanelType">
+            <label asp-for="PatchPanelType" class="control-label"></label>
+            <select asp-for="PatchPanelType" class="form-control">
+                @foreach (var t in Utils.GetEnumValues<Passive.PatchPanelTypeEnum>())
+                {
+                    <option value="@t">@Utils.DisplayName(t)</option>
+                }
+            </select>
+            <span asp-validation-for="PatchPanelType" class="text-danger"></span>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6" id="divTransmissionType">
+            <label asp-for="TransmissionType" class="control-label"></label>
+            <select asp-for="TransmissionType" class="form-control">
+                @foreach (var t in Utils.GetEnumValues<TransmissionSystemType>())
+                {
+                    <option value="@t">@Utils.DisplayName(t)</option>
+                }
+            </select>
+            <span asp-validation-for="TransmissionType" class="text-danger"></span>
         </div>
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Name" class="control-label"></label>
@@ -93,7 +117,11 @@
         </div>
     </div>
     <div class="form-group mt-4">
-        <input type="submit" value="ایجاد" class="btn btn-primary" />
+        <input type="submit" value="ویرایش" class="btn btn-primary" />
+        @if (!db.Any<EndPoint>(e => e.PassiveConnections.Any(p => p.PatchPanel == Model.Id)))
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger mx-3" onclick="return confirm('آیا برای حذف مطمئن هستید؟');">حذف رابط Passive</a>
+        }
     </div>
 </form>
 
@@ -105,28 +133,25 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
 <script>
-    var dropdownsToClear = [$("#Center"), $("#Building"), $("#Room")];
 
-    function ClearDropdownsAfter(offset) {
-        for (var i = offset; i < dropdownsToClear.length; i++)
-            removeOptionsOfDropDown(dropdownsToClear[i], "انتخاب کنید یا وارد کنید");
-    }
+    $("#Building").select2(select2BaseSettings);
+    $("#Room").select2(select2BaseSettings);
+    $("#Rack").select2(select2BaseSettings);
 
     $("#City").change(function () {
-        ClearDropdownsAfter(0);
         var cityId = $(this).val();
-        $.get("/Place/Centers?city=" + cityId, function (res) {
+        $.get("/Device/Centers?city=" + cityId, function (res) {
+            $("#Center").find('option').remove().end().append("<option disabled selected>انتخاب کنید</option>");
             $.each(res, function (index, item) {
                 $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
-            $("#Center").select2(select2BaseSettings);
         });
     });
 
     $("#Center").change(function () {
-        ClearDropdownsAfter(1);
         var centerId = $(this).val();
-        $.get("/Place/Buildings?center=" + centerId, function (res) {
+        $.get("/Device/Buildings?center=" + centerId, function (res) {
+            $("#Building").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
             $("#Building").select2({
                 tags: true,
                 data: res,
@@ -136,9 +161,9 @@
     });
 
     $("#Building").on('select2:select', function (e) {
-        ClearDropdownsAfter(2);
         var buildingId = e.params.data.id;
-        $.get("/Place/Rooms?building=" + buildingId, function (res) {
+        $.get("/Device/Rooms?building=" + buildingId, function (res) {
+            $("#Room").find('option').remove().end().append("<option disabled selected>انتخاب کنید یا وارد کنید</option>");
             $("#Room").select2({
                 tags: true,
                 data: res,
@@ -147,5 +172,22 @@
         });
     });
 
+    $("#Type").change(function () {
+        var type = $("#Type").val();
+        var divPP = $("#divPatchPanelType");
+        var divTT = $("#divTransmissionType");
+        if (type == "PatchPanel") {
+            divPP.show();
+            divTT.hide();
+            $("#TransmissionType").val("None");
+        }
+        else {
+            divPP.hide();
+            divTT.show();
+            $("#PatchPanelType").val("None");
+        }
+    });
+
+    $("#Type").trigger("change");
 </script>
 }

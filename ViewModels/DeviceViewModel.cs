@@ -2,7 +2,9 @@
 using EasyMongoNet;
 using Microsoft.AspNetCore.Mvc;
 using Omu.ValueInjecter;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using TciDataLinks.Controllers;
 using TciDataLinks.Models;
 
 namespace TciDataLinks.ViewModels
@@ -19,13 +21,16 @@ namespace TciDataLinks.ViewModels
         [Display(Name = "مدل دستگاه")]
         public string Model { get; set; }
 
-        [Remote("DeviceAddressIsValid", "Device", AdditionalFields = "Id", ErrorMessage = "آدرس وارد شده قبلا موجود میباشد!")]
+        [Remote(nameof(DeviceController.DeviceAddressIsValid), "Device", AdditionalFields = nameof(Id), ErrorMessage = "آدرس وارد شده قبلا موجود میباشد!")]
         [Display(Name = "آدرس IP یا NodeID")]
         public string Address { get; set; }
 
+        //public List<> Ports { get; set; }
+        public List<UserActivityViewModel> Logs { get; set; }
+
         public override string ToString()
         {
-            return Utils.GetDisplayNameOfMember(typeof(Device.DeviceType), Type.ToString()) + " " + Model;
+            return Utils.DisplayName(Type) + " " + Model;
         }
 
         public string GetPlaceDisplay(IReadOnlyDbContext db)

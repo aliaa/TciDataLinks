@@ -60,10 +60,45 @@ html {
     min-height: 100%;
 }
 
+@font-face {
+    font-family: 'irsans';
+    font-style: normal;
+    font-weight: 700;
+    src: url('../font/irsans-b.woff');
+}
+
+@font-face {
+    font-family: 'irsans';
+    font-style: normal;
+    font-weight: 500;
+    src: url('../font/irsans-m.woff');
+}
+
+@font-face {
+    font-family: 'irsans';
+    font-style: normal;
+    src: url('../font/irsans.woff');
+}
+
+@font-face {
+    font-family: 'irsans';
+    font-style: normal;
+    font-weight: 300;
+    src: url('../font/irsans-l.woff');
+}
+
+@font-face {
+    font-family: 'irsans';
+    font-style: normal;
+    font-weight: 200;
+    src: url('../font/irsans-u.woff');
+}
+
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
     text-align: right;
+    font-family: irsans;
 }
 
 .footer {
@@ -75,7 +110,7 @@ body {
 }
 
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-    font-weight: 300;
+    font-weight: 200;
 }
 
 .modal-header .close {
@@ -95,4 +130,44 @@ body {
 
 .form-check-input {
     margin-right: -1.25rem;
+}
+
+.form-group {
+    min-height: 3em;
+}
+
+@media (min-width: 34em) {
+    .card-columns {
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
+        column-count: 2;
+    }
+}
+
+@media (min-width: 48em) {
+    .card-columns {
+        -webkit-column-count: 3;
+        -moz-column-count: 3;
+        column-count: 3;
+    }
+}
+
+@media (min-width: 62em) {
+    .card-columns {
+        -webkit-column-count: 4;
+        -moz-column-count: 4;
+        column-count: 4;
+    }
+}
+
+@media (min-width: 75em) {
+    .card-columns {
+        -webkit-column-count: 5;
+        -moz-column-count: 5;
+        column-count: 5;
+    }
+}
+
+label.error {
+    color: red;
 }

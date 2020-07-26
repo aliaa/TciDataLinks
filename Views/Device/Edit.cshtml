@@ -71,9 +71,9 @@
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Type" class="control-label"></label>
             <select asp-for="Type" class="form-control">
-                @foreach (var t in Enum.GetNames(typeof(Device.DeviceType)))
+                @foreach (var t in Utils.GetEnumValues<Device.DeviceType>())
                 {
-                    <option>@t</option>
+                <option value="@t">@Utils.DisplayName(t)</option>
                 }
             </select>
             <span asp-validation-for="Type" class="text-danger"></span>
@@ -116,9 +116,9 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
-        $("#Building").select2(select2Settings);
-        $("#Room").select2(select2Settings);
-        $("#Rack").select2(select2Settings);
+        $("#Building").select2(select2BaseSettings);
+        $("#Room").select2(select2BaseSettings);
+        $("#Rack").select2(select2BaseSettings);
 
         $("#City").change(function () {
             var cityId = $(this).val();

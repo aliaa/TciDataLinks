@@ -1,4 +1,5 @@
-﻿@model CentersViewModel
+﻿@model PlaceIndexViewModel
+@inject Settings settings
 
 @{
     ViewData["Title"] = "تجهیزات";
@@ -7,29 +8,168 @@
 @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.EditPlacesAndDevices)))
 {
     <a asp-controller="Device" asp-action="Add" class="btn btn-info">دستگاه جدید</a>
-    <a asp-controller="PatchPanel" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>
+    <a asp-controller="Passive" asp-action="Add" class="btn btn-info mx-3">رابط Passive جدید</a>
 }
 
-<h1 class="mt-4">مراکز</h1>
-<p class="mb-4 text-danger">توجه: برای تغییر دادن لیست مراکز لطفا از طریق سامانه تیکتینگ اقدام فرمائید.</p>
+<h2 class="mt-5">جستجوی دستگاه</h2>
+<form asp-action="DeviceSearch">
+    <div class="mt-4 row">
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>نوع دستگاه</label>
+            <select name="type" class="form-control">
+                <option value="">همه</option>
+                @foreach (var t in Utils.GetEnumValues<Device.DeviceType>())
+                {
+                    <option value="@t">@Utils.DisplayName(t)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>نوع شبکه</label>
+            <select name="network" class="form-control">
+                <option value="">همه</option>
+                @foreach (var n in Utils.GetEnumValues<Device.NetworkType>())
+                {
+                    <option value="@n">@Utils.DisplayName(n)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>مدل دستگاه</label>
+            <input type="text" class="form-control" name="model" />
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>آدرس IP یا NodeID</label>
+            <input type="text" class="form-control" name="address" />
+        </div>
+    </div>
+    <div class="mt-3">
+        <input type="submit" value="جستجو" class="btn btn-primary" />
+    </div>
+</form>
+<hr />
 
-<div class="row">
-    @foreach (var city in Model.Centers.Keys)
-    {
-        <div class="col-md-3">
-            <div class="card m-2">
+<h2 class="mt-5">جستجوی رابط Passive</h2>
+<form asp-action="PassiveSearch">
+    <div class="mt-4 row">
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>نوع رابط</label>
+            <select id="type" name="type" class="form-control" onchange="">
+                <option value="">همه</option>
+                @foreach (var t in Utils.GetEnumValues<Passive.PassiveTypeEnum>())
+                {
+                    <option value="@t">@Utils.DisplayName(t)</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6" id="divPatchPanelType">
+            <label>نوع پچ پنل</label>
+            <select name="patchPanelType" class="form-control">
+                <option value="">همه</option>
+                @foreach (var t in Utils.GetEnumValues<Passive.PatchPanelTypeEnum>())
+                {
+                    <option value="@t">@Utils.DisplayName(t)</option>
+                }
+            </select>
+        </div>
+        <div class="form-group col-lg-3 col-sm-6" id="divTransmissionType">
+            <label>نوع تجهیزات انتقال</label>
+            <select name="transmissionType" class="form-control">
+                <option value="">همه</option>
+                @foreach (var t in Utils.GetEnumValues<TransmissionSystemType>())
+                {
+                    <option value="@t">@Utils.DisplayName(t)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label>نام</label>
+            <input type="text" class="form-control" name="name" />
+        </div>
+    </div>
+    <div class="mt-3">
+        <input type="submit" value="جستجو" class="btn btn-primary" />
+    </div>
+</form>
+<hr />
+
+
+@if (Model.DeviceSearchResult != null)
+{
+    <div class="mt-5">
+        @if (Model.DeviceSearchResult.Count == 20)
+        {
+            <small>توجه: فقط 20 مورد نمایش داده میشود!</small>
+        }
+        @foreach (var d in Model.DeviceSearchResult)
+        {
+            @Html.DisplayFor(m => d, "Device")
+        }
+    </div>
+}
+
+@if (Model.PassiveSearchResult != null)
+{
+    <div class="mt-5">
+        @if (Model.PassiveSearchResult.Count == 20)
+        {
+            <small>توجه: فقط 20 مورد نمایش داده میشود!</small>
+        }
+        @foreach (var d in Model.PassiveSearchResult)
+        {
+            @Html.DisplayFor(m => d, "Passive")
+        }
+    </div>
+}
+
+@if (Model.Centers != null)
+{
+    <h2 class="mt-5">مراکز</h2>
+    <small>توجه: برای تغییر دادن لیست مراکز لطفا از طریق <a href="@settings.TicketingSiteUrl">سامانه تیکتینگ</a> اقدام فرمائید.</small>
+
+    <div class="card-columns mt-4">
+        @foreach (var city in Model.Centers.Keys.OrderBy(c => c))
+        {
+            <div class="card mb-4" style="background-color:#eee;">
                 <div class="card-header">@city</div>
-                <div class="card-body">
-                    <ul class="">
-                        @foreach (var center in Model.Centers[city])
+                <div class="card-body p-2">
+                    <ol class="">
+                        @foreach (var center in Model.Centers[city].OrderBy(c => c.Name))
                         {
                             <li>
                                 <a asp-action="Item" asp-route-type="Center" asp-route-id="@center.Id.ToString()">@center.Name</a>
                             </li>
                         }
-                    </ul>
+                    </ol>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        }
+    </div>
+}
+
+
+@section Scripts {
+    <script>
+        $("#type").change(function () {
+            var type = $("#type").val();
+            var divPP = $("#divPatchPanelType");
+            var divTT = $("#divTransmissionType");
+            if (type == "PatchPanel") {
+                divPP.show();
+                divTT.hide();
+                $("#TransmissionType").val("");
+            }
+            else if (type == "Transmissional") {
+                divPP.hide();
+                divTT.show();
+                $("#PatchPanelType").val("");
+            }
+            else {
+                divPP.hide();
+                divTT.hide();
+            }
+        });
+
+        $("#type").trigger("change");
+    </script>
+}

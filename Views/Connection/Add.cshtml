@@ -1,8 +1,10 @@
 ﻿@model ConnectionViewModel
 @inject IEnumerable<City> Cities
+@inject Settings settings
 
 @if (ViewData.ContainsKey("EditMode"))
 {
+    <h1>لینک @Model.IdInt</h1>
     <div class="row text-black-50">
         @if (Model.CreateDate != null)
         {
@@ -25,12 +27,12 @@
             </div>
         }
     </div>
-    <hr/>
-    <h1 class="mt-5">ویرایش لینک</h1>
+    <hr />
+    <h2 class="mt-5">ویرایش لینک</h2>
 }
 else
 {
-    <h1>تعریف لینک جدید</h1>
+    <h2>تعریف لینک جدید</h2>
 }
 <hr />
 
@@ -87,7 +89,6 @@ else
 </div>
 
 <form asp-action="@(ViewData.ContainsKey("EditMode") ? "Edit" : "Add")">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div id="divEndPoints" class="mt-5">
         @for (var i = 0; i < Model.EndPoints.Count; i++)
         {
@@ -95,7 +96,37 @@ else
         }
     </div>
 
-    <div class="form-group">
+    <div class="card mt-5">
+        <div class="card-header">
+            <div class="float-left">
+                <button class="btn p-0" id="btnCustomerLink" title="جزئیات مشتری">
+                    <img src="~/lib/bootstrap-icons/icons/box-arrow-up-right.svg" width="24" />
+                </button>
+            </div>
+            <label class="mb-0">
+                <input type="checkbox" id="chkHasCustomer" @(Model.Customer == null ? "" : "checked") />
+                متصل به مشتری
+            </label>
+        </div>
+        <div class="card-body" id="divCustomer" style="display:@(Model.Customer == null ? "none" : "initial");">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label class="form-label">جستجوی مشتری</label>
+                    <select asp-for="CustomerId" class="form-control">
+                        @if (Model.Customer != null)
+                        {
+                            <option value="@Model.CustomerId">@Model.Customer</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="mt-5 text-danger">
+        <div asp-validation-summary="ModelOnly"></div>
+    </div>
+    <div class="form-group mt-5">
         <input type="button" id="btnDeleteLastConnection" value="حذف آخرین اتصال" class="btn btn-outline-danger d-none" />
         <input type="submit" id="btnSubmit" value="ذخیره" class="btn btn-primary mr-3 d-none" />
         @if (ViewData.ContainsKey("EditMode"))
@@ -114,6 +145,11 @@ else
             </div>
             <div class="modal-body">
                 <input type="hidden" id="newPassiveEndPointIndex" />
+                <input type="hidden" id="newPassiveEndPointId" />
+                <div class="form-group">
+                    <label class="control-label">ساختمان</label>
+                    <select id="NewPassiveBuilding" class="form-control"></select>
+                </div>
                 <div class="form-group">
                     <label class="control-label">سالن/اتاق</label>
                     <select id="NewPassiveRoom" class="form-control"></select>
@@ -123,8 +159,8 @@ else
                     <select id="NewPassiveRack" class="form-control"></select>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">پچ پنل</label>
-                    <select id="NewPassivePatchPanel" class="form-control"></select>
+                    <label class="control-label">رابط Passive</label>
+                    <select id="NewPassive" class="form-control"></select>
                 </div>
             </div>
             <div class="modal-footer">
@@ -144,12 +180,21 @@ else
     <script>
     $(document).ready(function () {
         var endPointsCount = $('#divEndPoints').children().length;
-        if (endPointsCount >= 2) {
+        if (endPointsCount >= 1) {
             $("#btnSubmit").removeClass("d-none");
         }
         if (endPointsCount >= 1) {
             $("#btnDeleteLastConnection").removeClass("d-none");
         }
+
+        $("#CustomerId").select2({
+            ...select2BaseSettings,
+            minimumInputLength: 3,
+            ajax: {
+                url: "/Connection/CustomerSearch",
+                dataType: 'json'
+            }
+        });
     });
 
     var dropdownsToClear = [$("#Center"), $("#Building"), $("#Room"), $("#Rack"), $("#Device")];
@@ -205,9 +250,21 @@ else
         });
     });
 
+    $("#NewPassiveBuilding").change(function () {
+        removeOptionsOfDropDown($("#NewPassiveRoom"));
+        removeOptionsOfDropDown($("#NewPassiveRack"));
+        removeOptionsOfDropDown($("#NewPassive"));
+        var id = $(this).val();
+        $.get("/Place/Rooms?building=" + id, function (res) {
+            $.each(res, function (index, item) {
+                $("#NewPassiveRoom").append("<option value='" + item.id + "'>" + item.text + "</option>");
+            });
+        });
+    });
+
     $("#NewPassiveRoom").change(function () {
         removeOptionsOfDropDown($("#NewPassiveRack"));
-        removeOptionsOfDropDown($("#NewPassivePatchPanel"));
+        removeOptionsOfDropDown($("#NewPassive"));
         var id = $(this).val();
         $.get("/Place/Racks?room=" + id, function (res) {
             $.each(res, function (index, item) {
@@ -228,17 +285,17 @@ else
     });
 
     $("#NewPassiveRack").change(function () {
-        removeOptionsOfDropDown($("#NewPassivePatchPanel"));
+        removeOptionsOfDropDown($("#NewPassive"));
         var id = $(this).val();
-        $.get("/Place/PatchPanels?rack=" + id, function (res) {
-            removeOptionsOfDropDown($("#NewPassivePatchPanel"));
+        $.get("/Place/Passives?rack=" + id, function (res) {
+            removeOptionsOfDropDown($("#NewPassive"));
             $.each(res, function (index, item) {
-                $("#NewPassivePatchPanel").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                $("#NewPassive").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
         });
     });
 
-    $("#NewPassivePatchPanel").change(function () {
+    $("#NewPassive").change(function () {
         $("#btnAddNewPassive").removeClass("d-none");
     });
 
@@ -251,7 +308,7 @@ else
     }
 
     $("#btnAddNewEndPoint").on("click", function () {
-        var buildingId = $("#Building").val();
+        var centerId = $("#Center").val();
         var deviceId = $("#Device").val();
         if (IsDeviceAlreadyAdded(deviceId)) {
             showToast("دستگاه انتخاب شده قبلا اضافه شده است!", "danger");
@@ -259,16 +316,17 @@ else
         }
         var i = $("#divEndPoints").children().length;
         $.ajax({
-            url: "/Connection/AddEndPoint?index=" + i + "&building=" + buildingId + "&device=" + deviceId,
+            url: "/Connection/AddEndPoint?index=" + i + "&center=" + centerId + "&device=" + deviceId,
                 success: function (partialView) {
                     var item = $.parseHTML(partialView);
                     item = ConvertInputsToBeAsArrayItem(item, "@nameof(Model.EndPoints)", i);
                     $('#divEndPoints').append(item);
                     $("#btnDeleteLastConnection").removeClass("d-none");
-                    if ($('#divEndPoints').children().length >= 2) {
+                    if ($('#divEndPoints').children().length >= 1) {
                         $("#btnSubmit").removeClass("d-none");
                     }
-                    resetValidation();
+                    //resetValidation();
+                    toggleEndPointPortType(i);
                 }
             });
     });
@@ -277,42 +335,45 @@ else
         $("#divEndPoints").children().last().remove();
         if ($("#divEndPoints").children().length == 0)
             $("#btnDeleteLastConnection").addClass("d-none");
-        if ($("#divEndPoints").children().length < 2)
+        if ($("#divEndPoints").children().length == 0)
             $("#btnSubmit").addClass("d-none");
     });
 
-    function ShowNewPassiveDialog(index) {
+    function ShowNewPassiveDialog(id, index) {
+        $("#newPassiveEndPointId").val(id);
         $("#newPassiveEndPointIndex").val(index);
         removeOptionsOfDropDown($("#NewPassiveRack"));
-        removeOptionsOfDropDown($("#NewPassivePatchPanel"));
+        removeOptionsOfDropDown($("#NewPassive"));
         $("#btnAddNewPassive").addClass("d-none");
-        var buildingId = $("#EndPoints_" + index + "__Building").val();
-        $.get("/Place/Rooms?building=" + buildingId, function (res) {
-            removeOptionsOfDropDown($("#NewPassiveRoom"));
+        var centerId = $("#EndPoints_" + index + "__Center").val();
+        $.get("/Place/Buildings?center=" + centerId, function (res) {
+            removeOptionsOfDropDown($("#NewPassiveBuilding"));
             $.each(res, function (index, item) {
-                $("#NewPassiveRoom").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                $("#NewPassiveBuilding").append("<option value='" + item.id + "'>" + item.text + "</option>");
             });
             $("#newPassiveModal").modal();
         });
     }
 
     $("#btnAddNewPassive").on("click", function () {
+        var endPointId = $("#newPassiveEndPointId").val();
         var endPointIndex = $("#newPassiveEndPointIndex").val();
         var index = $("#divPassives_" + endPointIndex).children().length;
-        var patchPanel = $("#NewPassivePatchPanel").val();
-        if (!patchPanel)
+        var passive = $("#NewPassive").val();
+        if (!passive)
             return;
-        if ($("#divPassives_" + endPointIndex).find("input[value='" + patchPanel + "']").length > 0) {
-            showToast("این پچ پنل قبلا به این اتصال اضافه شده است!", "danger");
+        if ($("#divPassives_" + endPointIndex).find("input[value='" + passive + "']").length > 0) {
+            showToast("این رابط Passive قبلا به این اتصال اضافه شده است!", "danger");
             return;
         }
         $.ajax({
-            url: "/Connection/AddPassiveConnection?endPointIndex=" + endPointIndex + "&index=" + index + "&patchPanel=" + patchPanel,
+            url: "/Connection/AddPassiveConnection?endPointId=" + endPointId + "&endPointIndex=" + endPointIndex + "&index=" + index + "&passive=" + passive,
             success: function (partialView) {
                 var item = $.parseHTML(partialView);
                 item = ConvertInputsToBeAsArrayItem(item, "@(nameof(Model.EndPoints))[" + endPointIndex + "].PassiveConnectionViewModels", index, false);
                 $("#divPassives_" + endPointIndex).append(item);
                 $("#EndPoints_" + index + "__btnRemoveLastPassive").removeClass("d-none");
+                //resetValidation();
             }
         });
     });
@@ -322,5 +383,30 @@ else
         if ($("#divPassives_" + index).children().length == 0)
             $("#EndPoints_" + index + "__btnRemoveLastPassive").addClass("d-none");
     }
+
+    function toggleEndPointPortType(index) {
+        var selected = $("#EndPoints_" + index + "__PortType").val();
+        var show = selected == "Optical";
+        $("#divModule_" + index).toggle(show);
+        $("#divPatchCord_" + index).toggle(show);
+        $("#divWaveLength_" + index).toggle(show);
+    }
+
+    $("#chkHasCustomer").click(function () {
+        var checked = $(this).is(":checked");
+        $('#divCustomer').toggle(checked);
+        if (!checked)
+            $("#CustomerId").empty();
+    });
+
+    $("#btnCustomerLink").click(function(e) {
+        var url = '@settings.CustomerDetailsUrl';
+        var id = $("#CustomerId").val();
+        if (id) {
+            url = url.replace('{Id}', id);
+            window.open(url, '_blank');
+        }
+        e.preventDefault();
+    });
     </script>
 }

@@ -1,10 +1,12 @@
 ﻿using AliaaCommon;
+using EasyMongoNet;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using TciDataLinks.Controllers;
 using TciDataLinks.Models;
 
 namespace TciDataLinks.ViewModels
@@ -19,7 +21,7 @@ namespace TciDataLinks.ViewModels
         [Display(Name = "نام خانوادگی")]
         public string LastName { get; set; }
 
-        [Remote("UsernameIsValid", "Account", AdditionalFields = "Id", ErrorMessage = "نام کاربری قبلا موجود میباشد!")]
+        [Remote(nameof(AccountController.UsernameIsValid), "Account", AdditionalFields = nameof(MongoEntity.Id), ErrorMessage = "نام کاربری قبلا موجود میباشد!")]
         [Required]
         [Display(Name = "نام کاربری")]
         public string Username { get; set; }
@@ -41,8 +43,8 @@ namespace TciDataLinks.ViewModels
 
         [Display(Name = "مجوزها")]
         public List<SelectListItem> PermissionsSelect { get; set; } =
-            Enum.GetNames(typeof(Permission))
-            .Select(p => new SelectListItem(Utils.GetDisplayNameOfMember(typeof(Permission), p), p))
+            Utils.GetEnumValues<Permission>()
+            .Select(p => new SelectListItem(Utils.DisplayName(p), p.ToString()))
             .ToList();
     }
 }

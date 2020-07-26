@@ -1,8 +1,22 @@
-﻿function initGojs(divId, data) {
+﻿function initGojs(divId, data, customerUrlTemplate) {
 
     for (var i = 0; i < data.Nodes.length; i++) {
         if (data.Nodes[i].loc) {
             data.Nodes[i].loc = new go.Point(data.Nodes[i].loc.x, data.Nodes[i].loc.y);
+        }
+        if (data.Nodes[i].key.startsWith("Passive_")) {
+            data.Nodes[i].color = "#cee";
+        }
+        else if (data.Nodes[i].key.startsWith("Empty_")) {
+            data.Nodes[i].color = "#0000";
+            data.Nodes[i].stroke = "#0000";
+        }
+        else if (data.Nodes[i].key.startsWith("Customer_")) {
+            data.Nodes[i].color = "#0000";
+            data.Nodes[i].stroke = "#0000";
+            data.Nodes[i].fontcolor = "#0000";
+            data.Nodes[i].width = 60;
+            data.Nodes[i].height = 60;
         }
     }
 
@@ -10,9 +24,10 @@
 
     if ($("#" + divId).children().length == 0) {
         myDiagram =
-            gojs(go.Diagram, divId,  // Diagram refers to its DIV HTML element by id
+            gojs(go.Diagram, divId,
                 {
-                    maxSelectionCount: 1 // no more than 1 element can be selected at a time
+                    maxSelectionCount: 1,
+                    initialAutoScale: go.Diagram.Uniform
                 });
         // define the node template
         myDiagram.nodeTemplate =
@@ -26,11 +41,14 @@
                     {
                         name: "OBJSHAPE",
                         fill: "white",
-                        desiredSize: new go.Size(160, 30)
-                    }),
+                        maxSize: new go.Size(180, 34)
+                    },
+                    new go.Binding("fill", "color"), new go.Binding("stroke", "stroke")),
                 gojs(go.TextBlock,
                     { margin: 4 },
-                    new go.Binding("text", "text")),
+                    new go.Binding("text", "text"), new go.Binding("stroke", "fontcolor")),
+                gojs(go.Picture, { margin: 8, width: 55, height: 55 },
+                    new go.Binding("source", "image")),
                 {
                     toolTip:  //  define a tooltip for each node that displays its information
                         gojs("ToolTip",
@@ -128,8 +146,15 @@
                 if (split[0] == "Device") {
                     window.location = "/Device/Item/" + split[1];
                 }
-                else if (split[0] == "PatchPanel") {
-                    window.location = "/PatchPanel/Item/" + split[1];
+                else if (split[0] == "Passive") {
+                    window.location = "/Passive/Item/" + split[1];
+                }
+                else if (split[0] == "Empty") {
+                    if (split.length == 3)
+                        window.location = "/Place/Item/" + split[2] + "?type=" + split[1];
+                }
+                else if (split[0] == "Customer") {
+                    window.open(customerUrlTemplate.replace("{Id}", split[1]), '_blank');
                 }
                 else {
                     window.location = "/Place/Item/" + split[1] + "?type=" + split[0];

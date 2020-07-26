@@ -7,22 +7,22 @@
 
 <div class="card my-4">
     <div class="card-header" style="background-color: hsl(@hue , 25%, 88%); color: hsl(@hue , 80%, 32%);">
-        <div class="float-right">اتصال @(Model.Index+1)</div>
+        <div class="float-right font-weight-bold">اتصال @(Model.Index+1)</div>
         <div class="text-center">@Html.Raw(Model.GetPlaceDisplay(db))</div>
     </div>
     <div class="card-body" style="background-color: hsl(@hue , 40%, 88%);">
         <input type="hidden" asp-for="Id" />
-        <input type="hidden" asp-for="Building" />
+        <input type="hidden" asp-for="Center" />
         <input type="hidden" asp-for="Device" />
         <input type="hidden" asp-for="Index" />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="row">
             <div class="form-group col-lg-3 col-sm-6">
                 <label asp-for="PortType" class="control-label"></label>
-                <select asp-for="PortType" class="form-control">
-                    @foreach (var item in Enum.GetNames(typeof(EndPoint.PortTypeEnum)))
+                <select asp-for="PortType" class="form-control" onchange="toggleEndPointPortType(@Model.Index)">
+                    @foreach (var item in Utils.GetEnumValues<EndPoint.PortTypeEnum>())
                     {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PortTypeEnum), item)</option>
+                        <option value="@item">@Utils.DisplayName(item)</option>
                     }
                 </select>
                 <span asp-validation-for="PortType" class="text-danger"></span>
@@ -31,6 +31,16 @@
                 <label asp-for="PortNumber" class="control-label"></label>
                 <input asp-for="PortNumber" class="form-control" />
                 <span asp-validation-for="PortNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group col-lg-3 col-sm-6">
+                <label asp-for="TransmissionSystem" class="control-label"></label>
+                <select asp-for="TransmissionSystem" class="form-control">
+                    @foreach (var item in Utils.GetEnumValues<TransmissionSystemType>())
+                    {
+                        <option value="@item">@Utils.DisplayName(item)</option>
+                    }
+                </select>
+                <span asp-validation-for="TransmissionSystem" class="text-danger"></span>
             </div>
             <div class="form-group col-lg-3 col-sm-6">
                 <label asp-for="Speed" class="control-label"></label>
@@ -48,69 +58,69 @@
                 <span asp-validation-for="SpeedUnit" class="text-danger"></span>
             </div>
             <div class="form-group col-lg-3 col-sm-6">
-                <label asp-for="Module" class="control-label"></label>
-                <select asp-for="Module" class="form-control">
-                    @foreach (var item in Enum.GetNames(typeof(EndPoint.ModuleType)))
-                    {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ModuleType), item)</option>
-                    }
-                </select>
-                <span asp-validation-for="Module" class="text-danger"></span>
-            </div>
-            <div class="form-group col-lg-3 col-sm-6">
-                <label asp-for="PatchCord" class="control-label"></label>
-                <select asp-for="PatchCord" class="form-control">
-                    @foreach (var item in Enum.GetNames(typeof(EndPoint.PatchCordType)))
-                    {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.PatchCordType), item)</option>
-                    }
-                </select>
-                <span asp-validation-for="PatchCord" class="text-danger"></span>
-            </div>
-            <div class="form-group col-lg-3 col-sm-6">
                 <label asp-for="Connector" class="control-label"></label>
                 <select asp-for="Connector" class="form-control">
-                    @foreach (var item in Enum.GetNames(typeof(EndPoint.ConnectorType)))
+                    @foreach (var item in Utils.GetEnumValues<EndPoint.ConnectorType>())
                     {
-                        <option value="@item">@Utils.GetDisplayNameOfMember(typeof(EndPoint.ConnectorType), item)</option>
+                        <option value="@item">@Utils.DisplayName(item)</option>
                     }
                 </select>
                 <span asp-validation-for="Connector" class="text-danger"></span>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="form-group">
-                    <label asp-for="DistanceToNextPoint" class="control-label"></label>
-                    <input asp-for="DistanceToNextPoint" class="form-control" />
-                    <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>
-                </div>
+            <div class="form-group col-lg-3 col-sm-6" id="divModule_@Model.Index" style="display: @(Model.PortType == EndPoint.PortTypeEnum.Optical ? "unset" : "none")">
+                <label asp-for="Module" class="control-label"></label>
+                <select asp-for="Module" class="form-control">
+                    @foreach (var item in Utils.GetEnumValues<EndPoint.ModuleType>())
+                    {
+                        <option value="@item">@Utils.DisplayName(item)</option>
+                    }
+                </select>
+                <span asp-validation-for="Module" class="text-danger"></span>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="form-group">
-                    <label>
-                        <input asp-for="DataProtection" /> @Html.DisplayNameFor(model => model.DataProtection)
-                    </label>
-                </div>
+            <div class="form-group col-lg-3 col-sm-6" id="divPatchCord_@Model.Index" style="display: @(Model.PortType == EndPoint.PortTypeEnum.Optical ? "unset" : "none")">
+                <label asp-for="PatchCord" class="control-label"></label>
+                <select asp-for="PatchCord" class="form-control">
+                    @foreach (var item in Utils.GetEnumValues<EndPoint.PatchCordType>())
+                    {
+                        <option value="@item">@Utils.DisplayName(item)</option>
+                    }
+                </select>
+                <span asp-validation-for="PatchCord" class="text-danger"></span>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="form-group">
-                    <label>
-                        <input asp-for="TransmissionProtection" /> @Html.DisplayNameFor(model => model.TransmissionProtection)
-                    </label>
-                </div>
+            <div class="form-group col-lg-3 col-sm-6" id="divWaveLength_@Model.Index" style="display: @(Model.PortType == EndPoint.PortTypeEnum.Optical ? "unset" : "none")">
+                <label asp-for="WaveLength" class="control-label"></label>
+                <select asp-for="WaveLength" class="form-control">
+                    @foreach (var item in Utils.GetEnumValues<EndPoint.WaveLengthEnum>())
+                    {
+                        <option value="@item">@Utils.DisplayName(item)</option>
+                    }
+                </select>
+                <span asp-validation-for="WaveLength" class="text-danger"></span>
             </div>
-            <div class="col-lg-3 col-sm-6">
-                <div class="form-group">
-                    <label>
-                        <input asp-for="Incomplete" /> @Html.DisplayNameFor(model => model.Incomplete)
-                    </label>
-                </div>
+            <div class="col-lg-3 col-sm-6 form-group">
+                <label asp-for="DistanceToNextPoint" class="control-label"></label>
+                <input asp-for="DistanceToNextPoint" class="form-control" />
+                <span asp-validation-for="DistanceToNextPoint" class="text-danger"></span>
             </div>
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <label asp-for="Description" class="control-label"></label>
-                    <textarea asp-for="Description" class="form-control"></textarea>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
+            <div class="col-lg-3 col-sm-6 form-group d-flex align-items-end">
+                <label asp-for="DataProtection">
+                    <input type="checkbox" asp-for="DataProtection" /> @Html.DisplayNameFor(model => model.DataProtection)
+                </label>
+            </div>
+            <div class="col-lg-3 col-sm-6 form-group d-flex align-items-end">
+                <label asp-for="TransmissionProtection">
+                    <input type="checkbox" asp-for="TransmissionProtection" /> @Html.DisplayNameFor(model => model.TransmissionProtection)
+                </label>
+            </div>
+            <div class="col-lg-3 col-sm-6 form-group d-flex align-items-end">
+                <label asp-for="Incomplete">
+                    <input type="checkbox" asp-for="Incomplete" /> @Html.DisplayNameFor(model => model.Incomplete)
+                </label>
+            </div>
+            <div class="col-lg-12 form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
         </div>
         <div id="divPassives_@Model.Index" class="my-4">
@@ -120,8 +130,9 @@
             }
         </div>
         <div class="text-center my-4">
-            <input id="btnNewPassive" type="button" class="btn btn-secondary" value="اتصال Passive جدید" onclick="ShowNewPassiveDialog(@Model.Index)" />
-            <input id="btnRemoveLastPassive" type="button" class="btn btn-outline-danger mx-4 d-none" value="حذف آخرین اتصال Passive" onclick="RemoveLastPassive(@Model.Index)" />
+            <input id="EndPoints_@(Model.Index)__btnNewPassive" type="button" class="btn btn-secondary" value="اتصال Passive جدید" onclick="ShowNewPassiveDialog('@Model.Id.ToString()', @Model.Index)" />
+            <input id="EndPoints_@(Model.Index)__btnRemoveLastPassive" type="button" 
+                   class="btn btn-outline-danger mx-4 @(Model.PassiveConnectionViewModels.Count > 0 ? "" : "d-none")" value="حذف آخرین اتصال Passive" onclick="RemoveLastPassive(@Model.Index)" />
         </div>
     </div>
 </div>

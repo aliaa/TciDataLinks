@@ -1,4 +1,5 @@
 ﻿@inject IEnumerable<City> Cities
+@inject Settings settings
 
 @{
     ViewData["Title"] = "گراف شبکه";
@@ -6,31 +7,53 @@
 
 <h1>گراف شبکه</h1>
 
-<div class="row mt-5">
-    <div class="col-lg-3 col-sm-6 form-group">
-        <label class="control-label">شهر</label>
-        <select id="City" class="form-control">
-            @foreach (var city in Cities)
-            {
-                <option value="@city.Id.ToString()">@city.Name</option>
-            }
-        </select>
+<form id="form">
+    <div class="row mt-5">
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label class="control-label">شهر</label>
+            <select id="City" class="form-control">
+                @foreach (var city in Cities)
+                {
+                    <option value="@city.Id.ToString()">@city.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label class="control-label">مرکز</label>
+            <select id="Center" class="form-control" data-rule-required="true" data-msg-required="انتخاب مرکز اجباری است."></select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label class="control-label">ساختمان</label>
+            <select id="Building" class="form-control"></select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label class="control-label">اتاق/سالن</label>
+            <select id="Room" class="form-control"></select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label class="control-label">راک</label>
+            <select id="Rack" class="form-control"></select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label class="control-label">نوع شبکه</label>
+            <select id="NetworkType" class="form-control">
+                <option value="all">همه</option>
+                @foreach (var t in Utils.GetEnumValues<Device.NetworkType>())
+                {
+                    <option value="@t">@Utils.DisplayName(t)</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 col-sm-6 form-group">
+            <label class="control-label">فیلتر لینکها</label>
+            <select id="HasCustomer" class="form-control">
+                <option value="all">همه</option>
+                <option value="true">فقط دارای مشتری</option>
+                <option value="false">فقط بدون مشتری</option>
+            </select>
+        </div>
     </div>
-    <div class="col-lg-3 col-sm-6 form-group">
-        <label class="control-label">مرکز</label>
-        <select id="Center" class="form-control"></select>
-    </div>
-    <div class="col-lg-3 col-sm-6 form-group">
-        <label class="control-label">نوع شبکه</label>
-        <select id="NetworkType" class="form-control">
-            <option value="all">همه</option>
-            @foreach(var t in Enum.GetNames(typeof(Device.NetworkType)))
-            {
-                <option value="@t">@Utils.GetDisplayNameOfMember(typeof(Device.NetworkType), t)</option>
-            }
-        </select>
-    </div>
-</div>
+</form>
 <div class="mt-2">
     <button id="btnShowGraph" class="btn btn-primary">نمایش گراف</button>
 </div>
@@ -43,13 +66,22 @@
             <button id="btnSaveOrders" class="btn btn-primary">ذخیره چینش</button>
         </div>
     }
-    <p class="mt-4">توجه: برای رفتن به جزئیات هر کدام از اشکال موجود، روی آن دوبار کلیک کنید.</p>
+    <p class="mt-4">توجه: برای رفتن به جزئیات هر کدام از اشکال موجود (مکانها، دستگاهها و اتصالها)، روی آن دوبار کلیک کنید.</p>
     <p class="mb-4">توجه: برای زوم کردن، موس را روی گراف نگه داشته، دکمه <kbd>Ctrl</kbd> را نگه داشته و اسکرول موس را بچرخانید.</p>
 </div>
 
 
 @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
+        $("#form").validate();
+        var dropdownsToClear = [$("#Building"), $("#Room"), $("#Rack")];
+
+        function ClearDropdownsAfter(offset) {
+            for (var i = offset; i < dropdownsToClear.length; i++)
+                removeOptionsOfDropDown(dropdownsToClear[i], { initMsg: "همه", disabledInitMsg: false });
+        }
+
         $(window).ready(function () {
             var city = $("#City").val();
             if (city) {
@@ -58,27 +90,83 @@
         });
 
         $("#City").change(function () {
-            removeOptionsOfDropDown($("#Center"), null);
+            ClearDropdownsAfter(0);
+            removeOptionsOfDropDown($("#Center"));
             var id = $(this).val();
             $.get("/Place/Centers?city=" + id + "&onlyUsed=true", function (res) {
                 $.each(res, function (index, item) {
                     $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
                 });
-                //$("#Center").select2(select2BaseSettings);
+            });
+        });
 
+        $("#Center").change(function () {
+            ClearDropdownsAfter(0);
+            var id = $(this).val();
+            $.get("/Place/Buildings?center=" + id, function (res) {
+                $.each(res, function (index, item) {
+                    $("#Building").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
+            });
+        });
+
+        $("#Building").change(function () {
+            ClearDropdownsAfter(1);
+            var id = $(this).val();
+            $.get("/Place/Rooms?building=" + id, function (res) {
+                $.each(res, function (index, item) {
+                    $("#Room").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
+            });
+        });
+
+        $("#Room").change(function () {
+            ClearDropdownsAfter(2);
+            var id = $(this).val();
+            $.get("/Place/Racks?room=" + id, function (res) {
+                $.each(res, function (index, item) {
+                    $("#Rack").append("<option value='" + item.id + "'>" + item.text + "</option>");
+                });
             });
         });
 
         var diagram = null;
         $("#btnShowGraph").click(function () {
+            if (!$("#form").valid())
+                return;
+            if (!$("#Center").val())
+                return;
+
             $("#divResult").removeClass("d-none");
-            var url = "/Graph/Center/" + $("#Center").val();
+            var center = $("#Center").val();
+            var building = $("#Building").val();
+            var room = $("#Room").val();
+            var rack = $("#Rack").val();
+            var hasCustomer = $("#HasCustomer").val();
             var networkType = $("#NetworkType").val();
+
+            var url = "/Graph/Place/";
+            if (!building)
+                url = url + center + "?type=Center";
+            else if (!room)
+                url = url + building + "?type=Building";
+            else if (!rack)
+                url = url + room + "?type=Room";
+            else
+                url = url + rack + "?type=Rack";
+
             if (networkType != "all")
-                url = url + "?NetworkType=" + networkType;
+                url = url + "&networkType=" + networkType;
+            if (hasCustomer != "all")
+                url = url + "&hasCustomer=" + hasCustomer;
             $.get(url, function (res) {
-                diagram = initGojs("divGraph", res);
+                diagram = initGojs("divGraph", res, "@settings.CustomerDetailsUrl");
             });
+
+            if (!building && networkType == "all" && hasCustomer == "all")
+                $("#btnSaveOrders").show();
+            else
+                $("#btnSaveOrders").hide();
         });
 
         $("#btnSaveOrders").click(function () {

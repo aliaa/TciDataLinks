@@ -36,15 +36,18 @@ namespace TciDataLinks.Controllers
         private ConnectionViewModel ConnectionToViewModel(Connection c, bool addMoreDetails = false)
         {
             var vm = Mapper.Map<ConnectionViewModel>(c);
+            if (c.CustomerId != ObjectId.Empty)
+                vm.Customer = db.FindById<Customer>(c.CustomerId);
             foreach (var e in db.Find<EndPoint>(e => e.Connection == c.Id).SortBy(e => e.Index).ToEnumerable())
             {
                 var evm = Mapper.Map<EndPointViewModel>(e);
-                if(addMoreDetails)
+                if (addMoreDetails)
                 {
                     var rackId = db.FindById<Device>(evm.Device).Rack;
                     var roomId = db.FindById<Rack>(rackId).Parent;
                     var buildingId = db.FindById<Room>(roomId).Parent;
-                    evm.Building = buildingId;
+                    var centerId = db.FindById<Building>(buildingId).Parent;
+                    evm.Center = centerId;
                 }
                 vm.EndPoints.Add(evm);
             }
@@ -52,6 +55,7 @@ namespace TciDataLinks.Controllers
             var endPointsIds = vm.EndPoints.Select(e => e.Id).ToList();
             var createActivity = db.FindFirst<UserActivity>(a => endPointsIds.Contains(a.ObjId) && a.ActivityType == ActivityType.Insert);
             var lastEditActivity = db.Find<UserActivity>(a => endPointsIds.Contains(a.ObjId) && a.ActivityType == ActivityType.Update)
+                .Project(a => new { a.Time, a.Username })
                 .SortByDescending(a => a.Time).FirstOrDefault();
             if (createActivity != null)
             {
@@ -72,7 +76,18 @@ namespace TciDataLinks.Controllers
 
         public IActionResult Index()
         {
-            return View(new ConnectionSearchViewModel());
+            return View(new ConnectionSearchViewModel
+            {
+                TotalLinksCount = db.Count<Connection>()
+            });
+        }
+
+        public IActionResult Go(int linkNumber)
+        {
+            var id = db.Find<Connection>(c => c.IdInt == linkNumber).Project(c => c.Id).FirstOrDefault();
+            if (id != ObjectId.Empty)
+                return RedirectToAction(nameof(Item), new { id });
+            return RedirectToAction(nameof(Index));
         }
 
         private const int SEARCH_RESULT_LIMIT = 200;
@@ -95,6 +110,8 @@ namespace TciDataLinks.Controllers
                     parentType = PlaceType.Building;
                 else if (ObjectId.TryParse(model.Center, out parentId))
                     parentType = PlaceType.Center;
+                else if (ObjectId.TryParse(model.City, out parentId))
+                    parentType = PlaceType.City;
                 else
                     throw new NotImplementedException();
                 devices = deviceController.FindDevices(parentId, parentType).Select(d => d.Id).ToList();
@@ -126,15 +143,29 @@ namespace TciDataLinks.Controllers
             else if (model.SearchType == ConnectionSearchViewModel.EndPointSearchType.NotFirst)
                 filters.Add(fb.Gt(e => e.Index, 0));
 
-            var connections = db.Aggregate<EndPoint>()
-                .Match(fb.And(filters))
-                .Group(id => id.Connection, g => new { g.Key })
+            var agg = db.Aggregate<EndPoint>()
+                .Match(fb.And(filters));
+            if (model.NetworkType != ConnectionSearchViewModel.DeviceNetworkType.All &&
+                model.NetworkType != ConnectionSearchViewModel.DeviceNetworkType.InterNetwork)
+            {
+                agg = agg.Lookup(nameof(Device), nameof(EndPoint.Device), "_id", "device")
+                    .Unwind("device")
+                    .Match("{\"device." + nameof(Device.Network) + "\": \"" + model.NetworkType.ToString() + "\" }")
+                    .Project("{\"device\": 0 }")
+                    .As<EndPoint>();
+            }
+            var connections = agg.Group(id => id.Connection, g => new { g.Key })
                 .Lookup(nameof(Connection), "Key", "_id", "as")
                 .Unwind("as").ReplaceRoot<Connection>("$as")
                 .SortByDescending(c => c.IdInt)
                 .Limit(SEARCH_RESULT_LIMIT)
                 .ToList();
-            model.SearchResult = connections.Select(c => ConnectionToViewModel(c)).ToList();
+            var cvmList = connections.Select(c => ConnectionToViewModel(c));
+            if (model.NetworkType == ConnectionSearchViewModel.DeviceNetworkType.InterNetwork)
+                cvmList = cvmList.Where(x => x.EndPoints.Select(e => db.FindById<Device>(e.Device)).GroupBy(d => d.Network).Count() > 1);
+
+            model.SearchResult = cvmList.ToList();
+            model.TotalLinksCount = db.Count<Connection>();
             model.City = null;
             return View(model);
         }
@@ -148,7 +179,8 @@ namespace TciDataLinks.Controllers
                 var deviceObj = db.FindById<Device>(device);
                 var rack = db.FindById<Rack>(deviceObj.Rack);
                 var room = db.FindById<Room>(rack.Parent);
-                vm.EndPoints.Add(new EndPointViewModel { Building = room.Parent, Device = device });
+                var building = db.FindById<Building>(room.Parent);
+                vm.EndPoints.Add(new EndPointViewModel { Center = building.Parent, Device = device });
             }
             return View(vm);
         }
@@ -157,6 +189,8 @@ namespace TciDataLinks.Controllers
         [HttpPost]
         public IActionResult Add(ConnectionViewModel model)
         {
+            if (!ModelState.IsValid || !PortsAreValid(model))
+                return View("Add", model);
             var connection = Mapper.Map<Connection>(model);
             connection.IdInt = db.Find<Connection>(_ => true).SortByDescending(c => c.IdInt).Project(c => c.IdInt).FirstOrDefault() + 1;
             db.Save(connection);
@@ -167,6 +201,29 @@ namespace TciDataLinks.Controllers
                 db.Save(e);
             }
             return RedirectToAction(nameof(Edit), new { id = connection.Id });
+        }
+
+        private bool PortsAreValid(ConnectionViewModel model)
+        {
+            bool isValid = true;
+            for (int i = 0; i < model.EndPoints.Count; i++)
+            {
+                if (PortAlreadyUsed(model.EndPoints[i].Device, model.EndPoints[i].Id, model.EndPoints[i].PortNumber))
+                {
+                    ModelState.AddModelError("EndPoints[" + i + "].PortNumber", "پورت قبلا استفاده شده است!");
+                    isValid = false;
+                }
+                for (int j = 0; j < model.EndPoints[i].PassiveConnections.Count; j++)
+                {
+                    var pc = model.EndPoints[i].PassiveConnections[j];
+                    if(PassivePortAlreadyUsed(model.EndPoints[i].Id, pc.PortNumber, pc.PatchPanel))
+                    {
+                        ModelState.AddModelError("EndPoints[" + i + "].PassiveConnectionViewModels[" + j + "].PortNumber", "پورت قبلا استفاده شده است!");
+                        isValid = false;
+                    }
+                }
+            }
+            return isValid;
         }
 
         [Authorize(nameof(Permission.EditConnections))]
@@ -182,11 +239,17 @@ namespace TciDataLinks.Controllers
         [HttpPost]
         public IActionResult Edit(ConnectionViewModel model)
         {
+            if (!ModelState.IsValid || !PortsAreValid(model))
+                return View("Add", model);
+            db.UpdateOne<Connection>(c => c.Id == model.Id, Builders<Connection>.Update.Set(c => c.CustomerId, model.CustomerId));
             var endPointsId = new List<ObjectId>();
             int i = 0;
             foreach (var evm in model.EndPoints)
             {
                 var e = Mapper.Map<EndPoint>(evm);
+                if (e.Device == ObjectId.Empty)
+                    continue;
+                e.PassiveConnections = e.PassiveConnections.Where(pc => pc.PatchPanel != ObjectId.Empty).ToList();
                 e.Index = i++;
                 e.Connection = model.Id;
                 db.Save(e);
@@ -201,24 +264,25 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditConnections))]
-        public IActionResult AddEndPoint(int index, ObjectId building, ObjectId device)
+        public IActionResult AddEndPoint(int index, ObjectId center, ObjectId device)
         {
             return GetEditorTemplatePartialView<EndPoint>(new EndPointViewModel
             {
                 Index = index,
-                Building = building,
+                Center = center,
                 Device = device
             });
         }
 
         [Authorize(nameof(Permission.EditConnections))]
-        public IActionResult AddPassiveConnection(int endPointIndex, int index, ObjectId patchPanel)
+        public IActionResult AddPassiveConnection(ObjectId endpointId, int endPointIndex, int index, ObjectId passive)
         {
             return GetEditorTemplatePartialView<PassiveConnection>(new PassiveConnectionViewModel
             {
+                EndPointId = endpointId,
                 EndPointIndex = endPointIndex,
                 Index = index,
-                PatchPanel = patchPanel
+                PatchPanel = passive
             });
         }
 
@@ -230,22 +294,43 @@ namespace TciDataLinks.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //[AcceptVerbs("GET", "POST")]
-        //public IActionResult PortNumberIsValid(string portNumber, ObjectId device, ObjectId patchPanel)
-        //{
-        //    if (device != ObjectId.Empty)
-        //    {
-        //        var exists = db.Any<Connection>(c => c.EndPoints.Any(e => e.Device == device && e.PortNumber == portNumber));
-        //        return Json(!exists);
-        //    }
-        //    else if (patchPanel != ObjectId.Empty)
-        //    {
-        //        var exists = db.Any<Connection>(c => c.EndPoints.Any(e => e.PassiveConnections.Any(p => p.PatchPanel == patchPanel && p.PortNumber == portNumber)));
-        //        return Json(!exists);
-        //    }
-        //    //TODO
-        //    return Json(true);
-        //}
+        public IActionResult CustomerSearch(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term))
+                return Ok();
+            var fb = Builders<Customer>.Filter;
+            FilterDefinition<Customer> filter;
+            if (long.TryParse(term, out long docNum))
+                filter = fb.Eq(c => c.DocumentNumber, docNum);
+            else
+                filter = fb.Regex(c => c.CustomerName, new BsonRegularExpression(term.Trim().Replace(" ", ".*")));
+            var results = db.Find<Customer>(fb.And(filter, fb.Ne(c => c.IsAborted, true))).ToEnumerable()
+                .Select(c => new { id = c.Id.ToString(), text = c.ToString() });
 
+            return Json(new { results });
+        }
+
+        private bool PortAlreadyUsed(ObjectId device, ObjectId currentEndPoint, string portNumber)
+        {
+            return db.Any<EndPoint>(e => e.Device == device && e.PortNumber == portNumber && e.Id != currentEndPoint);
+        }
+
+        private bool PassivePortAlreadyUsed(ObjectId endPointId, string portNumber, ObjectId patchPanel)
+        {
+            return db.Any<EndPoint>(e => e.Id != endPointId &&
+                e.PassiveConnections.Any(p => p.PatchPanel == patchPanel && p.PortNumber == portNumber));
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult PortNumberIsValid(ObjectId device, ObjectId id, string portNumber)
+        {
+            return Json(!PortAlreadyUsed(device, id, portNumber));
+        }
+
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult PassivePortIsValid(ObjectId endPointId, string portNumber, ObjectId patchPanel)
+        {
+            return Json(!PassivePortAlreadyUsed(endPointId, portNumber, patchPanel));
+        }
     }
 }

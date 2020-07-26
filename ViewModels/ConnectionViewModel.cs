@@ -5,6 +5,7 @@ namespace TciDataLinks.ViewModels
 {
     public class ConnectionViewModel : Connection
     {
+        public Customer Customer { get; set; }
         public List<EndPointViewModel> EndPoints { get; set; } = new List<EndPointViewModel>();
         public string CreateDate { get; set; }
         public string CreatedUser { get; set; }

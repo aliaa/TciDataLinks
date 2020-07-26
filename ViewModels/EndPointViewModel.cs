@@ -7,7 +7,7 @@ namespace TciDataLinks.ViewModels
 {
     public class EndPointViewModel : EndPoint
     {
-        public ObjectId Building { get; set; }
+        public ObjectId Center { get; set; }
 
         public List<PassiveConnectionViewModel> PassiveConnectionViewModels { get; set; } = new List<PassiveConnectionViewModel>();
 
