@@ -76,8 +76,8 @@ namespace TciDataLinks.Models
             this.text = text;
         }
 
-        public GraphLink(string from, string to, ObjectId id, int linkIndex, string fromPort, string toPort)
-            : this(from, to, id, "Link " +  linkIndex + "<br/>\nPort: " + fromPort + " ==> " + toPort) { }
+        public GraphLink(string from, string to, Connection connection, string fromPort, string toPort)
+            : this(from, to, connection.Id, "Link: " +  connection.IdInt + "\nPort: " + fromPort + " ==> " + toPort) { }
 
         public string from { get; set; }
         public string to { get; set; }

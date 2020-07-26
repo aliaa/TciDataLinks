@@ -28,6 +28,10 @@ namespace TciDataLinks.Controllers
         {
             var device = db.FindById<Device>(id);
             var model = Mapper.Map<DeviceViewModel>(device);
+            model.UsedPorts = db.Find<EndPoint>(e => e.Device == id)
+                .SortBy(e => e.PortNumber)
+                .Project(e => new PortViewModel { Connection = e.Connection, PortNumber = e.PortNumber, EndPointIndex = e.Index })
+                .ToList();
             if (UserPermissions.Contains(Permission.ViewUserLogs))
             {
                 var users = db.All<AuthUserX>().ToDictionary(u => u.Username, u => u.DisplayName);

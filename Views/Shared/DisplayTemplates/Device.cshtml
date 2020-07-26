@@ -35,39 +35,63 @@
                 </span>
             </div>
             <div class="col-lg-3 col-sm-6">
-                <label>@Html.DisplayNameFor(m => m.Address):</label>
+                <label>آدرس:</label>
                 <span class="text-value">
                     @Model.Address
                 </span>
             </div>
         </div>
-        @if (Model.Logs != null && Model.Logs.Count > 0 && User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.ViewUserLogs)))
+        @if (Model.UsedPorts != null && Model.UsedPorts.Count > 0)
         {
-            <h4 class="mt-5">عملیات انجام شده توسط کاربران</h4>
-            <div class="d-flex flex-wrap">
-                @foreach (var l in Model.Logs)
-                {
-                    <div class="m-1 p-2 alert-dark">
-                        <small>@PersianDateUtils.GetPersianDateString(l.Time) </small><br />
-                        @l.User <br />
-                        @{
-                            switch (l.ActivityType)
-                            {
-                                case ActivityType.Delete:
-                                    <span class="text-danger">حذف</span>
-                                    break;
-                                case ActivityType.Insert:
-                                    <span class="text-info">ایجاد</span>
-                                    break;
-                                case ActivityType.Update:
-                                    <span class="text-success">بروز رسانی</span>
-                                    break;
-                                default:
-                                    throw new NotImplementedException();
-                            }
+            <div class="card my-4">
+                <div class="card-header" data-toggle="collapse" data-target="#ports" style="cursor:pointer;">
+                    پورتهای استفاده شده (@Model.UsedPorts.Count)
+                </div>
+                <div class="card-body collapse" id="ports">
+                    <div class="d-flex flex-wrap" dir="ltr">
+                        @foreach (var p in Model.UsedPorts)
+                        {
+                            <a class="m-1 p-2 alert-dark" href="/Connection/Item/@(p.Connection.ToString())#endpoint_@(p.Connection)_@(p.EndPointIndex)">
+                                @p.PortNumber
+                            </a>
                         }
                     </div>
-                }
+                </div>
+            </div>
+        }
+        @if (Model.Logs != null && Model.Logs.Count > 0 && User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.ViewUserLogs)))
+        {
+            <div class="card my-4">
+                <div class="card-header" data-toggle="collapse" data-target="#logs" style="cursor:pointer;">
+                    عملیات انجام شده توسط کاربران (@Model.Logs.Count)
+                </div>
+                <div class="card-body collapse" id="logs">
+                    <div class="d-flex flex-wrap">
+                        @foreach (var l in Model.Logs)
+                        {
+                            <div class="m-1 p-2 alert-dark">
+                                <small>@PersianDateUtils.GetPersianDateString(l.Time) </small><br />
+                                @l.User <br />
+                                @{
+                                    switch (l.ActivityType)
+                                    {
+                                        case ActivityType.Delete:
+                                            <span class="text-danger">حذف</span>
+                                            break;
+                                        case ActivityType.Insert:
+                                            <span class="text-info">ایجاد</span>
+                                            break;
+                                        case ActivityType.Update:
+                                            <span class="text-success">بروز رسانی</span>
+                                            break;
+                                        default:
+                                            throw new NotImplementedException();
+                                    }
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         }
     </div>

@@ -1,4 +1,7 @@
-﻿$(".nav-link[href='" + window.location.pathname + "'").addClass("active");
+﻿$(document).ready(function () {
+    $(".nav-link[href='" + window.location.pathname + "'").addClass("active");
+    $("div:target").removeClass("collapse");
+});
 
 function ConvertInputsToBeAsArrayItem(elem, arrayName, index, changeId = true) {
     $(elem).find("input, select, textarea").each(function (i, e) {
