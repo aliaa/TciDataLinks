@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TciCommon.Models;
 using TciDataLinks.Models;
+using TciDataLinks.ViewModels;
 
 namespace TciDataLinks.Controllers
 {
@@ -214,10 +215,11 @@ namespace TciDataLinks.Controllers
                 if (c.Connection.CustomerId != ObjectId.Empty)
                 {
                     var key = "Customer_" + c.Connection.CustomerId;
+                    var icon = ImageListItem.CustomerIcons.FirstOrDefault(i => i.Value == c.Connection.CustomerIcon) ?? ImageListItem.CustomerIcons[0];
                     graph.AddNode(new GraphNode
                     {
                         key = key,
-                        image = "/lib/bootstrap-icons/icons/person-fill.svg",
+                        image = "/img/" + icon.FileName,
                         text = db.FindById<Customer>(c.Connection.CustomerId)?.ToString()
                     });
                     graph.AddLink(new GraphLink(lastKey, key, c.Connection.Id, "ارتباط مشتری"));
@@ -330,10 +332,11 @@ namespace TciDataLinks.Controllers
             if(connection.CustomerId != ObjectId.Empty)
             {
                 var key = "Customer_" + connection.CustomerId;
+                var icon = ImageListItem.CustomerIcons.FirstOrDefault(i => i.Value == connection.CustomerIcon) ?? ImageListItem.CustomerIcons[0];
                 graph.AddNode(new GraphNode
                 {
                     key = key,
-                    image = "/lib/bootstrap-icons/icons/person-fill.svg",
+                    image = "/img/" + icon.FileName,
                     text = db.FindById<Customer>(connection.CustomerId)?.ToString()
                 });
                 graph.AddLink(new GraphLink(lastKey, key, connection.Id, "ارتباط مشتری"));

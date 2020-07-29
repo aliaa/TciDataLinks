@@ -124,7 +124,7 @@ else
                     <select class="form-control" id="customerIconSelect">
                         @foreach (var icon in ImageListItem.CustomerIcons)
                         {
-                            <option value="@icon.Value" data-imagesrc="/img/@icon.Icon" selected="@(icon.Value == Model.CustomerIcon)">@icon.Text</option>
+                            <option value="@icon.Value" data-imagesrc="/img/@icon.FileName" selected="@(icon.Value == Model.CustomerIcon)">@icon.Text</option>
                         }
                     </select>
                     <input type="hidden" asp-for="CustomerIcon" />
