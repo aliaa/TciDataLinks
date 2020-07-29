@@ -10,5 +10,7 @@ namespace TciDataLinks.Models
         public int IdInt { get; set; }
 
         public ObjectId CustomerId { get; set; }
+
+        public string CustomerIcon { get; set; }
     }
 }

@@ -110,7 +110,7 @@ else
         </div>
         <div class="card-body" id="divCustomer" style="display:@(Model.Customer == null ? "none" : "initial");">
             <div class="row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label class="form-label">جستجوی مشتری</label>
                     <select asp-for="CustomerId" class="form-control">
                         @if (Model.Customer != null)
@@ -118,6 +118,16 @@ else
                             <option value="@Model.CustomerId">@Model.Customer</option>
                         }
                     </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label class="form-label">آیکون</label>
+                    <select class="form-control" id="customerIconSelect">
+                        @foreach (var icon in ImageListItem.CustomerIcons)
+                        {
+                            <option value="@icon.Value" data-imagesrc="/img/@icon.Icon" selected="@(icon.Value == Model.CustomerIcon)">@icon.Text</option>
+                        }
+                    </select>
+                    <input type="hidden" asp-for="CustomerIcon" />
                 </div>
             </div>
 
@@ -193,6 +203,13 @@ else
             ajax: {
                 url: "/Connection/CustomerSearch",
                 dataType: 'json'
+            }
+        });
+
+        $("#customerIconSelect").ddslick({
+            height: 300,
+            onSelected: function (data) {
+                $("#CustomerIcon").val(data.selectedData.value);
             }
         });
     });

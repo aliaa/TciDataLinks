@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\lib\select2-bootstrap4-theme\" />
+    <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
 

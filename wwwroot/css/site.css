@@ -171,3 +171,9 @@ body {
 label.error {
     color: red;
 }
+
+.dd-selected-text, .dd-option-text {
+    line-height: initial !important;
+    margin-right: 2rem !important;
+    margin-top: 0.6rem !important;
+}

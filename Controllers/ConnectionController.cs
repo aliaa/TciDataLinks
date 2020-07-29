@@ -37,7 +37,10 @@ namespace TciDataLinks.Controllers
         {
             var vm = Mapper.Map<ConnectionViewModel>(c);
             if (c.CustomerId != ObjectId.Empty)
+            {
                 vm.Customer = db.FindById<Customer>(c.CustomerId);
+                vm.CustomerIcon = c.CustomerIcon;
+            }
             foreach (var e in db.Find<EndPoint>(e => e.Connection == c.Id).SortBy(e => e.Index).ToEnumerable())
             {
                 var evm = Mapper.Map<EndPointViewModel>(e);
@@ -241,7 +244,9 @@ namespace TciDataLinks.Controllers
         {
             if (!ModelState.IsValid || !PortsAreValid(model))
                 return View("Add", model);
-            db.UpdateOne<Connection>(c => c.Id == model.Id, Builders<Connection>.Update.Set(c => c.CustomerId, model.CustomerId));
+            db.UpdateOne<Connection>(c => c.Id == model.Id, 
+                Builders<Connection>.Update.Set(c => c.CustomerId, model.CustomerId)
+                    .Set(c => c.CustomerIcon, model.CustomerIcon));
             var endPointsId = new List<ObjectId>();
             int i = 0;
             foreach (var evm in model.EndPoints)
