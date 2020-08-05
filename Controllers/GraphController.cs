@@ -19,13 +19,13 @@ namespace TciDataLinks.Controllers
     {
         public GraphController(IDbContext db) : base(db) { }
 
-        public IActionResult Index(ObjectId? id = null)
+        public IActionResult Index(ObjectId id)
         {
-            if(id != null)
+            if(id != ObjectId.Empty)
             {
-                var center = db.FindById<CommCenter>(id.Value);
-                ViewBag.City = center.City.ToString();
-                ViewBag.Center = id.Value.ToString();
+                var center = db.FindById<CommCenter>(id);
+                ViewBag.City = center.City;
+                ViewBag.Center = id;
             }
             return View();
         }
