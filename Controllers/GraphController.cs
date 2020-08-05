@@ -15,17 +15,18 @@ using TciDataLinks.ViewModels;
 namespace TciDataLinks.Controllers
 {
     [Authorize]
-    public class GraphController : Controller
+    public class GraphController : BaseController
     {
-        private readonly IDbContext db;
+        public GraphController(IDbContext db) : base(db) { }
 
-        public GraphController(IDbContext db)
+        public IActionResult Index(ObjectId? id = null)
         {
-            this.db = db;
-        }
-
-        public IActionResult Index()
-        {
+            if(id != null)
+            {
+                var center = db.FindById<CommCenter>(id.Value);
+                ViewBag.City = center.City.ToString();
+                ViewBag.Center = id.Value.ToString();
+            }
             return View();
         }
 
@@ -371,6 +372,14 @@ namespace TciDataLinks.Controllers
                 {
                     db.Save(item);
                 }
+                UserActivity log = new UserActivity(UserName) 
+                {
+                    CollectionName = nameof(Graph),
+                    ActivityType = ActivityType.Update,
+                    ObjId = req.center
+                };
+                db.Save(log);
+
                 return Ok();
             }
         }
