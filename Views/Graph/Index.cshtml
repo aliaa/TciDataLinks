@@ -14,7 +14,7 @@
             <select id="City" class="form-control">
                 @foreach (var city in Cities)
                 {
-                    <option value="@city.Id.ToString()">@city.Name</option>
+                    <option value="@city.Id.ToString()" selected="@(city.Id == ViewBag.City)">@city.Name</option>
                 }
             </select>
         </div>
@@ -73,7 +73,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
+<script>
         $("#form").validate();
         var dropdownsToClear = [$("#Building"), $("#Room"), $("#Rack")];
 
@@ -97,6 +97,10 @@
                 $.each(res, function (index, item) {
                     $("#Center").append("<option value='" + item.id + "'>" + item.text + "</option>");
                 });
+                if (id == "@ViewBag.City" && @((ViewBag.Center != null).ToString().ToLower())) {
+                    $("#Center").val("@ViewBag.Center");
+                    $("#Center").change();
+                }
             });
         });
 
@@ -177,5 +181,5 @@
             var data = { center: $("#Center").val(), nodeLocations: list };
             $.ajax({ url: "/Graph/SaveOrders", type: "POST", data: JSON.stringify(data), contentType: "application/json" });
         });
-    </script>
+</script>
 }
