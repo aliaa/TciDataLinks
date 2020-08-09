@@ -12,9 +12,9 @@ using TciDataLinks.ViewModels;
 
 namespace TciDataLinks.Controllers
 {
-    public class LogController : BaseController
+    public class LogsController : BaseController
     {
-        public LogController(IDbContext db) : base(db) { }
+        public LogsController(IDbContext db) : base(db) { }
 
         [Authorize(nameof(Permission.ViewUserLogs))]
         public IActionResult Index(string user = "all", string type = nameof(Device))

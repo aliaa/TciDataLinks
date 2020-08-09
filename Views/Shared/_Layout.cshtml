@@ -41,7 +41,7 @@
                             @if (User.FindFirst(nameof(Permission)).Value.Contains(nameof(Permission.ViewUserLogs)))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="Log" asp-action="Index">لاگ کاربران</a>
+                                    <a class="nav-link" asp-controller="Logs" asp-action="Index">لاگ کاربران</a>
                                 </li>
                             }
                             <li class="nav-item">

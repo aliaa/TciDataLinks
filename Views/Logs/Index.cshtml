@@ -1,0 +1,116 @@
+﻿@model IEnumerable<UserActivityViewModel>
+@inject IReadOnlyDbContext db
+
+@{
+    ViewData["Title"] = "لاگ فعالیت کاربران";
+}
+
+<h1>لاگ فعالیت کاربران</h1>
+
+<form asp-action="Index" class="mt-5">
+    <div class="row">
+        <div class="col-lg-3 form-group">
+            <label>کاربر</label>
+            <select name="user" class="form-control">
+                <option value="all">همه</option>
+                @foreach (var user in db.All<AuthUserX>())
+                {
+                    <option value="@user.Username" selected="@(ViewBag.User == user.Username)">@user.DisplayName</option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-3 form-group">
+            <label>نوع داده</label>
+            <select name="type" class="form-control">
+                <option value="Device" selected="@(ViewBag.Type == "Device")">دستگاه</option>
+                <option value="Passive" selected="@(ViewBag.Type == "Passive")">رابط Passive</option>
+                <option value="Link" selected="@(ViewBag.Type == "Link")">لینک</option>
+                <option value="AuthUser" selected="@(ViewBag.Type == "AuthUser")">کاربر</option>
+                <option value="Graph" selected="@(ViewBag.Type == "Graph")">گراف</option>
+            </select>
+        </div>
+    </div>
+    <div>
+        <input type="submit" class="btn btn-primary" value="نمایش" />
+    </div>
+</form>
+
+<table class="table mt-5">
+    <thead>
+        <tr>
+            <th>نوع داده</th>
+            <th>کاربر</th>
+            <th>تاریخ</th>
+            <th>نوع فعالیت</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @{
+                        string col, viewLink = null;
+                        switch (item.Type)
+                        {
+                            case nameof(Device):
+                                col = "دستگاه";
+                                viewLink = "/Device/Item/" + item.ObjId;
+                                break;
+
+                            case nameof(Passive):
+                                col = "Passive";
+                                viewLink = "/Passive/Item/" + item.ObjId;
+                                break;
+
+                            case nameof(Connection):
+                                col = "لینک";
+                                viewLink = "/Connection/Item/" + item.ObjId;
+                                break;
+
+                            case nameof(AliaaCommon.Models.AuthUser):
+                                col = "کاربر";
+                                viewLink = "/Account/Edit/" + item.ObjId;
+                                break;
+                            case nameof(Graph):
+                                col = "گراف";
+                                viewLink = "/Graph/Index/" + item.ObjId;
+                                break;
+
+                            default:
+                                throw new NotImplementedException();
+                        }
+                        if (item.ActivityType != EasyMongoNet.Model.ActivityType.Delete)
+                        {
+                            <a href="@viewLink">@col</a>
+                        }
+                        else
+                        {
+                            @col
+                        }
+                    }
+                </td>
+                <td>@item.User</td>
+                <td>@(PersianDateUtils.GetPersianDateString(item.Time))</td>
+                <td>
+                    @{
+                        switch (item.ActivityType)
+                        {
+                            case EasyMongoNet.Model.ActivityType.Delete:
+                                <span class="text-danger">حذف</span>
+                                break;
+                            case EasyMongoNet.Model.ActivityType.Insert:
+                                <span class="text-info">ایجاد</span>
+                                break;
+                            case EasyMongoNet.Model.ActivityType.Update:
+                                <span class="text-success">بروز رسانی</span>
+                                break;
+                            default:
+                                throw new NotImplementedException();
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

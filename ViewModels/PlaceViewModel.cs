@@ -1,6 +1,7 @@
 ﻿using AliaaCommon;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TciDataLinks.Models;
 
 namespace TciDataLinks.ViewModels
@@ -58,7 +59,8 @@ namespace TciDataLinks.ViewModels
         public PlaceBase Building { get; set; }
         public PlaceBase Room { get; set; }
         public PlaceBase Rack { get; set; }
-        public IEnumerable<PlaceBase> SubItems { get; set; }
+        public IEnumerable<PlaceBase> SubItems { get; set; } = Enumerable.Empty<PlaceBase>();
+        public IEnumerable<NonNetworkItem> NonNetworkItems { get; set; } = Enumerable.Empty<NonNetworkItem>();
 
         public override string ToString()
         {

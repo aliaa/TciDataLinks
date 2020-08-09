@@ -131,22 +131,24 @@ namespace TciDataLinks.Controllers
                     var city = cities.First(c => c.Id == center.City);
                     model.Center = new PlaceBase(PlaceType.Center) { Id = objId, Name = center.Name };
                     model.City = new PlaceBase(PlaceType.City) { Id = city.Id, Name = city.Name };
-                    model.SubItems = db.Find<Building>(b => b.Parent == objId).SortBy(b => b.Name).ToEnumerable();
+                    model.SubItems = db.Find<Building>(b => b.Parent == objId).SortBy(b => b.Name).ToList();
                     break;
                 case PlaceType.Building:
                     model.Building = db.FindById<Building>(objId);
-                    model.SubItems = db.Find<Room>(r => r.Parent == objId).SortBy(r => r.Name).ToEnumerable();
+                    model.SubItems = db.Find<Room>(r => r.Parent == objId).SortBy(r => r.Name).ToList();
                     break;
                 case PlaceType.Room:
                     model.Room = db.FindById<Room>(objId);
-                    model.SubItems = db.Find<Rack>(r => r.Parent == objId).SortBy(r => r.Line).ThenBy(r => r.Index).ThenBy(r => r.Side).ToEnumerable();
+                    model.SubItems = db.Find<Rack>(r => r.Parent == objId).SortBy(r => r.Line).ThenBy(r => r.Index).ThenBy(r => r.Side).ToList();
+                    model.NonNetworkItems = db.Find<NonNetworkItem>(x => x.Place == objId).ToList();
                     break;
                 case PlaceType.Rack:
                     model.Rack = db.FindById<Rack>(objId);
                     model.SubItems = db.FindGetResults<Device>(d => d.Rack == objId)
                         .Select(d => new PlaceBase(PlaceType.Device) { Id = d.Id, Name = d.ToString(), Parent = objId })
                         .Concat(db.FindGetResults<Passive>(p => p.Rack == objId)
-                            .Select(p => new PlaceBase(PlaceType.Passive) { Id = p.Id, Name = p.Name, Parent = objId }));
+                            .Select(p => new PlaceBase(PlaceType.Passive) { Id = p.Id, Name = p.Name, Parent = objId })).ToList();
+                    model.NonNetworkItems = db.Find<NonNetworkItem>(x => x.Place == objId).ToList();
                     break;
                 case PlaceType.Device:
                     return RedirectToAction("Edit", "Device", new { id });
@@ -288,6 +290,31 @@ namespace TciDataLinks.Controllers
             else
                 throw new NotImplementedException();
             return RedirectToAction(nameof(Item), new { type, id });
+        }
+
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
+        [HttpPost]
+        public IActionResult NewNonNetworkItem([FromForm] ObjectId placeId, [FromForm] PlaceType placeType, 
+            [FromForm] string name, [FromForm] string type)
+        {
+            NonNetworkItem item = null;
+            if (placeType == PlaceType.Room)
+                item = new NonNetworkRoomItem { Name = name, Place = placeId, Type = Enum.Parse<NonNetworkRoomItem.NonNetworkRoomItemType>(type) };
+            else if (placeType == PlaceType.Rack)
+                item = new NonNetworkRackItem { Name = name, Place = placeId, Type = Enum.Parse<NonNetworkRackItem.NonNetworkRackItemType>(type) };
+
+            db.Save(item);
+            return RedirectToAction(nameof(Item), new { type = placeType.ToString(), id = placeId.ToString() });
+        }
+
+        [Authorize(nameof(Permission.EditPlacesAndDevices))]
+        public IActionResult DeleteNonNetworkItem(ObjectId id, bool isRack)
+        {
+            var item = db.FindById<NonNetworkItem>(id);
+            if (item == null)
+                return null;
+            db.DeleteOne(item);
+            return RedirectToAction(nameof(Item), new { id = item.Place.ToString(), type = isRack ? nameof(PlaceType.Rack) : nameof(PlaceType.Room) });
         }
     }
 }

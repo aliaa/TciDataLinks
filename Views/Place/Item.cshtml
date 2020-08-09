@@ -25,6 +25,17 @@
                asp-route-city="@Model.City.Id" asp-route-center="@Model.Center.Id" asp-route-building="@Model.Building.Id"
                asp-route-room="@Model.Room.Id" asp-route-rack="@Model.Rack.Id">رابط Passive جدید</a>
         }
+        @if (Model.Current.PlaceType == PlaceType.Room || Model.Rack != null)
+        {
+            <button id="btnNewNonNetworkItem" class="btn btn-info mx-2">دستگاه غیر شبکه ای جدید</button>
+        }
+        @if (!Model.SubItems.Any() && !Model.NonNetworkItems.Any() && Model.Type != PlaceType.Center)
+        {
+            <div class="text-center m-5">
+                <a asp-controller="Place" asp-action="Delete" class="btn btn-danger mx-2"
+                   asp-route-id="@Model.Current.Id.ToString()" asp-route-type="@Model.Type">حذف</a>
+            </div>
+        }
     </div>
 }
 
@@ -93,11 +104,21 @@
         }
     </div>
 }
-else if (Model.Type != PlaceType.Center)
+
+@if (Model.NonNetworkItems.Any())
 {
-    <div class="text-center m-5">
-        <a asp-action="Delete" asp-route-id="@Model.Current.Id.ToString()" asp-route-type="@Model.Type" class="btn btn-danger">حذف</a>
-    </div>
+    <h3 class="mt-5">دستگاه های غیر شبکه ای</h3>
+    <ol class="mt-4">
+        @foreach (var item in Model.NonNetworkItems)
+        {
+            <li>
+                
+                @item
+                <a asp-action="DeleteNonNetworkItem" asp-route-id="@item.Id" asp-route-isRack="@item.IsRackItem" 
+                   class="btn btn-outline-danger btn-sm mx-2">حذف</a>
+            </li>
+        }
+    </ol>
 }
 
 <div class="modal fade" id="newRackModal">
@@ -171,6 +192,49 @@ else if (Model.Type != PlaceType.Center)
     </div>
 </div>
 
+<div class="modal fade" id="newNonNetworkItem">
+    <div class="modal-dialog">
+        <form asp-action="NewNonNetworkItem">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-light">
+                    <h4 class="modal-title">دستگاه غیر شبکه ای جدید</h4>
+                    <button type="button" class="close text-light" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="PlaceId" value="@Model.Current.Id" />
+                    <input type="hidden" name="PlaceType" value="@Model.Current.PlaceType" />
+                    <div class="form-group">
+                        <label class="control-label">نام</label>
+                        <input name="Name" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">نوع</label>
+                        <select name="Type" class="form-control">
+                            @if (Model.Current.PlaceType == PlaceType.Room)
+                            {
+                                @foreach (var t in Utils.GetEnumValues<NonNetworkRoomItem.NonNetworkRoomItemType>())
+                                {
+                                    <option value="@t">@Utils.DisplayName(t)</option>
+                                }
+                            }
+                            else if (Model.Current.PlaceType == PlaceType.Rack)
+                            {
+                                @foreach (var t in Utils.GetEnumValues<NonNetworkRackItem.NonNetworkRackItemType>())
+                                {
+                                    <option value="@t">@Utils.DisplayName(t)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="btn btn-primary" value="ذخیره" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 @section Scripts {
     <script>
@@ -180,6 +244,9 @@ else if (Model.Type != PlaceType.Center)
 
         $("#btnRename").click(function () {
             $("#renameModal").modal();
+        });
+        $("#btnNewNonNetworkItem").click(function () {
+            $("#newNonNetworkItem").modal();
         });
     </script>
 }
