@@ -294,14 +294,20 @@ namespace TciDataLinks.Controllers
 
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
         [HttpPost]
-        public IActionResult NewNonNetworkItem([FromForm] ObjectId placeId, [FromForm] PlaceType placeType, 
-            [FromForm] string name, [FromForm] string type)
+        public IActionResult NewNonNetworkItem(ObjectId placeId, PlaceType placeType, 
+             string name, string type, int count)
         {
-            NonNetworkItem item = null;
+            NonNetworkItem item;
             if (placeType == PlaceType.Room)
-                item = new NonNetworkRoomItem { Name = name, Place = placeId, Type = Enum.Parse<NonNetworkRoomItem.NonNetworkRoomItemType>(type) };
+                item = new NonNetworkRoomItem { Type = Enum.Parse<NonNetworkRoomItem.NonNetworkRoomItemType>(type) };
             else if (placeType == PlaceType.Rack)
-                item = new NonNetworkRackItem { Name = name, Place = placeId, Type = Enum.Parse<NonNetworkRackItem.NonNetworkRackItemType>(type) };
+                item = new NonNetworkRackItem { Type = Enum.Parse<NonNetworkRackItem.NonNetworkRackItemType>(type) };
+            else
+                throw new NotImplementedException();
+
+            item.Place = placeId;
+            item.Name = name;
+            item.Count = count;
 
             db.Save(item);
             return RedirectToAction(nameof(Item), new { type = placeType.ToString(), id = placeId.ToString() });
