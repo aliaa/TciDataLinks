@@ -18,14 +18,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AliaaCommon\AliaaCommonStandard\AliaaCommonStandard.csproj" />
-    <ProjectReference Include="..\..\EasyMongoNet\EasyMongoNet.csproj" />
-    <ProjectReference Include="..\TciCommon\TciCommonStandard\TciCommonStandard.csproj" />
+    <Folder Include="wwwroot\lib\select2-bootstrap4-theme\" />
+    <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\lib\select2-bootstrap4-theme\" />
-    <Folder Include="wwwroot\img\" />
+    <ProjectReference Include="..\..\AliaaCommon\AliaaCommonStandard\AliaaCommonStandard.csproj" />
+    <ProjectReference Include="..\..\EasyMongoNet\Definitions\EasyMongoNet.Definitions.csproj" />
+    <ProjectReference Include="..\..\EasyMongoNet\Driver\EasyMongoNet.Driver.csproj" />
+    <ProjectReference Include="..\TciCommon\TciCommon.Models\TciCommon.Models.csproj" />
   </ItemGroup>
 
 
