@@ -242,20 +242,29 @@ namespace TciDataLinks.Controllers
         [HttpPost]
         public IActionResult Edit(ConnectionViewModel model)
         {
+            for (int i = 0; i < model.EndPoints.Count; i++)
+            {
+                if (model.EndPoints[i].Device == ObjectId.Empty)
+                {
+                    model.EndPoints.RemoveAt(i);
+                    i--;
+                    ModelState.Clear();
+                }
+            }
             if (!ModelState.IsValid || !PortsAreValid(model))
                 return View("Add", model);
             db.UpdateOne<Connection>(c => c.Id == model.Id, 
                 Builders<Connection>.Update.Set(c => c.CustomerId, model.CustomerId)
                     .Set(c => c.CustomerIcon, model.CustomerIcon));
             var endPointsId = new List<ObjectId>();
-            int i = 0;
+            int index = 0;
             foreach (var evm in model.EndPoints)
             {
                 var e = Mapper.Map<EndPoint>(evm);
                 if (e.Device == ObjectId.Empty)
                     continue;
                 e.PassiveConnections = e.PassiveConnections.Where(pc => pc.PatchPanel != ObjectId.Empty).ToList();
-                e.Index = i++;
+                e.Index = index++;
                 e.Connection = model.Id;
                 db.Save(e);
                 endPointsId.Add(e.Id);
