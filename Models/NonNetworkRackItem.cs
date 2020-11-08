@@ -22,7 +22,7 @@ namespace TciDataLinks.Models
 
         public override string ToString()
         {
-            return Utils.DisplayName(Type) + " \"" + Name + "\"  تعداد: " + Count ;
+            return DisplayUtils.DisplayName(Type) + " \"" + Name + "\"  تعداد: " + Count ;
         }
     }
 }

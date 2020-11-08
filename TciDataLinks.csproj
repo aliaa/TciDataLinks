@@ -23,7 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AliaaCommon\AliaaCommonStandard\AliaaCommonStandard.csproj" />
+    <ProjectReference Include="..\..\AliaaCommon\AliaaCommon.Models\AliaaCommon.Models.csproj" />
+    <ProjectReference Include="..\..\AliaaCommon\AliaaCommon.Server\AliaaCommon.Server.csproj" />
+    <ProjectReference Include="..\..\AliaaCommon\AliaaCommon\AliaaCommon.csproj" />
     <ProjectReference Include="..\..\EasyMongoNet\Definitions\EasyMongoNet.Definitions.csproj" />
     <ProjectReference Include="..\..\EasyMongoNet\Driver\EasyMongoNet.Driver.csproj" />
     <ProjectReference Include="..\TciCommon\TciCommon.Models\TciCommon.Models.csproj" />

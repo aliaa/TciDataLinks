@@ -67,9 +67,9 @@
         <div class="col-lg-3 col-sm-6 form-group">
             <label asp-for="SearchType" class="control-label"></label>
             <select asp-for="SearchType" class="form-control">
-                @foreach (var item in Utils.GetEnumValues<ConnectionSearchViewModel.EndPointSearchType>())
+                @foreach (var item in DisplayUtils.GetEnumValues<ConnectionSearchViewModel.EndPointSearchType>())
                 {
-                    <option value="@item">@Utils.DisplayName(item)</option>
+                    <option value="@item">@DisplayUtils.DisplayName(item)</option>
                 }
             </select>
         </div>
@@ -77,9 +77,9 @@
             <label asp-for="PortType" class="control-label"></label>
             <select asp-for="PortType" class="form-control">
                 <option>همه</option>
-                @foreach (var item in Utils.GetEnumValues<EndPoint.PortTypeEnum>())
+                @foreach (var item in DisplayUtils.GetEnumValues<EndPoint.PortTypeEnum>())
                 {
-                    <option value="@item">@Utils.DisplayName(item)</option>
+                    <option value="@item">@DisplayUtils.DisplayName(item)</option>
                 }
             </select>
         </div>
@@ -87,9 +87,9 @@
             <label asp-for="Module" class="control-label"></label>
             <select asp-for="Module" class="form-control">
                 <option>همه</option>
-                @foreach (var item in Utils.GetEnumValues<EndPoint.ModuleType>())
+                @foreach (var item in DisplayUtils.GetEnumValues<EndPoint.ModuleType>())
                 {
-                    <option value="@item">@Utils.DisplayName(item)</option>
+                    <option value="@item">@DisplayUtils.DisplayName(item)</option>
                 }
             </select>
         </div>
@@ -97,9 +97,9 @@
             <label asp-for="PatchCord" class="control-label"></label>
             <select asp-for="PatchCord" class="form-control">
                 <option>همه</option>
-                @foreach (var item in Utils.GetEnumValues<EndPoint.PatchCordType>())
+                @foreach (var item in DisplayUtils.GetEnumValues<EndPoint.PatchCordType>())
                 {
-                    <option value="@item">@Utils.DisplayName(item)</option>
+                    <option value="@item">@DisplayUtils.DisplayName(item)</option>
                 }
             </select>
         </div>
@@ -107,9 +107,9 @@
             <label asp-for="Connector" class="control-label"></label>
             <select asp-for="Connector" class="form-control">
                 <option>همه</option>
-                @foreach (var item in Utils.GetEnumValues<EndPoint.ConnectorType>())
+                @foreach (var item in DisplayUtils.GetEnumValues<EndPoint.ConnectorType>())
                 {
-                    <option value="@item">@Utils.DisplayName(item)</option>
+                    <option value="@item">@DisplayUtils.DisplayName(item)</option>
                 }
             </select>
         </div>
@@ -140,9 +140,9 @@
         <div class="col-lg-3 col-sm-6 form-group">
             <label asp-for="NetworkType" class="control-label"></label>
             <select asp-for="NetworkType" class="form-control">
-                @foreach (var item in Utils.GetEnumValues<ConnectionSearchViewModel.DeviceNetworkType>())
+                @foreach (var item in DisplayUtils.GetEnumValues<ConnectionSearchViewModel.DeviceNetworkType>())
                 {
-                    <option value="@item">@Utils.DisplayName(item)</option>
+                    <option value="@item">@DisplayUtils.DisplayName(item)</option>
                 }
             </select>
         </div>

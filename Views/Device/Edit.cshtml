@@ -71,9 +71,9 @@
         <div class="form-group col-lg-3 col-sm-6">
             <label asp-for="Type" class="control-label"></label>
             <select asp-for="Type" class="form-control">
-                @foreach (var t in Utils.GetEnumValues<Device.DeviceType>())
+                @foreach (var t in DisplayUtils.GetEnumValues<Device.DeviceType>())
                 {
-                <option value="@t">@Utils.DisplayName(t)</option>
+                <option value="@t">@DisplayUtils.DisplayName(t)</option>
                 }
             </select>
             <span asp-validation-for="Type" class="text-danger"></span>

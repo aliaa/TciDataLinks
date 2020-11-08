@@ -35,53 +35,53 @@
                 <div class="card-body collapse" id="endpoint_@(Model.Id)_@i">
                     <div class="row">
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(e => e.PortType)):</label>
-                            <span class="text-value">@Utils.DisplayName(Model.EndPoints[i].PortType)</span>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.PortType)):</label>
+                            <span class="text-value">@DisplayUtils.DisplayName(Model.EndPoints[i].PortType)</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(e => e.PortNumber)):</label>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.PortNumber)):</label>
                             <span class="text-value">@Model.EndPoints[i].PortNumber</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(p => p.TransmissionSystem)):</label>
-                            <span class="text-value">@Utils.DisplayName(Model.EndPoints[i].TransmissionSystem)</span>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(p => p.TransmissionSystem)):</label>
+                            <span class="text-value">@DisplayUtils.DisplayName(Model.EndPoints[i].TransmissionSystem)</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(e => e.Speed)):</label>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.Speed)):</label>
                             <span class="text-value" dir="ltr">@Model.EndPoints[i].Speed @Model.EndPoints[i].SpeedUnit</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(e => e.Module)):</label>
-                            <span class="text-value">@Utils.DisplayName(Model.EndPoints[i].Module)</span>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.Module)):</label>
+                            <span class="text-value">@DisplayUtils.DisplayName(Model.EndPoints[i].Module)</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(e => e.PatchCord)):</label>
-                            <span class="text-value">@Utils.DisplayName(Model.EndPoints[i].PatchCord)</span>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.PatchCord)):</label>
+                            <span class="text-value">@DisplayUtils.DisplayName(Model.EndPoints[i].PatchCord)</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(e => e.Connector)):</label>
-                            <span class="text-value">@Utils.DisplayName(Model.EndPoints[i].Connector)</span>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.Connector)):</label>
+                            <span class="text-value">@DisplayUtils.DisplayName(Model.EndPoints[i].Connector)</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(e => e.DistanceToNextPoint)):</label>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.DistanceToNextPoint)):</label>
                             <span class="text-value">@Model.EndPoints[i].DistanceToNextPoint</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(e => e.DataProtection)):</label>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.DataProtection)):</label>
                             <span class="text-value">@(Model.EndPoints[i].DataProtection ? "بلی": "خیر")</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(e => e.TransmissionProtection)):</label>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.TransmissionProtection)):</label>
                             <span class="text-value">@(Model.EndPoints[i].TransmissionProtection ? "بلی": "خیر")</span>
                         </div>
                         <div class="col-lg-3 col-sm-6">
-                            <label>@(Utils.DisplayName<EndPoint>(e => e.Incomplete)):</label>
+                            <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.Incomplete)):</label>
                             <span class="text-value">@(Model.EndPoints[i].Incomplete ? "بلی": "خیر")</span>
                         </div>
                         @if (!string.IsNullOrWhiteSpace(Model.EndPoints[i].Description))
                         {
                             <div class="col-lg-9 col-sm-12">
-                                <label>@(Utils.DisplayName<EndPoint>(e => e.Description)):</label>
+                                <label>@(DisplayUtils.DisplayName<EndPoint>(e => e.Description)):</label>
                                 <span class="text-value">@Model.EndPoints[i].Description</span>
                             </div>
                         }
@@ -103,15 +103,15 @@
                                 <div class="card-body" style="background-color: hsl(@hue , 40%, 77%); color: hsl(@hue , 80%, 22%);">
                                     <div class="row">
                                         <div class="col-lg-3 col-sm-6">
-                                            <label>@(Utils.DisplayName<PassiveConnectionViewModel>(p => p.PortNumber)):</label>
+                                            <label>@(DisplayUtils.DisplayName<PassiveConnectionViewModel>(p => p.PortNumber)):</label>
                                             <span class="text-value">@passive.PortNumber</span>
                                         </div>
                                         <div class="col-lg-3 col-sm-6">
-                                            <label>@(Utils.DisplayName<PassiveConnectionViewModel>(p => p.Connector)):</label>
-                                            <span class="text-value">@Utils.DisplayName(passive.Connector)</span>
+                                            <label>@(DisplayUtils.DisplayName<PassiveConnectionViewModel>(p => p.Connector)):</label>
+                                            <span class="text-value">@DisplayUtils.DisplayName(passive.Connector)</span>
                                         </div>
                                         <div class="col-lg-3 col-sm-6">
-                                            <label>@(Utils.DisplayName<PassiveConnectionViewModel>(p => p.DistanceToNextPoint)):</label>
+                                            <label>@(DisplayUtils.DisplayName<PassiveConnectionViewModel>(p => p.DistanceToNextPoint)):</label>
                                             <span class="text-value">@passive.DistanceToNextPoint</span>
                                         </div>
                                     </div>

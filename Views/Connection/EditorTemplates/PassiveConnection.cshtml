@@ -25,9 +25,9 @@
             <div class="form-group col-lg-3 col-sm-6">
                 <label asp-for="Connector" class="control-label"></label>
                 <select asp-for="Connector" class="form-control">
-                    @foreach (var item in Utils.GetEnumValues<EndPoint.ConnectorType>())
+                    @foreach (var item in DisplayUtils.GetEnumValues<EndPoint.ConnectorType>())
                     {
-                        <option value="@item">@Utils.DisplayName(item)</option>
+                        <option value="@item">@DisplayUtils.DisplayName(item)</option>
                     }
                 </select>
                 <span asp-validation-for="Connector" class="text-danger"></span>

@@ -20,9 +20,9 @@
             <div class="form-group col-lg-3 col-sm-6">
                 <label asp-for="PortType" class="control-label"></label>
                 <select asp-for="PortType" class="form-control" onchange="toggleEndPointPortType(@Model.Index)">
-                    @foreach (var item in Utils.GetEnumValues<EndPoint.PortTypeEnum>())
+                    @foreach (var item in DisplayUtils.GetEnumValues<EndPoint.PortTypeEnum>())
                     {
-                        <option value="@item">@Utils.DisplayName(item)</option>
+                        <option value="@item">@DisplayUtils.DisplayName(item)</option>
                     }
                 </select>
                 <span asp-validation-for="PortType" class="text-danger"></span>
@@ -35,9 +35,9 @@
             <div class="form-group col-lg-3 col-sm-6">
                 <label asp-for="TransmissionSystem" class="control-label"></label>
                 <select asp-for="TransmissionSystem" class="form-control">
-                    @foreach (var item in Utils.GetEnumValues<TransmissionSystemType>())
+                    @foreach (var item in DisplayUtils.GetEnumValues<TransmissionSystemType>())
                     {
-                        <option value="@item">@Utils.DisplayName(item)</option>
+                        <option value="@item">@DisplayUtils.DisplayName(item)</option>
                     }
                 </select>
                 <span asp-validation-for="TransmissionSystem" class="text-danger"></span>
@@ -60,9 +60,9 @@
             <div class="form-group col-lg-3 col-sm-6">
                 <label asp-for="Connector" class="control-label"></label>
                 <select asp-for="Connector" class="form-control">
-                    @foreach (var item in Utils.GetEnumValues<EndPoint.ConnectorType>())
+                    @foreach (var item in DisplayUtils.GetEnumValues<EndPoint.ConnectorType>())
                     {
-                        <option value="@item">@Utils.DisplayName(item)</option>
+                        <option value="@item">@DisplayUtils.DisplayName(item)</option>
                     }
                 </select>
                 <span asp-validation-for="Connector" class="text-danger"></span>
@@ -70,9 +70,9 @@
             <div class="form-group col-lg-3 col-sm-6" id="divModule_@Model.Index" style="display: @(Model.PortType == EndPoint.PortTypeEnum.Optical ? "unset" : "none")">
                 <label asp-for="Module" class="control-label"></label>
                 <select asp-for="Module" class="form-control">
-                    @foreach (var item in Utils.GetEnumValues<EndPoint.ModuleType>())
+                    @foreach (var item in DisplayUtils.GetEnumValues<EndPoint.ModuleType>())
                     {
-                        <option value="@item">@Utils.DisplayName(item)</option>
+                        <option value="@item">@DisplayUtils.DisplayName(item)</option>
                     }
                 </select>
                 <span asp-validation-for="Module" class="text-danger"></span>
@@ -80,9 +80,9 @@
             <div class="form-group col-lg-3 col-sm-6" id="divPatchCord_@Model.Index" style="display: @(Model.PortType == EndPoint.PortTypeEnum.Optical ? "unset" : "none")">
                 <label asp-for="PatchCord" class="control-label"></label>
                 <select asp-for="PatchCord" class="form-control">
-                    @foreach (var item in Utils.GetEnumValues<EndPoint.PatchCordType>())
+                    @foreach (var item in DisplayUtils.GetEnumValues<EndPoint.PatchCordType>())
                     {
-                        <option value="@item">@Utils.DisplayName(item)</option>
+                        <option value="@item">@DisplayUtils.DisplayName(item)</option>
                     }
                 </select>
                 <span asp-validation-for="PatchCord" class="text-danger"></span>
@@ -90,9 +90,9 @@
             <div class="form-group col-lg-3 col-sm-6" id="divWaveLength_@Model.Index" style="display: @(Model.PortType == EndPoint.PortTypeEnum.Optical ? "unset" : "none")">
                 <label asp-for="WaveLength" class="control-label"></label>
                 <select asp-for="WaveLength" class="form-control">
-                    @foreach (var item in Utils.GetEnumValues<EndPoint.WaveLengthEnum>())
+                    @foreach (var item in DisplayUtils.GetEnumValues<EndPoint.WaveLengthEnum>())
                     {
-                        <option value="@item">@Utils.DisplayName(item)</option>
+                        <option value="@item">@DisplayUtils.DisplayName(item)</option>
                     }
                 </select>
                 <span asp-validation-for="WaveLength" class="text-danger"></span>

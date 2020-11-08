@@ -26,7 +26,7 @@ namespace TciDataLinks.ViewModels
                 sb.Append("پچ پنل ");
             else if (passive.Type == Passive.PassiveTypeEnum.Transmissional)
                 sb.Append("تجهیز انتقال ")
-                    .Append(Utils.DisplayName(passive.TransmissionType))
+                    .Append(DisplayUtils.DisplayName(passive.TransmissionType))
                     .Append(" ");
             else
                 throw new NotImplementedException();

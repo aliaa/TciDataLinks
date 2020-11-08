@@ -64,7 +64,7 @@
 {
     <div class="row mt-5">
         <div class="col-lg-6">
-            <h3>@(Utils.DisplayName(Model.NextLevelType))های @Model.ToString() </h3>
+            <h3>@(DisplayUtils.DisplayName(Model.NextLevelType))های @Model.ToString() </h3>
             <ol class="mt-4">
                 @foreach (var item in Model.SubItems.OrderBy(x => x.Name))
                 {
@@ -81,7 +81,7 @@
                     {
                         <li>
                             <a asp-action="Item" asp-route-type="@Model.NextLevelType" asp-route-id="@item.Id.ToString()">
-                                @Utils.DisplayName(Model.NextLevelType) @item
+                                @DisplayUtils.DisplayName(Model.NextLevelType) @item
                             </a>
                         </li>
                     }
@@ -153,9 +153,9 @@
                     <div class="form-group">
                         <label class="control-label">نوع راک</label>
                         <select name="Type" class="form-control">
-                            @foreach (var t in Utils.GetEnumValues<Rack.RackType>())
+                            @foreach (var t in DisplayUtils.GetEnumValues<Rack.RackType>())
                             {
-                                <option value="t">@Utils.DisplayName(t)</option>
+                                <option value="t">@DisplayUtils.DisplayName(t)</option>
                             }
                         </select>
                     </div>
@@ -212,16 +212,16 @@
                         <select name="Type" class="form-control">
                             @if (Model.Current.PlaceType == PlaceType.Room)
                             {
-                                @foreach (var t in Utils.GetEnumValues<NonNetworkRoomItem.NonNetworkRoomItemType>())
+                                @foreach (var t in DisplayUtils.GetEnumValues<NonNetworkRoomItem.NonNetworkRoomItemType>())
                                 {
-                                    <option value="@t">@Utils.DisplayName(t)</option>
+                                    <option value="@t">@DisplayUtils.DisplayName(t)</option>
                                 }
                             }
                             else if (Model.Current.PlaceType == PlaceType.Rack)
                             {
-                                @foreach (var t in Utils.GetEnumValues<NonNetworkRackItem.NonNetworkRackItemType>())
+                                @foreach (var t in DisplayUtils.GetEnumValues<NonNetworkRackItem.NonNetworkRackItemType>())
                                 {
-                                    <option value="@t">@Utils.DisplayName(t)</option>
+                                    <option value="@t">@DisplayUtils.DisplayName(t)</option>
                                 }
                             }
                         </select>
