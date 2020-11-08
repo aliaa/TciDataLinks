@@ -5,13 +5,17 @@ VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TciDataLinks", "TciDataLinks.csproj", "{ECAADF71-03C9-4DF8-B15E-853F8EFD4CAE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AliaaCommonStandard", "..\..\AliaaCommon\AliaaCommonStandard\AliaaCommonStandard.csproj", "{F1AA2CBC-BE7E-4C5F-A295-35085B133E69}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TciCommon.Models", "..\TciCommon\TciCommon.Models\TciCommon.Models.csproj", "{6F95FC8C-BE21-4B45-99AC-989B21230B76}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyMongoNet.Definitions", "..\..\EasyMongoNet\Definitions\EasyMongoNet.Definitions.csproj", "{02FD4106-FDE5-4A25-A739-35864BB81DDB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EasyMongoNet.Driver", "..\..\EasyMongoNet\Driver\EasyMongoNet.Driver.csproj", "{AAA407F4-719C-4DE9-A85C-62E855B6326D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AliaaCommon", "..\..\AliaaCommon\AliaaCommon\AliaaCommon.csproj", "{F0B78ED0-F366-4081-A228-4D91A096780C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AliaaCommon.Models", "..\..\AliaaCommon\AliaaCommon.Models\AliaaCommon.Models.csproj", "{F4EC0DC4-EDFD-4B1F-A2CF-B48C0082851D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AliaaCommon.Server", "..\..\AliaaCommon\AliaaCommon.Server\AliaaCommon.Server.csproj", "{A32924D0-F17E-41BB-8A32-06959F102AAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +27,6 @@ Global
 		{ECAADF71-03C9-4DF8-B15E-853F8EFD4CAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECAADF71-03C9-4DF8-B15E-853F8EFD4CAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECAADF71-03C9-4DF8-B15E-853F8EFD4CAE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F1AA2CBC-BE7E-4C5F-A295-35085B133E69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1AA2CBC-BE7E-4C5F-A295-35085B133E69}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1AA2CBC-BE7E-4C5F-A295-35085B133E69}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1AA2CBC-BE7E-4C5F-A295-35085B133E69}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6F95FC8C-BE21-4B45-99AC-989B21230B76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6F95FC8C-BE21-4B45-99AC-989B21230B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F95FC8C-BE21-4B45-99AC-989B21230B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +39,18 @@ Global
 		{AAA407F4-719C-4DE9-A85C-62E855B6326D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAA407F4-719C-4DE9-A85C-62E855B6326D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAA407F4-719C-4DE9-A85C-62E855B6326D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0B78ED0-F366-4081-A228-4D91A096780C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0B78ED0-F366-4081-A228-4D91A096780C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0B78ED0-F366-4081-A228-4D91A096780C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0B78ED0-F366-4081-A228-4D91A096780C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4EC0DC4-EDFD-4B1F-A2CF-B48C0082851D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4EC0DC4-EDFD-4B1F-A2CF-B48C0082851D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4EC0DC4-EDFD-4B1F-A2CF-B48C0082851D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4EC0DC4-EDFD-4B1F-A2CF-B48C0082851D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A32924D0-F17E-41BB-8A32-06959F102AAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A32924D0-F17E-41BB-8A32-06959F102AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A32924D0-F17E-41BB-8A32-06959F102AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A32924D0-F17E-41BB-8A32-06959F102AAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
