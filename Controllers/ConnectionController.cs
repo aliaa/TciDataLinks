@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using OfficeOpenXml.ConditionalFormatting;
 using Omu.ValueInjecter;
 using System;
 using System.Collections.Generic;
@@ -46,11 +47,8 @@ namespace TciDataLinks.Controllers
                 var evm = Mapper.Map<EndPointViewModel>(e);
                 if (addMoreDetails)
                 {
-                    var rackId = db.FindById<Device>(evm.Device).Rack;
-                    var roomId = db.FindById<Rack>(rackId).Parent;
-                    var buildingId = db.FindById<Room>(roomId).Parent;
-                    var centerId = db.FindById<Building>(buildingId).Parent;
-                    evm.Center = centerId;
+                    var device = db.FindById<Device>(evm.Device);
+                    evm.Center = device.GetCenterId(db);
                 }
                 vm.EndPoints.Add(evm);
             }
@@ -180,10 +178,7 @@ namespace TciDataLinks.Controllers
             if (device != ObjectId.Empty)
             {
                 var deviceObj = db.FindById<Device>(device);
-                var rack = db.FindById<Rack>(deviceObj.Rack);
-                var room = db.FindById<Room>(rack.Parent);
-                var building = db.FindById<Building>(room.Parent);
-                vm.EndPoints.Add(new EndPointViewModel { Center = building.Parent, Device = device });
+                vm.EndPoints.Add(new EndPointViewModel { Center = deviceObj.GetCenterId(db), Device = device });
             }
             return View(vm);
         }

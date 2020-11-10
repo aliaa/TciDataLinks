@@ -52,7 +52,7 @@ namespace TciDataLinks.Controllers
                 Center = center,
                 Building = building.ToString(),
                 Room = room.ToString(),
-                Rack = rack
+                Place = rack
             };
             ViewBag.Cities = cities;
             if (city != ObjectId.Empty)
@@ -73,7 +73,7 @@ namespace TciDataLinks.Controllers
             if (rack != ObjectId.Empty)
             {
                 var rackObj = db.FindById<Rack>(rack);
-                model.Rack = rack;
+                model.Place = rack;
                 model.RackLine = rackObj.Line;
                 model.RackIndex = rackObj.Index;
                 model.RackSide = rackObj.Side;
@@ -116,7 +116,7 @@ namespace TciDataLinks.Controllers
             else
             {
                 rackId = rack.Id;
-                if (rack.Type != m.RackType && !db.Any<Device>(d => d.Rack == rack.Id))
+                if (rack.Type != m.RackType && !db.Any<Device>(d => d.Place == rack.Id))
                 {
                     rack.Type = m.RackType;
                     db.Save(rack);
@@ -124,7 +124,7 @@ namespace TciDataLinks.Controllers
             }
 
             var passive = Mapper.Map<Passive>(m);
-            passive.Rack = rackId;
+            passive.Place = rackId;
 
             db.Save(passive);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
@@ -135,7 +135,7 @@ namespace TciDataLinks.Controllers
         {
             var passive = db.FindById<Passive>(id);
             var model = Mapper.Map<PassiveViewModel>(passive);
-            var rack = db.FindById<Rack>(passive.Rack);
+            var rack = db.FindById<Rack>(passive.Place);
             model.RackType = rack.Type;
             model.RackLine = rack.Line;
             model.RackIndex = rack.Index;
@@ -195,7 +195,7 @@ namespace TciDataLinks.Controllers
             else
             {
                 rackId = rack.Id;
-                if (rack.Type != m.RackType && !db.Any<Device>(d => d.Rack == rackId))
+                if (rack.Type != m.RackType && !db.Any<Device>(d => d.Place == rackId))
                 {
                     rack.Type = m.RackType;
                     db.Save(rack);
@@ -204,7 +204,7 @@ namespace TciDataLinks.Controllers
 
             var passive = db.FindById<Passive>(m.Id);
             passive.InjectFrom(m);
-            passive.Rack = rackId;
+            passive.Place = rackId;
             db.Save(passive);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
@@ -214,7 +214,7 @@ namespace TciDataLinks.Controllers
             var pp = db.FindById<Passive>(id);
             if (!db.Any<EndPoint>(e => e.PassiveConnections.Any(p => p.PatchPanel == id)))
                 db.DeleteOne<Passive>(id);
-            return RedirectToAction("Item", "Place", new { type = "Rack", id = pp.Rack.ToString() });
+            return RedirectToAction("Item", "Place", new { type = "Rack", id = pp.Place.ToString() });
         }
     }
 }

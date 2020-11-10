@@ -119,7 +119,7 @@ namespace TciDataLinks.Controllers
                         };
                         graph.AddNode(rackNode);
 
-                        var filter = Builders<Device>.Filter.Eq(d => d.Rack, rack.Id);
+                        var filter = Builders<Device>.Filter.Eq(d => d.Place, rack.Id);
                         if (networkType != null)
                             filter = Builders<Device>.Filter.And(filter, Builders<Device>.Filter.Eq(d => d.Network, networkType));
                         foreach (var device in db.Find(filter).ToEnumerable())
@@ -133,7 +133,7 @@ namespace TciDataLinks.Controllers
                             };
                             graph.AddNode(deviceNode);
                         }
-                        foreach (var pp in db.FindGetResults<Passive>(p => p.Rack == rack.Id))
+                        foreach (var pp in db.FindGetResults<Passive>(p => p.Place == rack.Id))
                         {
                             var ppNode = new GraphNode
                             {
@@ -265,12 +265,12 @@ namespace TciDataLinks.Controllers
             if (graph.ContainsNodeKey(deviceKey))
                 return;
 
-            var rackKey = "Rack_" + device.Rack;
+            var rackKey = "Rack_" + device.Place;
             graph.AddNode(new GraphNode { key = deviceKey, text = device.ToString(), group = rackKey });
             if (graph.ContainsNodeKey(rackKey))
                 return;
 
-            var rack = db.FindById<Rack>(device.Rack);
+            var rack = db.FindById<Rack>(device.Place);
             var roomKey = "Room_" + rack.Parent;
             graph.AddNode(new GraphNode { key = rackKey, text = rack.ToString(), group = roomKey, isGroup = true });
             if (graph.ContainsNodeKey(roomKey))

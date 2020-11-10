@@ -8,6 +8,12 @@ namespace TciDataLinks.ViewModels
     {
         public ObjectId Id { get; set; }
 
+        [Display(Name = "نوع محل نصب")]
+        public BaseDevice.DevicePlaceType PlaceType { get; set; }
+
+        [Display(Name = "محل نصب")]
+        public ObjectId Place { get; set; }
+
         [Required(ErrorMessage = "انتخاب شهر الزامی می باشد!")]
         [Display(Name = "شهر")]
         public ObjectId City { get; set; }
@@ -37,7 +43,5 @@ namespace TciDataLinks.ViewModels
 
         [Display(Name = "شماره ردیف داخل راک")]
         public int RackRow { get; set; }
-
-        public ObjectId Rack { get; set; }
     }
 }

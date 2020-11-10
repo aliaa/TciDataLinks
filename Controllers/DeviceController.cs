@@ -57,7 +57,7 @@ namespace TciDataLinks.Controllers
                 Center = center,
                 Building = building.ToString(),
                 Room = room.ToString(),
-                Rack = rack
+                Place = rack
             };
             ViewBag.Cities = cities;
             if (city != ObjectId.Empty)
@@ -78,7 +78,7 @@ namespace TciDataLinks.Controllers
             if (rack != ObjectId.Empty)
             {
                 var rackObj = db.FindById<Rack>(rack);
-                model.Rack = rack;
+                model.Place = rack;
                 model.RackLine = rackObj.Line;
                 model.RackIndex = rackObj.Index;
                 model.RackSide = rackObj.Side;
@@ -120,7 +120,7 @@ namespace TciDataLinks.Controllers
             }
 
             var device = Mapper.Map<Device>(m);
-            device.Rack = rackId;
+            device.Place = rackId;
 
             db.Save(device);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
@@ -131,7 +131,7 @@ namespace TciDataLinks.Controllers
         {
             var device = db.FindById<Device>(id);
             var model = Mapper.Map<DeviceViewModel>(device);
-            var rack = db.FindById<Rack>(device.Rack);
+            var rack = db.FindById<Rack>(device.Place);
             model.RackLine = rack.Line;
             model.RackIndex = rack.Index;
             model.RackSide = rack.Side;
@@ -186,7 +186,7 @@ namespace TciDataLinks.Controllers
             }
             var device = db.FindById<Device>(m.Id);
             device.InjectFrom(m);
-            device.Rack = rackId;
+            device.Place = rackId;
             db.Save(device);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
@@ -202,7 +202,7 @@ namespace TciDataLinks.Controllers
         public IEnumerable<Device> FindDevices(ObjectId parentId, PlaceType parentType)
         {
             if (parentType == PlaceType.Rack)
-                return db.FindGetResults<Device>(d => d.Rack == parentId);
+                return db.FindGetResults<Device>(d => d.Place == parentId);
             else
             {
                 List<ObjectId> racks;
@@ -228,7 +228,7 @@ namespace TciDataLinks.Controllers
                 }
                 else
                     throw new NotImplementedException();
-                return db.FindGetResults<Device>(d => racks.Contains(d.Rack));
+                return db.FindGetResults<Device>(d => racks.Contains(d.Place));
             }
         }
 
@@ -237,7 +237,7 @@ namespace TciDataLinks.Controllers
             var device = db.FindById<Device>(id);
             if (!db.Any<EndPoint>(e => e.Device == id))
                 db.DeleteOne<Device>(id);
-            return RedirectToAction("Item", "Place", new { type = "Rack", id = device.Rack.ToString() });
+            return RedirectToAction("Item", "Place", new { type = "Rack", id = device.Place.ToString() });
         }
     }
 }

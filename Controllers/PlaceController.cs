@@ -144,9 +144,9 @@ namespace TciDataLinks.Controllers
                     break;
                 case PlaceType.Rack:
                     model.Rack = db.FindById<Rack>(objId);
-                    model.SubItems = db.FindGetResults<Device>(d => d.Rack == objId)
+                    model.SubItems = db.FindGetResults<Device>(d => d.Place == objId)
                         .Select(d => new PlaceBase(PlaceType.Device) { Id = d.Id, Name = d.ToString(), Parent = objId })
-                        .Concat(db.FindGetResults<Passive>(p => p.Rack == objId)
+                        .Concat(db.FindGetResults<Passive>(p => p.Place == objId)
                             .Select(p => new PlaceBase(PlaceType.Passive) { Id = p.Id, Name = p.Name, Parent = objId })).ToList();
                     model.NonNetworkItems = db.Find<NonNetworkItem>(x => x.Place == objId).ToList();
                     break;
@@ -188,7 +188,7 @@ namespace TciDataLinks.Controllers
                         deleted = db.DeleteOne<Room>(objId).DeletedCount > 0;
                     break;
                 case PlaceType.Rack:
-                    if (!db.Any<Device>(d => d.Rack == objId) && !db.Any<Passive>(p => p.Rack == objId))
+                    if (!db.Any<Device>(d => d.Place == objId) && !db.Any<Passive>(p => p.Place == objId))
                         deleted = db.DeleteOne<Rack>(objId).DeletedCount > 0;
                     break;
                 default:
@@ -253,7 +253,7 @@ namespace TciDataLinks.Controllers
         {
             if (ObjectId.TryParse(rack, out ObjectId rackId))
             {
-                var devices = db.FindGetResults<Device>(d => d.Rack == rackId)
+                var devices = db.FindGetResults<Device>(d => d.Place == rackId)
                     .Select(d => new { id = d.Id.ToString(), text = d.ToString() });
                 return Json(devices);
             }
@@ -264,9 +264,20 @@ namespace TciDataLinks.Controllers
         {
             if (ObjectId.TryParse(rack, out ObjectId rackId))
             {
-                var passives = db.FindGetResults<Passive>(p => p.Rack == rackId)
+                var passives = db.FindGetResults<Passive>(p => p.Place == rackId)
                     .Select(p => new { id = p.Id.ToString(), text = p.ToString() });
                 return Json(passives);
+            }
+            return Json(Enumerable.Empty<object>());
+        }
+
+        public IActionResult Kafus(string center)
+        {
+            if (ObjectId.TryParse(center, out ObjectId centerId))
+            {
+                var kafus = db.FindGetResults<Kafu>(k => k.CommCenter == centerId)
+                    .Select(k => new { id = k.Id.ToString(), text = k.Name });
+                return Json(kafus);
             }
             return Json(Enumerable.Empty<object>());
         }

@@ -16,7 +16,7 @@ namespace TciDataLinks.ViewModels
         public string GetPlaceDisplayName(IReadOnlyDbContext db)
         {
             var passive = db.FindById<Passive>(PatchPanel);
-            var rack = db.FindById<Rack>(passive.Rack);
+            var rack = db.FindById<Rack>(passive.Place);
             var room = db.FindById<Room>(rack.Parent);
 
             StringBuilder sb = new StringBuilder();
