@@ -103,9 +103,13 @@ namespace TciDataLinks.Models
             _1550nm120k,
         }
 
-        public ObjectId Connection { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Connection { get; set; }
+        
         public int Index { get; set; }
-        public ObjectId Device { get; set; }
+
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Device { get; set; }
 
         public List<PassiveConnection> PassiveConnections { get; set; } = new List<PassiveConnection>();
 

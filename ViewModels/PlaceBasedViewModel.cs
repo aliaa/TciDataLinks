@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
 using TciDataLinks.Models;
 
@@ -6,28 +7,34 @@ namespace TciDataLinks.ViewModels
 {
     public abstract class PlaceBasedViewModel
     {
-        public ObjectId Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
         [Display(Name = "نوع محل نصب")]
         public BaseDevice.DevicePlaceType PlaceType { get; set; }
 
         [Display(Name = "محل نصب")]
-        public ObjectId Place { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Place { get; set; }
 
         [Required(ErrorMessage = "انتخاب شهر الزامی می باشد!")]
         [Display(Name = "شهر")]
-        public ObjectId City { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string City { get; set; }
 
         [Required(ErrorMessage = "انتخاب مرکز الزامی می باشد!")]
         [Display(Name = "مرکز")]
-        public ObjectId Center { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Center { get; set; }
 
         [Required(ErrorMessage = "نام ساختمان الزامی می باشد!")]
         [Display(Name = "ساختمان")]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string Building { get; set; }
 
         [Required(ErrorMessage = "نام اتاق الزامی می باشد!")]
         [Display(Name = "اتاق")]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string Room { get; set; }
 
         [Required(ErrorMessage = "ردیف راک الزامی میباشد!")]

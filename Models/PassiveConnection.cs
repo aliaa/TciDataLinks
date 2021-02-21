@@ -9,7 +9,8 @@ namespace TciDataLinks.Models
     public class PassiveConnection
     {
         [Display(Name = "رابط Passive")]
-        public ObjectId PatchPanel { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string PatchPanel { get; set; }
 
         [Required(ErrorMessage = "شماره پورت اجباریست")]
         //[Remote(nameof(ConnectionController.PassivePortIsValid), "Connection", AdditionalFields = nameof(PatchPanel) + ",EndPointId", ErrorMessage = "شماره پورت در این پچ پنل قبلا استفاده شده است!")]

@@ -26,7 +26,8 @@ namespace TciDataLinks.Models
     [CollectionIndex(new string[] { nameof(Parent) })]
     public class PlaceBase : MongoEntity
     {
-        public ObjectId Parent { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Parent { get; set; }
         public virtual string Name { get; set; }
 
         [BsonIgnore]

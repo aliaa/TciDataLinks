@@ -1,11 +1,13 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace TciDataLinks.ViewModels
 {
     public class EditUserViewModel : BaseUserViewModel
     {
-        public ObjectId Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
         [MinLength(6, ErrorMessage = "رمز عبور بایستی حداقل 6 کاراکتر باشد")]
         [Display(Name = "رمز عبور")]

@@ -119,7 +119,6 @@ namespace TciDataLinks.Controllers
 
         public IActionResult Item(string type, string id)
         {
-            var objId = ObjectId.Parse(id);
             var model = new PlaceViewModel
             {
                 Type = (PlaceType)Enum.Parse(typeof(PlaceType), type)
@@ -127,28 +126,28 @@ namespace TciDataLinks.Controllers
             switch (model.Type)
             {
                 case PlaceType.Center:
-                    var center = db.FindById<CommCenter>(objId);
+                    var center = db.FindById<CommCenter>(id);
                     var city = cities.First(c => c.Id == center.City);
-                    model.Center = new PlaceBase(PlaceType.Center) { Id = objId, Name = center.Name };
+                    model.Center = new PlaceBase(PlaceType.Center) { Id = id, Name = center.Name };
                     model.City = new PlaceBase(PlaceType.City) { Id = city.Id, Name = city.Name };
-                    model.SubItems = db.Find<Building>(b => b.Parent == objId).SortBy(b => b.Name).ToList();
+                    model.SubItems = db.Find<Building>(b => b.Parent == id).SortBy(b => b.Name).ToList();
                     break;
                 case PlaceType.Building:
-                    model.Building = db.FindById<Building>(objId);
-                    model.SubItems = db.Find<Room>(r => r.Parent == objId).SortBy(r => r.Name).ToList();
+                    model.Building = db.FindById<Building>(id);
+                    model.SubItems = db.Find<Room>(r => r.Parent == id).SortBy(r => r.Name).ToList();
                     break;
                 case PlaceType.Room:
-                    model.Room = db.FindById<Room>(objId);
-                    model.SubItems = db.Find<Rack>(r => r.Parent == objId).SortBy(r => r.Line).ThenBy(r => r.Index).ThenBy(r => r.Side).ToList();
-                    model.NonNetworkItems = db.Find<NonNetworkItem>(x => x.Place == objId).ToList();
+                    model.Room = db.FindById<Room>(id);
+                    model.SubItems = db.Find<Rack>(r => r.Parent == id).SortBy(r => r.Line).ThenBy(r => r.Index).ThenBy(r => r.Side).ToList();
+                    model.NonNetworkItems = db.Find<NonNetworkItem>(x => x.Place == id).ToList();
                     break;
                 case PlaceType.Rack:
-                    model.Rack = db.FindById<Rack>(objId);
-                    model.SubItems = db.FindGetResults<Device>(d => d.Place == objId)
-                        .Select(d => new PlaceBase(PlaceType.Device) { Id = d.Id, Name = d.ToString(), Parent = objId })
-                        .Concat(db.FindGetResults<Passive>(p => p.Place == objId)
-                            .Select(p => new PlaceBase(PlaceType.Passive) { Id = p.Id, Name = p.Name, Parent = objId })).ToList();
-                    model.NonNetworkItems = db.Find<NonNetworkItem>(x => x.Place == objId).ToList();
+                    model.Rack = db.FindById<Rack>(id);
+                    model.SubItems = db.FindGetResults<Device>(d => d.Place == id)
+                        .Select(d => new PlaceBase(PlaceType.Device) { Id = d.Id, Name = d.ToString(), Parent = id })
+                        .Concat(db.FindGetResults<Passive>(p => p.Place == id)
+                            .Select(p => new PlaceBase(PlaceType.Passive) { Id = p.Id, Name = p.Name, Parent = id })).ToList();
+                    model.NonNetworkItems = db.Find<NonNetworkItem>(x => x.Place == id).ToList();
                     break;
                 case PlaceType.Device:
                     return RedirectToAction("Edit", "Device", new { id });
@@ -174,22 +173,21 @@ namespace TciDataLinks.Controllers
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
         public IActionResult Delete(string type, string id)
         {
-            var objId = ObjectId.Parse(id);
             var t = (PlaceType)Enum.Parse(typeof(PlaceType), type);
             bool deleted = false;
             switch (t)
             {
                 case PlaceType.Building:
-                    if (!db.Any<Room>(r => r.Parent == objId))
-                        deleted = db.DeleteOne<Building>(objId).DeletedCount > 0;
+                    if (!db.Any<Room>(r => r.Parent == id))
+                        deleted = db.DeleteOne<Building>(id).DeletedCount > 0;
                     break;
                 case PlaceType.Room:
-                    if (!db.Any<Rack>(r => r.Parent == objId))
-                        deleted = db.DeleteOne<Room>(objId).DeletedCount > 0;
+                    if (!db.Any<Rack>(r => r.Parent == id))
+                        deleted = db.DeleteOne<Room>(id).DeletedCount > 0;
                     break;
                 case PlaceType.Rack:
-                    if (!db.Any<Device>(d => d.Place == objId) && !db.Any<Passive>(p => p.Place == objId))
-                        deleted = db.DeleteOne<Rack>(objId).DeletedCount > 0;
+                    if (!db.Any<Device>(d => d.Place == id) && !db.Any<Passive>(p => p.Place == id))
+                        deleted = db.DeleteOne<Rack>(id).DeletedCount > 0;
                     break;
                 default:
                     throw new NotImplementedException();
@@ -201,7 +199,7 @@ namespace TciDataLinks.Controllers
 
         public IActionResult Centers(string city, bool onlyUsed = false)
         {
-            var centers = db.Find<CommCenter>(c => c.City == ObjectId.Parse(city))
+            var centers = db.Find<CommCenter>(c => c.City == city)
                 .Project(c => new { c.Id, c.Name })
                 .SortBy(c => c.Name).ToEnumerable()
                 .Select(c => new { c.Id, c.Name });
@@ -218,68 +216,44 @@ namespace TciDataLinks.Controllers
 
         public IActionResult Buildings(string center)
         {
-            if (ObjectId.TryParse(center, out ObjectId id))
-            {
-                var buildings = db.FindGetResults<Building>(b => b.Parent == id)
+            var buildings = db.FindGetResults<Building>(b => b.Parent == center)
                     .Select(r => new { id = r.Id.ToString(), text = r.ToString() });
-                return Json(buildings);
-            }
-            return Json(Enumerable.Empty<object>());
+            return Json(buildings);
         }
 
         public IActionResult Rooms(string building)
         {
-            if (ObjectId.TryParse(building, out ObjectId buildingId))
-            {
-                var rooms = db.FindGetResults<Room>(r => r.Parent == buildingId)
+            var rooms = db.FindGetResults<Room>(r => r.Parent == building)
                     .Select(r => new { id = r.Id.ToString(), text = r.ToString() });
-                return Json(rooms);
-            }
-            return Json(Enumerable.Empty<object>());
+            return Json(rooms);
         }
 
         public IActionResult Racks(string room)
         {
-            if (ObjectId.TryParse(room, out ObjectId roomId))
-            {
-                var racks = db.FindGetResults<Rack>(r => r.Parent == roomId)
+            var racks = db.FindGetResults<Rack>(r => r.Parent == room)
                     .Select(r => new { id = r.Id.ToString(), text = r.ToString() });
-                return Json(racks);
-            }
-            return Json(Enumerable.Empty<object>());
+            return Json(racks);
         }
 
         public IActionResult Devices(string rack)
         {
-            if (ObjectId.TryParse(rack, out ObjectId rackId))
-            {
-                var devices = db.FindGetResults<Device>(d => d.Place == rackId)
+            var devices = db.FindGetResults<Device>(d => d.Place == rack)
                     .Select(d => new { id = d.Id.ToString(), text = d.ToString() });
-                return Json(devices);
-            }
-            return Json(Enumerable.Empty<object>());
+            return Json(devices);
         }
 
         public IActionResult Passives(string rack)
         {
-            if (ObjectId.TryParse(rack, out ObjectId rackId))
-            {
-                var passives = db.FindGetResults<Passive>(p => p.Place == rackId)
+            var passives = db.FindGetResults<Passive>(p => p.Place == rack)
                     .Select(p => new { id = p.Id.ToString(), text = p.ToString() });
-                return Json(passives);
-            }
-            return Json(Enumerable.Empty<object>());
+            return Json(passives);
         }
 
         public IActionResult Kafus(string center)
         {
-            if (ObjectId.TryParse(center, out ObjectId centerId))
-            {
-                var kafus = db.FindGetResults<Kafu>(k => k.CommCenter == centerId)
+            var kafus = db.FindGetResults<Kafu>(k => k.CommCenter == center)
                     .Select(k => new { id = k.Id.ToString(), text = k.Name });
-                return Json(kafus);
-            }
-            return Json(Enumerable.Empty<object>());
+            return Json(kafus);
         }
 
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
@@ -292,7 +266,7 @@ namespace TciDataLinks.Controllers
 
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
         [HttpPost]
-        public IActionResult Rename([FromForm] ObjectId id, [FromForm] PlaceType type, [FromForm] string name)
+        public IActionResult Rename([FromForm] string id, [FromForm] PlaceType type, [FromForm] string name)
         {
             if (type == PlaceType.Building)
                 db.UpdateOne<Building>(b => b.Id == id, Builders<Building>.Update.Set(b => b.Name, name));
@@ -305,7 +279,7 @@ namespace TciDataLinks.Controllers
 
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
         [HttpPost]
-        public IActionResult NewNonNetworkItem(ObjectId placeId, PlaceType placeType, 
+        public IActionResult NewNonNetworkItem(string placeId, PlaceType placeType, 
              string name, string type, int count)
         {
             NonNetworkItem item;
@@ -325,7 +299,7 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
-        public IActionResult DeleteNonNetworkItem(ObjectId id, bool isRack)
+        public IActionResult DeleteNonNetworkItem(string id, bool isRack)
         {
             var item = db.FindById<NonNetworkItem>(id);
             if (item == null)

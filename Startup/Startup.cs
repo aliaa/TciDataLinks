@@ -67,7 +67,6 @@ namespace TciDataLinks
                 .AddNewtonsoftJson(
                     options =>
                     {
-                        options.SerializerSettings.Converters.Add(new ObjectIdJsonConverter());
                         options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                         // Maintain property names during serialization. See:
                         // https://github.com/aspnet/Announcements/issues/194
@@ -82,7 +81,7 @@ namespace TciDataLinks
             services.AddSingleton(settings);
 
             var db = services.AddMongDbContext(Configuration);
-            var cities = db.FindGetResults<City>(c => c.Province == ObjectId.Parse(settings.ProvinceId));
+            var cities = db.FindGetResults<City>(c => c.Province == settings.ProvinceId);
             services.AddSingleton(cities);
 
             services.Configure<IISServerOptions>(options =>

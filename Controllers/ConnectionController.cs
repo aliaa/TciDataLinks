@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using OfficeOpenXml.ConditionalFormatting;
 using Omu.ValueInjecter;
 using System;
 using System.Collections.Generic;
@@ -27,7 +26,7 @@ namespace TciDataLinks.Controllers
             this.deviceController = deviceController;
         }
 
-        public IActionResult Item(ObjectId id)
+        public IActionResult Item(string id)
         {
             var conn = db.FindById<Connection>(id);
             var vm = ConnectionToViewModel(conn);
@@ -37,7 +36,7 @@ namespace TciDataLinks.Controllers
         private ConnectionViewModel ConnectionToViewModel(Connection c, bool addMoreDetails = false)
         {
             var vm = Mapper.Map<ConnectionViewModel>(c);
-            if (c.CustomerId != ObjectId.Empty)
+            if (c.CustomerId != null)
             {
                 vm.Customer = db.FindById<Customer>(c.CustomerId);
                 vm.CustomerIcon = c.CustomerIcon;
@@ -86,7 +85,7 @@ namespace TciDataLinks.Controllers
         public IActionResult Go(int linkNumber)
         {
             var id = db.Find<Connection>(c => c.IdInt == linkNumber).Project(c => c.Id).FirstOrDefault();
-            if (id != ObjectId.Empty)
+            if (id != null)
                 return RedirectToAction(nameof(Item), new { id });
             return RedirectToAction(nameof(Index));
         }
@@ -96,23 +95,38 @@ namespace TciDataLinks.Controllers
         [HttpPost]
         public IActionResult Index(ConnectionSearchViewModel model)
         {
-            List<ObjectId> devices;
-            if (ObjectId.TryParse(model.Device, out ObjectId deviceId))
-                devices = new List<ObjectId> { deviceId };
+            List<string> devices;
+            if (model.Device != null)
+                devices = new List<string> { model.Device };
             else
             {
-                ObjectId parentId;
+                string parentId;
                 PlaceType parentType;
-                if (ObjectId.TryParse(model.Rack, out parentId))
+                if (model.Rack != null)
+                {
                     parentType = PlaceType.Rack;
-                else if (ObjectId.TryParse(model.Room, out parentId))
+                    parentId = model.Rack;
+                }
+                else if (model.Room != null)
+                {
                     parentType = PlaceType.Room;
-                else if (ObjectId.TryParse(model.Building, out parentId))
+                    parentId = model.Rack;
+                }
+                else if (model.Building != null)
+                {
                     parentType = PlaceType.Building;
-                else if (ObjectId.TryParse(model.Center, out parentId))
+                    parentId = model.Rack;
+                }
+                else if (model.Center != null)
+                {
                     parentType = PlaceType.Center;
-                else if (ObjectId.TryParse(model.City, out parentId))
+                    parentId = model.Rack;
+                }
+                else if (model.City != null)
+                {
                     parentType = PlaceType.City;
+                    parentId = model.Rack;
+                }
                 else
                     throw new NotImplementedException();
                 devices = deviceController.FindDevices(parentId, parentType).Select(d => d.Id).ToList();
@@ -172,10 +186,10 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditConnections))]
-        public IActionResult Add(ObjectId device)
+        public IActionResult Add(string device)
         {
             var vm = new ConnectionViewModel();
-            if (device != ObjectId.Empty)
+            if (device != null)
             {
                 var deviceObj = db.FindById<Device>(device);
                 vm.EndPoints.Add(new EndPointViewModel { Center = deviceObj.GetCenterId(db), Device = device });
@@ -225,7 +239,7 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditConnections))]
-        public IActionResult Edit(ObjectId id)
+        public IActionResult Edit(string id)
         {
             var c = db.FindById<Connection>(id);
             var vm = ConnectionToViewModel(c, addMoreDetails: true);
@@ -239,7 +253,7 @@ namespace TciDataLinks.Controllers
         {
             for (int i = 0; i < model.EndPoints.Count; i++)
             {
-                if (model.EndPoints[i].Device == ObjectId.Empty)
+                if (model.EndPoints[i].Device == null)
                 {
                     model.EndPoints.RemoveAt(i);
                     i--;
@@ -251,14 +265,14 @@ namespace TciDataLinks.Controllers
             db.UpdateOne<Connection>(c => c.Id == model.Id, 
                 Builders<Connection>.Update.Set(c => c.CustomerId, model.CustomerId)
                     .Set(c => c.CustomerIcon, model.CustomerIcon));
-            var endPointsId = new List<ObjectId>();
+            var endPointsId = new List<string>();
             int index = 0;
             foreach (var evm in model.EndPoints)
             {
                 var e = Mapper.Map<EndPoint>(evm);
-                if (e.Device == ObjectId.Empty)
+                if (e.Device == null)
                     continue;
-                e.PassiveConnections = e.PassiveConnections.Where(pc => pc.PatchPanel != ObjectId.Empty).ToList();
+                e.PassiveConnections = e.PassiveConnections.Where(pc => pc.PatchPanel != null).ToList();
                 e.Index = index++;
                 e.Connection = model.Id;
                 db.Save(e);
@@ -273,7 +287,7 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditConnections))]
-        public IActionResult AddEndPoint(int index, ObjectId center, ObjectId device)
+        public IActionResult AddEndPoint(int index, string center, string device)
         {
             return GetEditorTemplatePartialView<EndPoint>(new EndPointViewModel
             {
@@ -284,7 +298,7 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditConnections))]
-        public IActionResult AddPassiveConnection(ObjectId endpointId, int endPointIndex, int index, ObjectId passive)
+        public IActionResult AddPassiveConnection(string endpointId, int endPointIndex, int index, string passive)
         {
             return GetEditorTemplatePartialView<PassiveConnection>(new PassiveConnectionViewModel
             {
@@ -296,7 +310,7 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditConnections))]
-        public IActionResult Delete(ObjectId id)
+        public IActionResult Delete(string id)
         {
             db.DeleteMany<EndPoint>(e => e.Connection == id);
             db.DeleteOne<Connection>(c => c.Id == id);
@@ -319,25 +333,25 @@ namespace TciDataLinks.Controllers
             return Json(new { results });
         }
 
-        private bool PortAlreadyUsed(ObjectId device, ObjectId currentEndPoint, string portNumber)
+        private bool PortAlreadyUsed(string device, string currentEndPoint, string portNumber)
         {
             return db.Any<EndPoint>(e => e.Device == device && e.PortNumber == portNumber && e.Id != currentEndPoint);
         }
 
-        private bool PassivePortAlreadyUsed(ObjectId endPointId, string portNumber, ObjectId patchPanel)
+        private bool PassivePortAlreadyUsed(string endPointId, string portNumber, string patchPanel)
         {
             return db.Any<EndPoint>(e => e.Id != endPointId &&
                 e.PassiveConnections.Any(p => p.PatchPanel == patchPanel && p.PortNumber == portNumber));
         }
 
         [AcceptVerbs("GET", "POST")]
-        public IActionResult PortNumberIsValid(ObjectId device, ObjectId id, string portNumber)
+        public IActionResult PortNumberIsValid(string device, string id, string portNumber)
         {
             return Json(!PortAlreadyUsed(device, id, portNumber));
         }
 
         [AcceptVerbs("GET", "POST")]
-        public IActionResult PassivePortIsValid(ObjectId endPointId, string portNumber, ObjectId patchPanel)
+        public IActionResult PassivePortIsValid(string endPointId, string portNumber, string patchPanel)
         {
             return Json(!PassivePortAlreadyUsed(endPointId, portNumber, patchPanel));
         }

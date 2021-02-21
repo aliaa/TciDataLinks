@@ -59,7 +59,7 @@ namespace TciDataLinks.Models
     [CollectionIndex(new string[] { nameof(Center), nameof(Key) }, Unique = true)]
     public class NodeLocationWithKey : MongoEntity
     {
-        public ObjectId Center { get; set; }
+        public string Center { get; set; }
         public string Key { get; set; }
         public NodeLocation Loc { get; set; }
     }
@@ -68,7 +68,7 @@ namespace TciDataLinks.Models
     {
         public GraphLink() { }
 
-        public GraphLink(string from, string to, ObjectId id, string text)
+        public GraphLink(string from, string to, string id, string text)
         {
             this.from = from;
             this.to = to;

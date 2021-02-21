@@ -18,13 +18,13 @@ namespace TciDataLinks.Controllers
     [Authorize]
     public class DeviceController : BaseController
     {
-        private IEnumerable<City> cities = null;
+        private readonly IEnumerable<City> cities = null;
         public DeviceController(IDbContext db, IEnumerable<City> cities) : base(db)
         {
             this.cities = cities;
         }
 
-        public IActionResult Item(ObjectId id)
+        public IActionResult Item(string id)
         {
             var device = db.FindById<Device>(id);
             var model = Mapper.Map<DeviceViewModel>(device);
@@ -49,7 +49,7 @@ namespace TciDataLinks.Controllers
         }
 
         [Authorize(nameof(Permission.EditPlacesAndDevices))]
-        public IActionResult Add(ObjectId city, ObjectId center, ObjectId building, ObjectId room, ObjectId rack)
+        public IActionResult Add(string city, string center, string building, string room, string rack)
         {
             var model = new DeviceViewModel
             {
@@ -60,22 +60,22 @@ namespace TciDataLinks.Controllers
                 Place = rack
             };
             ViewBag.Cities = cities;
-            if (city != ObjectId.Empty)
+            if (city != null)
             {
                 ViewBag.Centers = db.Find<CommCenter>(c => c.City == city).Project(c => new { c.Id, c.Name }).ToEnumerable()
                     .Select(c => new SelectListItem(text: c.Name, value: c.Id.ToString(), selected: c.Id == center));
             }
-            if (center != ObjectId.Empty)
+            if (center != null)
             {
                 ViewBag.Buildings = db.FindGetResults<Building>(b => b.Parent == center)
                     .Select(b => new SelectListItem(text: b.Name, value: b.Id.ToString(), selected: b.Id == building));
             }
-            if (building != ObjectId.Empty)
+            if (building != null)
             {
                 ViewBag.Rooms = db.FindGetResults<Room>(r => r.Parent == building)
                     .Select(r => new SelectListItem(text: r.Name, value: r.Id.ToString(), selected: r.Id == room));
             }
-            if (rack != ObjectId.Empty)
+            if (rack != null)
             {
                 var rackObj = db.FindById<Rack>(rack);
                 model.Place = rack;
@@ -91,7 +91,7 @@ namespace TciDataLinks.Controllers
         public IActionResult Add(DeviceViewModel m)
         {
             ObjectId buildingId, roomId, rackId;
-            if (m.Center == ObjectId.Empty)
+            if (m.Center == null)
             {
                 ViewBag.Cities = cities;
                 ModelState.AddModelError("Center", "مرکز درست انتخاب نشده است.");
@@ -102,25 +102,25 @@ namespace TciDataLinks.Controllers
             {
                 var building = new Building { Name = m.Building, Parent = m.Center };
                 db.Save(building);
-                buildingId = building.Id;
+                buildingId = ObjectId.Parse(building.Id);
             }
             if (!ObjectId.TryParse(m.Room, out roomId))
             {
-                var room = new Room { Name = m.Room, Parent = buildingId };
+                var room = new Room { Name = m.Room, Parent = buildingId.ToString() };
                 db.Save(room);
-                roomId = room.Id;
+                roomId = ObjectId.Parse(room.Id);
             }
-            rackId = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
-                .Project(r => r.Id).FirstOrDefault();
+            rackId = ObjectId.Parse(db.Find<Rack>(r => r.Parent == roomId.ToString() && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
+                .Project(r => r.Id).FirstOrDefault());
             if (rackId == ObjectId.Empty)
             {
-                var rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex, Side = m.RackSide };
+                var rack = new Rack { Parent = roomId.ToString(), Line = m.RackLine, Index = m.RackIndex, Side = m.RackSide };
                 db.Save(rack);
-                rackId = rack.Id;
+                rackId = ObjectId.Parse(rack.Id);
             }
 
             var device = Mapper.Map<Device>(m);
-            device.Place = rackId;
+            device.Place = rackId.ToString();
 
             db.Save(device);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
@@ -148,7 +148,7 @@ namespace TciDataLinks.Controllers
                 .Select(c => new SelectListItem { Text = c.Name, Value = c.Id.ToString(), Selected = c.Id == model.Center });
             ViewBag.Buildings = db.FindGetResults<Building>(b => b.Parent == model.Center)
                 .Select(b => new SelectListItem { Text = b.Name, Value = b.Id.ToString(), Selected = b.Id.ToString() == model.Building });
-            ViewBag.Rooms = db.FindGetResults<Room>(r => r.Parent == ObjectId.Parse(model.Building))
+            ViewBag.Rooms = db.FindGetResults<Room>(r => r.Parent == model.Building)
                 .Select(r => new SelectListItem { Text = r.Name, Value = r.Id.ToString(), Selected = r.Id.ToString() == model.Room });
             return View(model);
         }
@@ -158,7 +158,7 @@ namespace TciDataLinks.Controllers
         public IActionResult Edit(DeviceViewModel m)
         {
             ObjectId buildingId, roomId, rackId;
-            if (m.Center == ObjectId.Empty)
+            if (m.Center == null)
             {
                 ViewBag.Cities = cities;
                 ModelState.AddModelError("Center", "مرکز درست انتخاب نشده است.");
@@ -168,25 +168,25 @@ namespace TciDataLinks.Controllers
             {
                 var building = new Building { Name = m.Building, Parent = m.Center };
                 db.Save(building);
-                buildingId = building.Id;
+                buildingId = ObjectId.Parse(building.Id);
             }
             if (!ObjectId.TryParse(m.Room, out roomId))
             {
-                var room = new Room { Name = m.Room, Parent = buildingId };
+                var room = new Room { Name = m.Room, Parent = buildingId.ToString() };
                 db.Save(room);
-                roomId = room.Id;
+                roomId = ObjectId.Parse(room.Id);
             }
-            rackId = db.Find<Rack>(r => r.Parent == roomId && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
-                .Project(r => r.Id).FirstOrDefault();
+            rackId = ObjectId.Parse(db.Find<Rack>(r => r.Parent == roomId.ToString() && r.Line == m.RackLine && r.Index == m.RackIndex && r.Side == m.RackSide)
+                .Project(r => r.Id).FirstOrDefault());
             if (rackId == ObjectId.Empty)
             {
-                var rack = new Rack { Parent = roomId, Line = m.RackLine, Index = m.RackIndex, Side = m.RackSide };
+                var rack = new Rack { Parent = roomId.ToString(), Line = m.RackLine, Index = m.RackIndex, Side = m.RackSide };
                 db.Save(rack);
-                rackId = rack.Id;
+                rackId = ObjectId.Parse(rack.Id);
             }
             var device = db.FindById<Device>(m.Id);
             device.InjectFrom(m);
-            device.Place = rackId;
+            device.Place = rackId.ToString();
             db.Save(device);
             return RedirectToAction("Item", "Place", new { type = "Rack", id = rackId.ToString() });
         }
@@ -194,18 +194,17 @@ namespace TciDataLinks.Controllers
         [AcceptVerbs("GET", "POST")]
         public IActionResult DeviceAddressIsValid(string id, string address)
         {
-            ObjectId.TryParse(id, out ObjectId objId);
-            bool exists = db.Any<Device>(d => d.Id != objId && d.Address == address);
+            bool exists = db.Any<Device>(d => d.Id != id && d.Address == address);
             return Json(!exists);
         }
 
-        public IEnumerable<Device> FindDevices(ObjectId parentId, PlaceType parentType)
+        public IEnumerable<Device> FindDevices(string parentId, PlaceType parentType)
         {
             if (parentType == PlaceType.Rack)
                 return db.FindGetResults<Device>(d => d.Place == parentId);
             else
             {
-                List<ObjectId> racks;
+                List<string> racks;
                 if (parentType == PlaceType.Room)
                     racks = db.Find<Rack>(r => r.Parent == parentId).Project(r => r.Id).ToList();
                 else if (parentType == PlaceType.Building)
@@ -232,7 +231,7 @@ namespace TciDataLinks.Controllers
             }
         }
 
-        public IActionResult Delete(ObjectId id)
+        public IActionResult Delete(string id)
         {
             var device = db.FindById<Device>(id);
             if (!db.Any<EndPoint>(e => e.Device == id))

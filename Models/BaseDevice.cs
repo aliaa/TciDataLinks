@@ -24,7 +24,8 @@ namespace TciDataLinks.Models
         public DevicePlaceType PlaceType { get; set; }
 
         [Display(Name = "محل نصب")]
-        public ObjectId Place { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Place { get; set; }
 
         public int RackRow { get; set; }
 
@@ -63,7 +64,7 @@ namespace TciDataLinks.Models
             return sb.ToString();
         }
 
-        public ObjectId GetCenterId(IReadOnlyDbContext db)
+        public string GetCenterId(IReadOnlyDbContext db)
         {
             if (PlaceType == DevicePlaceType.Rack)
             {

@@ -131,14 +131,14 @@ namespace TciDataLinks.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult UsernameIsValid(string username, ObjectId id)
+        public IActionResult UsernameIsValid(string username, string id)
         {
             var exists = db.Any<AuthUserX>(u => u.Username == username && u.Id != id);
             return Json(!exists);
         }
 
         [Authorize(nameof(Permission.ManageUsers))]
-        public IActionResult Edit(ObjectId id)
+        public IActionResult Edit(string id)
         {
             var user = db.FindById<AuthUserX>(id);
             var model = Mapper.Map<EditUserViewModel>(user);

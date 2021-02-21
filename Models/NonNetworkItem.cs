@@ -9,7 +9,8 @@ namespace TciDataLinks.Models
     [BsonKnownTypes(typeof(NonNetworkRackItem), typeof(NonNetworkRoomItem))]
     public abstract class NonNetworkItem : MongoEntity
     {
-        public ObjectId Place { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Place { get; set; }
 
         [Display(Name = "نام")]
         public string Name { get; set; }

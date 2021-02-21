@@ -20,10 +20,12 @@ namespace TciDataLinks.Models
         public string CustomerName { get; set; }
 
         [Display(Name = "شهر")]
-        public ObjectId City { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string City { get; set; }
 
         [Display(Name = "مرکز مخابراتی")]
-        public ObjectId Center { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Center { get; set; }
 
         [Display(Name = "شماره پرونده")]
         public long DocumentNumber { get; set; }

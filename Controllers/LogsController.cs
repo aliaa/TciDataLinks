@@ -46,7 +46,7 @@ namespace TciDataLinks.Controllers
                 {
                     item.Type = nameof(Connection);
                     if (item.ActivityType != ActivityType.Delete)
-                        item.ObjId = db.FindById<EndPoint>(item.ObjId)?.Connection ?? ObjectId.Empty;
+                        item.ObjId = db.FindById<EndPoint>(item.ObjId)?.Connection;
                 }
             }
 

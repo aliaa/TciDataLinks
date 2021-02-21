@@ -19,16 +19,7 @@ namespace TciDataLinks.Controllers
             db.GetUserNameFunc = () => UserName;
         }
 
-        protected ObjectId? UserId
-        {
-            get
-            {
-                ObjectId val;
-                if (ObjectId.TryParse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value, out val))
-                    return val;
-                return null;
-            }
-        }
+        protected string UserId => HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
         protected string UserName => HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
 
@@ -49,7 +40,7 @@ namespace TciDataLinks.Controllers
         {
             var id = UserId;
             if (id != null)
-                return db.FindById<AuthUserX>(id.Value);
+                return db.FindById<AuthUserX>(id);
             return null;
         }
 

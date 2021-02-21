@@ -1,5 +1,6 @@
 ﻿using EasyMongoNet.Model;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 
 namespace TciDataLinks.ViewModels
@@ -14,6 +15,7 @@ namespace TciDataLinks.ViewModels
 
         public string Type { get; set; }
 
-        public ObjectId ObjId { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string ObjId { get; set; }
     }
 }

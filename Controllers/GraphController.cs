@@ -19,9 +19,9 @@ namespace TciDataLinks.Controllers
     {
         public GraphController(IDbContext db) : base(db) { }
 
-        public IActionResult Index(ObjectId id)
+        public IActionResult Index(string id)
         {
-            if(id != ObjectId.Empty)
+            if(id != null)
             {
                 var center = db.FindById<CommCenter>(id);
                 ViewBag.City = center.City;
@@ -31,15 +31,15 @@ namespace TciDataLinks.Controllers
         }
 
 
-        private static PlaceType[] ForbiddenPlaces = new PlaceType[] { PlaceType.City, PlaceType.Device, PlaceType.Passive };
-        public IActionResult Place(PlaceType type, ObjectId id, Device.NetworkType? networkType = null, bool? hasCustomer = null)
+        private static readonly PlaceType[] ForbiddenPlaces = new PlaceType[] { PlaceType.City, PlaceType.Device, PlaceType.Passive };
+        public IActionResult Place(PlaceType type, string id, Device.NetworkType? networkType = null, bool? hasCustomer = null)
         {
             if (ForbiddenPlaces.Contains(type))
                 throw new Exception("type: " + type + " is not supported for creating graph!");
 
             var graph = new Graph();
             CommCenter center;
-            var deviceIds = new List<ObjectId>();
+            var deviceIds = new List<string>();
 
             IEnumerable<PlaceBase> buildings = null, rooms = null, racks = null;
             if (type == PlaceType.Center)
@@ -157,9 +157,9 @@ namespace TciDataLinks.Controllers
                     EndPoints = db.Find<EndPoint>(e => e.Connection == c.Key).SortBy(e => e.Index).ToList()
                 });
             if (hasCustomer == true)
-                connections = connections.Where(c => c.Connection.CustomerId != ObjectId.Empty);
+                connections = connections.Where(c => c.Connection.CustomerId != null);
             else if(hasCustomer == false)
-                connections = connections.Where(c => c.Connection.CustomerId == ObjectId.Empty);
+                connections = connections.Where(c => c.Connection.CustomerId == null);
 
             foreach (var c in connections)
             {
@@ -214,7 +214,7 @@ namespace TciDataLinks.Controllers
                     lastPort = lastFirstEndPointPort;
                 }
 
-                if (c.Connection.CustomerId != ObjectId.Empty)
+                if (c.Connection.CustomerId != null)
                 {
                     var key = "Customer_" + c.Connection.CustomerId;
                     var icon = ImageListItem.CustomerIcons.FirstOrDefault(i => i.Value == c.Connection.CustomerIcon) ?? ImageListItem.CustomerIcons[0];
@@ -298,7 +298,7 @@ namespace TciDataLinks.Controllers
             graph.AddNode(new GraphNode { key = buildingKey, text = "ساختمان " + building.Name, group = centerKey, isGroup = true });
         }
 
-        public IActionResult Connection(ObjectId id)
+        public IActionResult Connection(string id)
         {
             var graph = new Graph();
             var connection = db.FindById<Connection>(id);
@@ -331,7 +331,7 @@ namespace TciDataLinks.Controllers
                 lastKey = lastFirstEndPointKey;
             }
 
-            if(connection.CustomerId != ObjectId.Empty)
+            if(connection.CustomerId != null)
             {
                 var key = "Customer_" + connection.CustomerId;
                 var icon = ImageListItem.CustomerIcons.FirstOrDefault(i => i.Value == connection.CustomerIcon) ?? ImageListItem.CustomerIcons[0];
@@ -349,7 +349,7 @@ namespace TciDataLinks.Controllers
 
         public class Req
         {
-            public ObjectId center { get; set; }
+            public string center { get; set; }
             public List<NodeLocationWithKey> nodeLocations { get; set; }
         }
 
